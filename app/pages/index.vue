@@ -25,16 +25,21 @@
         </p>
 
         <div class="mt-8 flex flex-wrap gap-4">
-          <NuxtLink to="/tentang"
-            class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-semibold px-6 py-3 rounded-full transition">
+          <NuxtLink to="/tentang" class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300
+           text-gray-900 font-semibold px-6 py-3 rounded-full
+           transition-all duration-200 ease-out
+           hover:scale-105 hover:-translate-y-1 hover:shadow-lg">
             Tentang MediFinder →
           </NuxtLink>
 
-          <NuxtLink to="/daftar"
-            class="inline-flex items-center gap-2 border border-white/70 text-white hover:bg-white/10 font-semibold px-6 py-3 rounded-full transition">
+          <NuxtLink to="/daftar" class="inline-flex items-center gap-2 border border-white/70 text-white
+           hover:bg-white/10 font-semibold px-6 py-3 rounded-full
+           transition-all duration-200 ease-out
+           hover:scale-105 hover:-translate-y-1 hover:shadow-lg">
             Daftarkan Apotek
           </NuxtLink>
         </div>
+
       </div>
 
       <!-- RIGHT EMPTY (for balance / future image) -->
@@ -139,20 +144,74 @@
     </div>
   </section>
 
+  <section class="pharmacy-section bg-slate-50 py-24">
+    <div class="max-w-7xl mx-auto px-6">
+
+      <!-- TITLE -->
+      <h2 class="pharmacy-item text-2xl md:text-3xl font-bold text-gray-900 mb-12">
+        Daftar Apotek di Wilayah
+        <span class="text-[#0f766e]">
+          Lohbener, Kec.Indramayu, Jawa Barat
+        </span>
+      </h2>
+
+      <!-- GRID -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div v-for="i in 4" :key="i"
+          class="pharmacy-item bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden">
+          <!-- IMAGE -->
+          <img src="/images/image.png" class="w-full h-40 object-cover" />
+
+          <!-- CONTENT -->
+          <div class="p-5 text-center">
+            <h3 class="font-semibold text-lg text-gray-900">
+              Apotek Test {{ i }}
+            </h3>
+
+            <p class="text-sm text-gray-500 mt-1">
+              Lohbener
+            </p>
+
+            <!-- STATUS -->
+            <div class="mt-3">
+              <span class="bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full font-medium">
+                Tutup
+              </span>
+            </div>
+
+            <!-- BUTTON -->
+            <button
+              class="mt-4 bg-yellow-400 hover:bg-yellow-300 px-5 py-2 rounded-full text-sm font-semibold shadow transition hover:scale-105">
+              Lihat Detail
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+
+
 </template>
 
+
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, nextTick } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-// register plugin
+useHead({
+    title: "Kemitraan"
+})
+
 gsap.registerPlugin(ScrollTrigger)
 
-onMounted(() => {
-  /* =========================
-   * HERO ANIMATION (ON LOAD)
-   * ========================= */
+onMounted(async () => {
+  await nextTick()
+
+  /* HERO */
   gsap.from('.hero-item', {
     opacity: 0,
     y: 40,
@@ -161,9 +220,7 @@ onMounted(() => {
     ease: 'power3.out',
   })
 
-  /* =========================
-   * SECTION 2 (ON SCROLL)
-   * ========================= */
+  /* ABOUT */
   gsap.from('.about-item', {
     scrollTrigger: {
       trigger: '.about-section',
@@ -176,6 +233,7 @@ onMounted(() => {
     ease: 'power3.out',
   })
 
+  /* MAP */
   gsap.from('.map-card', {
     scrollTrigger: {
       trigger: '.map-card',
@@ -186,5 +244,25 @@ onMounted(() => {
     duration: 0.8,
     ease: 'power3.out',
   })
+
+  /* PHARMACY (FIXED) */
+  const cards = gsap.utils.toArray('.pharmacy-item')
+
+  gsap.from(cards, {
+    scrollTrigger: {
+      trigger: '.pharmacy-section',
+      start: 'top 85%',
+      toggleActions: 'play none none none',
+      invalidateOnRefresh: true
+    },
+    opacity: 0,
+    y: 60,
+    duration: 0.8,
+    stagger: 0.2,
+    ease: 'power3.out',
+  })
+
+  ScrollTrigger.refresh()
+
 })
 </script>

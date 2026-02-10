@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: ['@nuxt/fonts', '@nuxt/a11y', '@nuxt/image', '@nuxt/ui'],
-  
+
   fonts: {
     families: [
       {
@@ -14,5 +14,12 @@ export default defineNuxtConfig({
         styles: ['normal'],
       }
     ]
+  },
+
+  app: {
+    head: {
+      titleTemplate: "%s - MediFinder",
+      title: "MediFinder"
+    }
   }
 })

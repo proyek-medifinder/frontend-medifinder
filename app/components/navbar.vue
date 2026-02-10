@@ -14,7 +14,7 @@ const isActive = (path: string) =>
         <div class="max-w-7xl mx-auto px-4">
 
             <!-- PILL -->
-            <div class="bg-white/90 backdrop-blur-md rounded-full px-6 py-3 shadow-md max-w-5xl mx-auto">
+            <div class="bg-white/90 backdrop-blur-md rounded-full px-6 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.12)] max-w-5xl mx-auto">
                 <div class="flex items-center justify-between">
 
                     <!-- LOGO -->
@@ -58,12 +58,12 @@ const isActive = (path: string) =>
                     <div class="hidden lg:flex items-center gap-3">
                         <NuxtLink to="/login"
                             class="bg-[#0f766e] hover:bg-[#115e59] text-white text-sm font-semibold px-5 py-2 rounded-full transition">
-                            Daftarkan Apotek Anda
+                            Login / Daftar
                         </NuxtLink>
 
-                        <div class="w-9 h-9 rounded-full border flex items-center justify-center">
+                        <!-- <div class="w-9 h-9 rounded-full border flex items-center justify-center">
                             <img src="/images/Group 2.png" alt="ID" class="w-9 h-9" />
-                        </div>
+                        </div> -->
                     </div>
 
                     <!-- MOBILE TOGGLE -->
@@ -76,31 +76,31 @@ const isActive = (path: string) =>
                     </button>
 
                 </div>
-            </div>
+        </div>
 
-            <!-- MOBILE MENU -->
-            <div v-if="mobileOpen" class="lg:hidden mt-4 bg-white rounded-2xl shadow-md p-6">
-                <ul class="flex flex-col gap-4 text-center font-medium">
-                    <li>
-                        <NuxtLink to="/" @click="mobileOpen = false">Kemitraan</NuxtLink>
-                    </li>
-                    <li>
-                        <NuxtLink to="/katalog" @click="mobileOpen = false">Katalog Produk</NuxtLink>
-                    </li>
-                    <li>
-                        <NuxtLink to="/artikel" @click="mobileOpen = false">Artikel</NuxtLink>
-                    </li>
-                    <li>
-                        <NuxtLink to="/kontak" @click="mobileOpen = false">Kontak Kami</NuxtLink>
-                    </li>
+        <!-- MOBILE MENU -->
+        <div v-if="mobileOpen" class="lg:hidden mt-4 bg-white rounded-2xl shadow-md p-6">
+            <ul class="flex flex-col gap-4 text-center font-medium">
+                <li>
+                    <NuxtLink to="/" @click="mobileOpen = false">Kemitraan</NuxtLink>
+                </li>
+                <li>
+                    <NuxtLink to="/katalog" @click="mobileOpen = false">Katalog Produk</NuxtLink>
+                </li>
+                <li>
+                    <NuxtLink to="/artikel" @click="mobileOpen = false">Artikel</NuxtLink>
+                </li>
+                <li>
+                    <NuxtLink to="/kontak" @click="mobileOpen = false">Kontak Kami</NuxtLink>
+                </li>
 
-                    <li class="pt-3">
-                        <NuxtLink to="/login" class="block bg-emerald-500 text-white py-2 rounded-full">
-                            Daftarkan Apotek Anda
-                        </NuxtLink>
-                    </li>
-                </ul>
-            </div>
+                <li class="pt-3">
+                    <NuxtLink to="/login" class="block bg-emerald-500 text-white py-2 rounded-full">
+                        Login / Daftar
+                    </NuxtLink>
+                </li>
+            </ul>
+        </div>
 
         </div>
     </nav>
