@@ -1,7 +1,7 @@
 <template>
   <section class="relative min-h-screen flex items-center overflow-hidden">
     <!-- Background Image -->
-    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/images/image.png');"></div>
+    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/images/bg.png');"></div>
 
     <!-- Overlay Gradient -->
     <div class="absolute inset-0 bg-gradient-to-r from-[#0f766e]/90 via-[#0f766e]/70 to-transparent"></div>
@@ -160,7 +160,7 @@
         <div v-for="i in 4" :key="i"
           class="pharmacy-item bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden">
           <!-- IMAGE -->
-          <img src="/images/image.png" class="w-full h-40 object-cover" />
+          <img src="/images/istri.png" class="w-full h-40 object-cover" />
 
           <!-- CONTENT -->
           <div class="p-5 text-center">

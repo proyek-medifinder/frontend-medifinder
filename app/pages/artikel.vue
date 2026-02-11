@@ -22,7 +22,7 @@
 
                 <!-- IMAGE WRAPPER -->
                 <div class="h-72 md:h-auto">
-                    <img src="/images/image.png" class="w-full h-full object-cover" />
+                    <img src="/images/istri.png" class="w-full h-full object-cover" />
                 </div>
 
                 <div class="p-8 flex flex-col justify-center">
@@ -97,21 +97,21 @@ const articles = [
         title: "Manfaat Probiotik untuk Pencernaan",
         excerpt: "Probiotik membantu menjaga keseimbangan bakteri baik...",
         category: "Kesehatan",
-        image: "/images/image.png"
+        image: "/images/istri.png"
     },
     {
         id: 2,
         title: "Tips Menjaga Imunitas Tubuh",
         excerpt: "Sistem imun yang kuat membantu tubuh melawan penyakit...",
         category: "Lifestyle",
-        image: "/images/image.png"
+        image: "/images/istri.png"
     },
     {
         id: 3,
         title: "Cara Menyimpan Obat yang Benar",
         excerpt: "Penyimpanan obat yang tepat menjaga kualitas obat...",
         category: "Edukasi",
-        image: "/images/image.png"
+        image: "/images/istri.png"
     }
 ]
 
