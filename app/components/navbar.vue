@@ -18,10 +18,25 @@ const logout = () => {
     dropdownOpen.value = false
 }
 
-/* ACTIVE LINK HELPER */
 const isActive = (path: string) => {
     return route.path === path
 }
+
+const cartOpen = ref(false)
+
+const cartItems = ref([
+    {
+        id: 1,
+        name: "Paracetamol 500mg",
+        qty: 2
+    },
+    {
+        id: 2,
+        name: "Vitamin C 1000mg",
+        qty: 1
+    }
+])
+
 </script>
 
 <template>
@@ -73,9 +88,56 @@ const isActive = (path: string) => {
                     </ul>
 
 
-                    <!-- RIGHT -->
-                    <div class="hidden lg:flex items-center gap-3">
 
+                    <!-- RIGHT -->
+                    <div class="hidden lg:flex items-center gap-4">
+
+                        <!-- CART -->
+                        <!-- CART -->
+                        <div v-if="user.loggedIn" class="relative">
+
+                            <button @click="cartOpen = !cartOpen"
+                                class="relative p-2 rounded-full hover:bg-gray-100 transition">
+
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-700" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 7h13M7 13L5.4 5M16 21a1 1 0 100-2M8 21a1 1 0 100-2" />
+                                </svg>
+
+                                <!-- BADGE -->
+                                <span v-if="cartItems.length"
+                                    class="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 rounded-full">
+                                    {{ cartItems.length }}
+                                </span>
+                            </button>
+
+                            <!-- CART DROPDOWN -->
+                            <div v-if="cartOpen"
+                                class="absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-lg border p-4">
+
+                                <p class="font-semibold mb-3">Keranjang</p>
+
+                                <div v-if="cartItems.length" class="space-y-2">
+                                    <div v-for="item in cartItems" :key="item.id" class="flex justify-between text-sm">
+                                        <span>{{ item.name }}</span>
+                                        <span>x{{ item.qty }}</span>
+                                    </div>
+                                </div>
+
+                                <div v-else class="text-sm text-gray-400">
+                                    Keranjang kosong
+                                </div>
+
+                                <NuxtLink to="/keranjang"
+                                    class="block mt-4 bg-emerald-600 text-white text-center py-2 rounded-lg text-sm">
+                                    Lihat Semua Keranjang
+                                </NuxtLink>
+
+                            </div>
+                        </div>
+
+                        <!-- LOGIN -->
                         <NuxtLink v-if="!user.loggedIn" to="/login"
                             class="bg-[#0f766e] text-white px-5 py-2 rounded-full">
                             Login / Daftar
@@ -85,13 +147,11 @@ const isActive = (path: string) => {
                         <div v-else class="relative">
                             <button @click="dropdownOpen = !dropdownOpen" class="flex items-center gap-3">
                                 <img :src="user.avatar" class="w-10 h-10 rounded-full object-cover border" />
-
                                 <span class="font-medium text-gray-700">
                                     {{ user.name }}
                                 </span>
                             </button>
 
-                            <!-- DROPDOWN -->
                             <div v-if="dropdownOpen"
                                 class="absolute right-0 mt-3 w-44 bg-white rounded-xl shadow-lg border py-2">
                                 <NuxtLink to="/profile" class="block px-4 py-2 text-sm hover:bg-gray-50">
@@ -104,7 +164,9 @@ const isActive = (path: string) => {
                                 </button>
                             </div>
                         </div>
+
                     </div>
+
 
 
                     <!-- MOBILE BUTTON -->
@@ -146,6 +208,33 @@ const isActive = (path: string) => {
                                 Kontak Kami
                             </NuxtLink>
                         </li>
+
+                        <!-- CART MOBILE -->
+                        <li v-if="user.loggedIn" class="pt-4 border-t">
+                            <button @click="cartOpen = !cartOpen"
+                                class="w-full text-center font-semibold text-gray-700">
+                                Keranjang ({{ cartItems.length }})
+                            </button>
+
+                            <div v-if="cartOpen" class="mt-3 bg-gray-50 rounded-xl p-3 text-sm">
+                                <div v-if="cartItems.length">
+                                    <div v-for="item in cartItems" :key="item.id" class="flex justify-between py-1">
+                                        <span>{{ item.name }}</span>
+                                        <span>x{{ item.qty }}</span>
+                                    </div>
+                                </div>
+
+                                <div v-else class="text-gray-400 text-center">
+                                    Keranjang kosong
+                                </div>
+
+                                <NuxtLink to="/keranjang" @click="mobileOpen = false"
+                                    class="block mt-3 bg-emerald-600 text-white py-2 rounded-lg text-center">
+                                    Lihat Semua Keranjang
+                                </NuxtLink>
+                            </div>
+                        </li>
+
 
                         <!-- LOGIN -->
                         <li v-if="!user.loggedIn" class="pt-3">

@@ -16,22 +16,29 @@
         <!-- SEARCH -->
         <section class="search-box mt-6">
             <div class="max-w-6xl mx-auto px-6">
-                <div class="bg-emerald-200/60 rounded-2xl p-4 flex gap-3 items-center">
+                <div class="bg-emerald-200/60 rounded-2xl p-4 flex flex-col sm:flex-row gap-3">
 
+                    <!-- INPUT -->
                     <input v-model="keyword" placeholder="Masukkan nama obat, contoh: Paracetamol 500mg"
-                        class="flex-1 px-4 py-3 rounded-xl outline-none" />
+                        class="flex-1 px-4 py-3 rounded-xl outline-none w-full" />
 
-                    <button @click="searchObat"
-                        class="bg-[#0f766e] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#115e59] transition">
-                        Tampilkan
-                    </button>
+                    <!-- BUTTONS -->
+                    <div class="flex gap-3 w-full sm:w-auto">
+                        <button @click="searchObat"
+                            class="flex-1 sm:flex-none bg-[#0f766e] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#115e59] transition">
+                            Tampilkan
+                        </button>
 
-                    <button @click="resetSearch" class="border border-gray-400 px-6 py-3 rounded-xl text-gray-500">
-                        Reset
-                    </button>
+                        <button @click="resetSearch"
+                            class="flex-1 sm:flex-none border border-gray-400 px-6 py-3 rounded-xl text-gray-500">
+                            Reset
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </section>
+
 
         <!-- EMPTY FEATURE STATE -->
         <section v-if="!searched" class="empty-state mt-20">
