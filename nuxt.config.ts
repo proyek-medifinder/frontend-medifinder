@@ -21,5 +21,11 @@ export default defineNuxtConfig({
       titleTemplate: "%s - MediFinder",
       title: "MediFinder"
     }
+  },
+
+   runtimeConfig: {
+    public: {
+      apiBase: 'https://nonregressive-kyoko-supercelestially.ngrok-free.dev'
+    }
   }
 })

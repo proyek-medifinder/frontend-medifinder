@@ -1,15 +1,16 @@
 <template>
     <div class="flex min-h-screen bg-[#0f766e]">
 
-        <AdminSidebar />
+        <AdminSidebar class="w-64 shrink-0" />
 
         <div class="flex-1 flex flex-col">
-            <AdminNavbar />
 
-            <!-- CONTENT AREA -->
-            <main class="flex-1 p-6">
+            <AdminNavbar class="shrink-0" />
+
+            <main class="flex-1 overflow-y-auto p-8">
                 <slot />
             </main>
+
         </div>
 
     </div>

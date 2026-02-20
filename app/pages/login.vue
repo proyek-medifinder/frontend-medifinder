@@ -1,4 +1,3 @@
-
 <template>
     <div class="min-h-screen grid lg:grid-cols-2">
 
@@ -42,21 +41,27 @@
                     </p>
                 </div>
 
-                <form class="space-y-4">
-                    <input type="text" placeholder="Username"
+                <form class="space-y-4" @submit.prevent="handleLogin">
+
+                    <input v-model="email" type="email" placeholder="Email"
                         class="w-full px-4 py-3 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#0f766e]" />
 
-                    <input type="password" placeholder="Password"
+                    <input v-model="password" type="password" placeholder="Password"
                         class="w-full px-4 py-3 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#0f766e]" />
 
                     <div class="text-right text-sm text-gray-500">
                         Lupa password?
                     </div>
 
-                    <button
+                    <button type="submit" :disabled="loading"
                         class="w-full bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-semibold py-3 rounded-lg transition">
-                        Masuk
+                        {{ loading ? 'Loading...' : 'Masuk' }}
                     </button>
+
+                    <p v-if="errorMessage" class="text-red-500 text-sm text-center">
+                        {{ errorMessage }}
+                    </p>
+
                 </form>
 
                 <button
@@ -94,7 +99,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({
     layout: 'auth'
 })
@@ -102,5 +107,27 @@ definePageMeta({
 useHead({
     title: "Sign In"
 })
-</script>
 
+const email = ref('')
+const password = ref('')
+const loading = ref(false)
+const errorMessage = ref('')
+
+const router = useRouter()
+const { login } = useAuth()
+
+const handleLogin = async () => {
+    try {
+        loading.value = true
+        errorMessage.value = ''
+
+        await login(email.value, password.value)
+
+        router.push('/')
+    } catch (err: any) {
+        errorMessage.value = err.message
+    } finally {
+        loading.value = false
+    }
+}
+</script>
