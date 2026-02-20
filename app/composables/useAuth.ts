@@ -12,18 +12,15 @@ export const useAuth = () => {
     } | null>('auth_user', () => null)
 
     const token = useCookie<string | null>('auth_token')
+    const emailCookie = useCookie<string | null>('auth_email')
     const config = useRuntimeConfig()
 
-    // 🔥 RESTORE USER SAAT REFRESH
-    if (token.value && !user.value) {
-        const savedEmail = useCookie<string | null>('auth_email')
-
-        if (savedEmail.value) {
-            user.value = {
-                name: '',
-                role: '',
-                email: savedEmail.value
-            }
+    // 🔥 restore saat refresh
+    if (token.value && emailCookie.value && !user.value) {
+        user.value = {
+            name: '',
+            role: '',
+            email: emailCookie.value
         }
     }
 
@@ -41,21 +38,42 @@ export const useAuth = () => {
         }
 
         token.value = data.value.token
-
-        // 🔥 simpan email juga ke cookie
-        const emailCookie = useCookie<string | null>('auth_email')
         emailCookie.value = email
 
         user.value = {
             name: data.value.name,
             role: data.value.role,
-            email: email
+            email
+        }
+    }
+
+    // ✅ REGISTER SEKARANG DI SINI
+    const register = async (name: string, email: string, password: string) => {
+        const { data, error } = await useFetch<LoginResponse>(
+            `${config.public.apiBase}/register`,
+            {
+                method: 'POST',
+                body: { name, email, password }
+            }
+        )
+
+        if (error.value || !data.value) {
+            throw new Error('Registrasi gagal')
+        }
+
+        // auto login setelah register
+        token.value = data.value.token
+        emailCookie.value = email
+
+        user.value = {
+            name: data.value.name,
+            role: data.value.role,
+            email
         }
     }
 
     const logout = () => {
         token.value = null
-        const emailCookie = useCookie<string | null>('auth_email')
         emailCookie.value = null
         user.value = null
         navigateTo('/')
@@ -65,6 +83,7 @@ export const useAuth = () => {
         user,
         token,
         login,
+        register,
         logout
     }
 }
