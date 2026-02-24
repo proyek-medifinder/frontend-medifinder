@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div>
 
         <!-- STATS -->
         <div class="grid md:grid-cols-3 gap-6 mb-6">
@@ -35,12 +35,15 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({
     layout: "admin",
+    middleware: 'admin'
 })
 
 useHead({
     title: "Dashboard Admin"
 })
+
+
 </script>

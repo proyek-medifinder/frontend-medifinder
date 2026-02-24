@@ -100,7 +100,7 @@ const cartItems = ref([
                                 <img src="/images/istri.png" class="w-10 h-10 rounded-full object-cover border" />
 
                                 <span class="font-medium text-gray-700">
-                                    {{ user?.email }}
+                                    {{ user?.name }}
                                 </span>
                             </button>
 
@@ -182,7 +182,7 @@ const cartItems = ref([
                                 <img src="/images/istri.png" class="w-14 h-14 rounded-full object-cover border" />
 
                                 <p class="font-semibold text-gray-800">
-                                    {{ user?.email }}
+                                    {{ user?.name }}
                                 </p>
 
                                 <NuxtLink to="/profile" class="text-sm text-gray-600 hover:text-emerald-600">

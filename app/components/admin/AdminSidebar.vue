@@ -90,12 +90,21 @@
 
         <!-- LOGOUT -->
         <div class="p-4">
-            <NuxtLink to="/">
-                <button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-medium transition">
-                    Keluar
-                </button>
-            </NuxtLink>
+
+            <button @click="handleLogout"
+                class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-medium transition">
+                Keluar
+            </button>
+
         </div>
 
     </aside>
 </template>
+
+<script setup lang="ts">
+const { logout } = useAuth()
+
+const handleLogout = () => {
+    logout()
+}
+</script>

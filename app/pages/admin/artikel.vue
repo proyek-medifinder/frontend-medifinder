@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 
 definePageMeta({
     layout: "admin",
+    middleware: 'admin'
 })
 
 useHead({

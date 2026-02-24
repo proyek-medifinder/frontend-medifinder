@@ -46,27 +46,54 @@
                     <input v-model="email" type="email" placeholder="Email"
                         class="w-full px-4 py-3 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#0f766e]" />
 
-                    <input v-model="password" type="password" placeholder="Password"
-                        class="w-full px-4 py-3 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#0f766e]" />
+                    <div class="relative">
+                        <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Password"
+                            class="w-full px-4 py-3 pr-12 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#0f766e]" />
 
+                        <!-- Toggle Button -->
+                        <button type="button" @click="showPassword = !showPassword"
+                            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 cursor-pointer">
+                            <!-- Eye Icon -->
+                            <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5
+           c4.477 0 8.268 2.943 9.542 7
+           -1.274 4.057-5.065 7-9.542 7
+           -4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+
+                            <!-- Eye Slash Icon -->
+                            <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19
+           c-4.477 0-8.268-2.943-9.542-7
+           a9.956 9.956 0 012.042-3.368m3.03-2.249A9.956
+           9.956 0 0112 5c4.477 0 8.268 2.943
+           9.542 7a9.978 9.978 0 01-4.043 5.143M15
+           12a3 3 0 00-4.243-2.829M9.88
+           9.88A3 3 0 0012 15a3 3 0 002.121-.879M3
+           3l18 18" />
+                            </svg>
+                        </button>
+                    </div>
                     <div class="text-right text-sm text-gray-500">
                         Lupa password?
                     </div>
 
                     <button type="submit" :disabled="loading"
-                        class="w-full bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-semibold py-3 rounded-lg transition">
+                        class="w-full bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-semibold py-3 rounded-lg transition cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 hover:scale-[1.01] active:scale-95">
                         {{ loading ? 'Loading...' : 'Masuk' }}
                     </button>
-
                     <p v-if="errorMessage" class="text-red-500 text-sm text-center">
                         {{ errorMessage }}
                     </p>
 
                 </form>
 
-                <button
-                    class="mt-4 w-full border py-3 rounded-lg bg-white hover:bg-gray-100 transition flex items-center justify-center gap-3">
-                    <!-- GOOGLE ICON -->
+                <!-- <button
+                    class="mt-4 w-full border py-3 rounded-lg bg-white hover:bg-gray-100 transition cursor-pointer flex items-center justify-center gap-3 hover:scale-[1.01] active:scale-95">
                     <svg width="20" height="20" viewBox="0 0 48 48">
                         <path fill="#FFC107"
                             d="M43.611 20.083H42V20H24v8h11.303C33.62 32.657 29.215 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.061 0 5.842 1.154 7.961 3.039l5.657-5.657C34.073 6.053 29.297 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z" />
@@ -77,9 +104,16 @@
                         <path fill="#1976D2"
                             d="M43.611 20.083H42V20H24v8h11.303c-.816 2.329-2.29 4.345-4.248 5.653l6.144 5.199C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z" />
                     </svg>
+                    <div class="mt-4 flex justify-center">
+                        <div id="google-buttonDiv"></div>
+                    </div>
 
                     Login dengan Google
-                </button>
+                </button> -->
+                <div class="mt-4 flex justify-center">
+                    <div id="google-buttonDiv" class="transition-all duration-200 hover:scale-[1.02] active:scale-95">
+                    </div>
+                </div>
 
 
                 <div class="text-center mt-6 text-sm text-gray-500">
@@ -114,11 +148,14 @@ useHead({
 
 const email = ref('')
 const password = ref('')
+const showPassword = ref(false)
 const loading = ref(false)
 const errorMessage = ref('')
 
+const googleLoading = ref(false)
 const router = useRouter()
-const { login } = useAuth()
+
+const { login, googleLogin, user } = useAuth()
 
 const handleLogin = async () => {
     try {
@@ -127,11 +164,61 @@ const handleLogin = async () => {
 
         await login(email.value, password.value)
 
-        router.push('/')
+        // 🔥 Redirect berdasarkan role
+        if (user.value?.role === 'super_admin') {
+            router.push('/admin')
+        } else {
+            router.push('/')
+        }
+
     } catch (err: any) {
         errorMessage.value = err.message
     } finally {
         loading.value = false
     }
 }
+
+import { onMounted } from 'vue'
+
+
+const handleCredentialResponse = async (response: any) => {
+    try {
+        await googleLogin(response.credential)
+
+        // redirect setelah login
+        router.push('/')
+
+    } catch (err: any) {
+        errorMessage.value = 'Login Google gagal'
+    }
+}
+
+onMounted(() => {
+    // tunggu sampai script google siap
+    const checkGoogle = setInterval(() => {
+        // @ts-ignore
+        if (window.google && window.google.accounts) {
+            clearInterval(checkGoogle)
+
+            // @ts-ignore
+            window.google.accounts.id.initialize({
+                client_id: '539021546127-kj6icorqjdrouo9n31tla5r2tcl90e7r.apps.googleusercontent.com',
+                callback: handleCredentialResponse
+            })
+
+            // @ts-ignore
+            window.google.accounts.id.renderButton(
+                document.getElementById("google-buttonDiv"),
+                {
+                    theme: "outline",     // outline | filled_blue | filled_black
+                    size: "large",
+                    shape: "pill",        // pill | rectangular
+                    text: "signin_with",  // signin_with | continue_with | signup_with
+                    logo_alignment: "left",
+                    width: 320
+                }
+            )
+        }
+    }, 100)
+})
 </script>
