@@ -73,7 +73,7 @@ const cartItems = ref([
                         <!-- CART -->
                         <div v-if="user" class="relative">
                             <button @click="cartOpen = !cartOpen"
-                                class="relative p-2 rounded-full hover:bg-gray-100 transition">
+                                class="relative p-2 rounded-full hover:bg-gray-100 transition cursor-pointer">
 
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-700" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -94,8 +94,8 @@ const cartItems = ref([
                         </NuxtLink>
 
                         <!-- PROFILE -->
-                        <div v-if="user" class="relative">
-                            <button @click="dropdownOpen = !dropdownOpen" class="flex items-center gap-3">
+                        <div v-if="user" class="relative ">
+                            <button @click="dropdownOpen = !dropdownOpen" class="flex items-center gap-3 cursor-pointer">
 
                                 <img src="/images/istri.png" class="w-10 h-10 rounded-full object-cover border" />
 

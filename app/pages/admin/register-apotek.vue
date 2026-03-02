@@ -4,99 +4,117 @@ definePageMeta({
 })
 
 useHead({
-    title: 'Daftar Akun'
+    title: 'Daftar Apotek'
 })
 
-const name = ref('')
+const namaApotek = ref('')
+const namaPemilik = ref('')
 const email = ref('')
+const noHp = ref('')
+const alamat = ref('')
 const password = ref('')
+const confirmPassword = ref('')
+
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
-const confirmPassword = ref('')
 
 const loading = ref(false)
 const errorMessage = ref('')
+const successMessage = ref('')
 
-const { register } = useAuth()
-const router = useRouter()
+const handleSubmit = async () => {
+    errorMessage.value = ''
+    successMessage.value = ''
 
-const handleRegister = async () => {
-    try {
-        errorMessage.value = ''
-
-        if (!name.value || !email.value || !password.value) {
-            errorMessage.value = 'Semua field wajib diisi'
-            return
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-        if (!emailRegex.test(email.value)) {
-            errorMessage.value = 'Format email tidak valid'
-            return
-        }
-
-        if (password.value !== confirmPassword.value) {
-            errorMessage.value = 'Konfirmasi password tidak sama'
-            return
-        }
-
-        loading.value = true
-
-        await register(name.value, email.value, password.value)
-
-        // ✅ redirect ke login setelah sukses
-        router.push('/login')
-
-    } catch (err: any) {
-        errorMessage.value = err.message
-    } finally {
-        loading.value = false
+    if (
+        !namaApotek.value ||
+        !namaPemilik.value ||
+        !email.value ||
+        !noHp.value ||
+        !alamat.value ||
+        !password.value ||
+        !confirmPassword.value
+    ) {
+        errorMessage.value = 'Semua field wajib diisi'
+        return
     }
+
+    if (password.value !== confirmPassword.value) {
+        errorMessage.value = 'Konfirmasi password tidak sama'
+        return
+    }
+
+    loading.value = true
+
+    // 🔥 SEMENTARA (Belum ada API)
+    setTimeout(() => {
+        loading.value = false
+        successMessage.value =
+            'Pengajuan pendaftaran apotek berhasil dikirim. Menunggu verifikasi Super Admin.'
+    }, 1200)
 }
 </script>
 
 <template>
     <div class="min-h-screen grid lg:grid-cols-2">
 
-        <!-- LEFT SIDE -->
-        <div class="hidden lg:flex items-center justify-center bg-teal-700 text-white">
-            <div class="max-w-md px-12">
+        <!-- LEFT PANEL -->
+        <div class="hidden lg:flex items-center bg-[#0f766e] text-white">
+            <div class="max-w-md mx-auto px-12">
                 <h1 class="text-4xl font-bold mb-6">
-                    Daftarkan Diri anda
+                    Daftarkan Apotek Anda
                 </h1>
+
                 <p class="text-white/80 leading-relaxed">
-                    Dengan MediFinder, temukan apotek terdekat dengan mudah dan cepat. Daftar sekarang untuk akses penuh
-                    ke fitur pencarian apotek, informasi obat, dan banyak lagi. Bergabunglah dengan komunitas kami dan
-                    nikmati kemudahan menemukan apotek kapan saja, di mana saja.
+                    Bergabunglah sebagai mitra MediFinder dan kelola apotek Anda
+                    secara digital. Tingkatkan visibilitas dan jangkauan pelanggan
+                    dengan sistem modern dan terintegrasi.
                 </p>
+
+                <div class="mt-10 space-y-3 text-white/90">
+                    <div>✓ Kelola produk obat</div>
+                    <div>✓ Pantau transaksi</div>
+                    <div>✓ Terhubung dengan pelanggan</div>
+                </div>
+
+                <div class="mt-16 text-white/60 text-sm">
+                    © 2026 MediFinder Partner Program
+                </div>
             </div>
         </div>
 
-        <!-- RIGHT SIDE -->
-        <div class="flex items-center justify-center bg-gray-100">
-
-            <div class="w-full max-w-md px-8 py-12 bg-gray-100 rounded-xl">
+        <!-- RIGHT PANEL -->
+        <div class="flex items-center justify-center bg-slate-50">
+            <div class="w-full max-w-md px-8 py-12  rounded-2xl">
 
                 <h2 class="text-2xl font-semibold text-gray-900 text-center mb-6">
-                    Daftar Akun Baru
+                    Pendaftaran Admin Apotek
                 </h2>
 
-                <form @submit.prevent="handleRegister" class="space-y-4">
+                <form @submit.prevent="handleSubmit" class="space-y-4">
 
-                    <input v-model="name" type="text" placeholder="Nama Lengkap"
-                        class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-teal-600" />
+                    <input v-model="namaApotek" type="text" placeholder="Nama Apotek"
+                        class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#134e4a]" />
+
+                    <input v-model="namaPemilik" type="text" placeholder="Nama Pemilik / Penanggung Jawab"
+                        class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#134e4a]" />
 
                     <input v-model="email" type="email" placeholder="Email"
-                        class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-teal-600" />
+                        class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#134e4a]" />
+
+                    <input v-model="noHp" type="text" placeholder="Nomor HP"
+                        class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#134e4a]" />
+
+                    <textarea v-model="alamat" rows="3" placeholder="Alamat Lengkap Apotek"
+                        class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#134e4a]"></textarea>
 
                     <!-- PASSWORD -->
                     <div class="relative">
                         <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Password"
-                            class="w-full px-4 py-3 pr-12 rounded-lg border focus:outline-none focus:ring-2 focus:ring-teal-600" />
+                            class="w-full px-4 py-3 pr-12 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#134e4a]" />
 
                         <button type="button" @click="showPassword = !showPassword"
-                            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 cursor-pointer">
+                            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 cursor-pointer transition">
                             <!-- Eye -->
                             <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor">
@@ -123,15 +141,14 @@ const handleRegister = async () => {
                         </button>
                     </div>
 
-
                     <!-- CONFIRM PASSWORD -->
                     <div class="relative">
                         <input v-model="confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
                             placeholder="Konfirmasi Password"
-                            class="w-full px-4 py-3 pr-12 rounded-lg border focus:outline-none focus:ring-2 focus:ring-teal-600" />
+                            class="w-full px-4 py-3 pr-12 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#134e4a]" />
 
                         <button type="button" @click="showConfirmPassword = !showConfirmPassword"
-                            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 cursor-pointer">
+                            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 cursor-pointer transition">
                             <!-- Eye -->
                             <svg v-if="!showConfirmPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
                                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -157,26 +174,30 @@ const handleRegister = async () => {
                             </svg>
                         </button>
                     </div>
+
                     <p v-if="errorMessage" class="text-red-500 text-sm text-center">
                         {{ errorMessage }}
                     </p>
 
+                    <p v-if="successMessage" class="text-green-600 text-sm text-center">
+                        {{ successMessage }}
+                    </p>
+
                     <button type="submit" :disabled="loading"
-                        class="w-full bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-semibold py-3 rounded-lg transition">
-                        {{ loading ? 'Loading...' : 'Daftar' }}
+                        class="w-full bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-semibold py-3 rounded-lg transition disabled:opacity-70">
+                        {{ loading ? 'Mengirim...' : 'Ajukan Pendaftaran' }}
                     </button>
 
                 </form>
 
-                <p class="text-center text-sm mt-6">
-                    Sudah punya akun?
-                    <NuxtLink to="/login" class="text-teal-600 font-medium">
-                        Masuk
+                <p class="text-center text-sm mt-6 text-gray-500">
+                    Sudah terdaftar?
+                    <NuxtLink to="/admin/login" class="text-[#0f766e] font-medium">
+                        Masuk sebagai Admin
                     </NuxtLink>
                 </p>
 
             </div>
-
         </div>
 
     </div>

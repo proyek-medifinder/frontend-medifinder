@@ -27,7 +27,7 @@
             <table class="w-full text-sm">
                 <thead class="bg-gray-50 text-gray-600">
                     <tr>
-                        <th class="px-6 py-3 text-left">ID</th>
+                        <th class="px-6 py-3 text-left">No</th>
                         <th class="px-6 py-3 text-left">Username</th>
                         <th class="px-6 py-3 text-left">Nama Apotek</th>
                         <th class="px-6 py-3 text-left">Email</th>
@@ -35,14 +35,31 @@
                     </tr>
                 </thead>
 
-                <tbody>
-                    <tr v-for="admin in paginatedAdmins" :key="admin.id" class="border-t hover:bg-gray-50">
-                        <td class="px-6 py-3">{{ admin.id }}</td>
-                        <td class="px-6 py-3">{{ admin.username }}</td>
-                        <td class="px-6 py-3">{{ admin.apotek }}</td>
+                <tbody v-if="!loading">
+
+                    <!-- LOADING -->
+                    <tr v-if="loading">
+                        <td colspan="5" class="px-6 py-6 text-center text-gray-500">
+                            Loading data...
+                        </td>
+                    </tr>
+
+                    <!-- ERROR -->
+                    <tr v-else-if="errorMessage">
+                        <td colspan="5" class="px-6 py-6 text-center text-red-500">
+                            {{ errorMessage }}
+                        </td>
+                    </tr>
+
+                    <tr v-for="(admin, index) in paginatedAdmins" :key="admin.id" class="border-t hover:bg-gray-50">
+                        <td class="px-6 py-4">
+                            {{ (currentPage - 1) * perPage + index + 1 }}
+                        </td>
+                        <td class="px-6 py-3">{{ admin.name }}</td>
+                        <td class="px-6 py-3">{{ admin.name }}</td>
                         <td class="px-6 py-3">{{ admin.email }}</td>
                         <td class="px-6 py-3">
-                            <span class="bg-emerald-100 text-emerald-700 text-xs px-3 py-1 rounded-full">
+                            <span class="bg-emerald-100 text-emerald-700 texDt-xs px-3 py-1 rounded-full">
                                 Aktif
                             </span>
                         </td>
@@ -83,35 +100,85 @@
 </template>
 
 
-<script setup>
-import { ref, computed } from "vue"
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue"
 
 definePageMeta({
     layout: "admin",
-    middleware: 'admin'
+    middleware: "admin"
 })
 
 useHead({
     title: "Admin Apotek",
 })
 
+const config = useRuntimeConfig()
+const token = useCookie('auth_token')
+
 const keyword = ref("")
 const currentPage = ref(1)
 const perPage = 5
 
-const admins = ref([
-    { id: 9, username: "qonita", apotek: "Apotek Test 3", email: "qonita@gmail.com" },
-    { id: 8, username: "novalsantria320", apotek: "Apotek noval ardi", email: "novalsantria320@gmail.com" },
-    { id: 6, username: "noval24", apotek: "Apotek Ardiansyah", email: "noval24@student.polindra.ac.id" },
-    { id: 2, username: "test", apotek: "Apotek test", email: "novalardi230@gmail.com" },
-    { id: 1, username: "admin1", apotek: "Apotek Sehat", email: "admin1@mail.com" },
-    { id: 3, username: "admin2", apotek: "Apotek Farma", email: "admin2@mail.com" },
-])
+const admins = ref<Admin[]>([])
+const loading = ref(false)
+const errorMessage = ref("")
+
+
+interface Admin {
+    id: string
+    name: string
+    email: string
+    role_id: number
+    status: string
+    last_login_at: string | null
+    created_at: string
+    updated_at: string
+}
+
+interface AdminResponse {
+    data: Admin[]
+    meta: {
+        limit: number
+        page: number
+        total?: number
+    }
+}
+
+const fetchAdmins = async () => {
+    try {
+        loading.value = true
+        errorMessage.value = ""
+
+        const data = await $fetch<AdminResponse>(
+            `${config.public.apiBase}/superadmin/admin`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token.value}`
+                }
+            }
+        )
+
+        admins.value = data.data
+
+    } catch (err: any) {
+        errorMessage.value = err?.data?.message || "Gagal mengambil data admin"
+    } finally {
+        loading.value = false
+    }
+}
+
+onMounted(() => {
+    fetchAdmins()
+})
+
+/* ===============================
+   FILTER & PAGINATION
+================================ */
 
 const filteredAdmins = computed(() => {
     if (!keyword.value) return admins.value
 
-    return admins.value.filter(a =>
+    return admins.value.filter((a: any) =>
         a.username.toLowerCase().includes(keyword.value.toLowerCase())
     )
 })

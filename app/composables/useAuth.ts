@@ -1,3 +1,4 @@
+import { jwtDecode } from "jwt-decode"
 interface AuthResponse {
     name: string
     role: string
@@ -7,20 +8,29 @@ interface AuthResponse {
 
 export const useAuth = () => {
     const user = useState<{
-        name: string
+        user_id: string
+        name?: string
+        email?: string
         role: string
-        email: string
+        picture?: string
     } | null>('auth_user', () => null)
+
+    const logout = () => {
+        token.value = null
+        emailCookie.value = null
+        user.value = null
+        navigateTo('/')
+    }
 
     const token = useCookie<string | null>('auth_token')
     const emailCookie = useCookie<string | null>('auth_email')
     const config = useRuntimeConfig()
-
     const fetchUser = async () => {
         if (!token.value) return
 
         try {
             const data = await $fetch<{
+                user_id: string
                 name: string
                 email: string
                 role: string
@@ -37,23 +47,50 @@ export const useAuth = () => {
         }
     }
 
-    // RESTORE USER
-    // if (token.value && !user.value) {
-    //     fetchUser()
-    // }
 
-    if (import.meta.client) {
-        onMounted(() => {
-            if (token.value && !user.value) {
-                fetchUser()
+
+    // if (token.value && !user.value) {
+    //     const decoded: any = jwtDecode(token.value)
+
+    //     user.value = {
+    //         name: decoded.name,
+    //         email: decoded.email,
+    //         role: decoded.role
+    //     }
+    //     console.log("DECODED JWT:", decoded)
+    // }
+    if (token.value && !user.value) {
+        try {
+            const decoded: any = jwtDecode(token.value)
+
+            user.value = {
+                user_id: decoded.user_id,
+                role: decoded.role
             }
-        })
+        } catch (e) {
+            logout()
+        }
     }
+
+
+    // const setAuthData = (data: AuthResponse, email: string) => {
+    //     token.value = data.token
+    //     emailCookie.value = email
+
+    //     user.value = {
+    //         name: data.name,
+    //         role: data.role,
+    //         email
+    //     }
+    // }
     const setAuthData = (data: AuthResponse, email: string) => {
         token.value = data.token
         emailCookie.value = email
 
+        const decoded: any = jwtDecode(data.token)
+
         user.value = {
+            user_id: decoded.user_id,
             name: data.name,
             role: data.role,
             email
@@ -88,7 +125,7 @@ export const useAuth = () => {
 
             console.log('GOOGLE LOGIN RESPONSE:', data)
 
-            setAuthData(data, data.email ?? '') 
+            setAuthData(data, data.email ?? '')
         } catch (err: any) {
             throw new Error(err?.data?.message || 'Login Google gagal')
         }
@@ -108,12 +145,7 @@ export const useAuth = () => {
         }
     }
 
-    const logout = () => {
-        token.value = null
-        emailCookie.value = null
-        user.value = null
-        navigateTo('/')
-    }
+
 
     return {
         user,

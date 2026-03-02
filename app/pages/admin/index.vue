@@ -6,7 +6,9 @@
 
             <div class="bg-white p-6 rounded-2xl shadow-sm">
                 <p class="text-sm text-gray-500">Total Admin</p>
-                <p class="text-2xl font-bold text-gray-900 mt-1">4</p>
+                <p class="text-2xl font-bold text-gray-900 mt-1">
+                    {{ loading ? "..." : totalAdmin }}
+                </p>
             </div>
 
             <div class="bg-white p-6 rounded-2xl shadow-sm">
@@ -20,6 +22,8 @@
             </div>
 
         </div>
+
+
 
         <!-- TABLE / EMPTY STATE -->
         <div class="bg-white rounded-2xl shadow-sm p-6">
@@ -38,12 +42,49 @@
 <script setup lang="ts">
 definePageMeta({
     layout: "admin",
-    middleware: 'admin'
+    middleware: "admin"
 })
 
 useHead({
     title: "Dashboard Admin"
 })
 
+const config = useRuntimeConfig()
+const token = useCookie<string | null>("auth_token")
 
+const totalAdmin = ref(0)
+const totalApotek = ref(0)
+const totalObat = ref(0)
+const loading = ref(true)
+
+const fetchDashboardData = async () => {
+    try {
+        loading.value = true
+
+        // 🔥 Ambil data admin apotek
+        const adminRes = await $fetch<any>(
+            `${config.public.apiBase}/superadmin/admin`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token.value}`
+                }
+            }
+        )
+
+        totalAdmin.value = adminRes.data.length
+
+        // Kalau nanti ada endpoint lain:
+        // const apotekRes = await ...
+        // const obatRes = await ...
+
+    } catch (err) {
+        console.error("Gagal ambil data dashboard", err)
+    } finally {
+        loading.value = false
+    }
+}
+
+onMounted(() => {
+    fetchDashboardData()
+})
 </script>

@@ -78,7 +78,8 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="text-right text-sm text-gray-500">
+                    <div @click="openForgotModal"
+                        class="text-right text-sm text-gray-500 hover:text-[#0f766e] cursor-pointer transition">
                         Lupa password?
                     </div>
 
@@ -123,8 +124,6 @@
                             Ajukan sekarang
                         </span>
                     </NuxtLink>
-
-
                 </div>
 
                 <NuxtLink to="/" class="block text-center mt-4 text-sm text-gray-500 hover:text-gray-700">
@@ -134,6 +133,56 @@
             </div>
         </div>
 
+    </div>
+    <!-- FORGOT PASSWORD MODAL -->
+    <div v-if="forgotOpen" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+        <div class="bg-white w-full max-w-md rounded-2xl p-6 shadow-xl relative">
+
+            <button @click="forgotOpen = false" class="absolute right-4 top-4 text-gray-400 hover:text-gray-600">
+                ✕
+            </button>
+
+            <!-- STEP 1: INPUT EMAIL -->
+            <div v-if="forgotStep === 1">
+                <h2 class="text-xl font-semibold mb-4">Reset Password</h2>
+
+                <input v-model="forgotEmail" type="email" placeholder="Masukkan email Anda"
+                    class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#0f766e]" />
+
+                <button @click="handleSendForgot" :disabled="forgotLoading"
+                    class="mt-4 w-full bg-[#0f766e] text-white py-3 rounded-lg hover:opacity-90 transition">
+                    {{ forgotLoading ? 'Mengirim...' : 'Kirim OTP' }}
+                </button>
+            </div>
+
+            <!-- STEP 2: INPUT OTP -->
+            <div v-if="forgotStep === 2">
+                <h2 class="text-xl font-semibold mb-4">Masukkan OTP</h2>
+
+                <input v-model="forgotOtp" type="text" placeholder="Masukkan kode OTP"
+                    class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#0f766e]" />
+
+                <button @click="handleVerifyOtp"
+                    class="mt-4 w-full bg-[#0f766e] text-white py-3 rounded-lg hover:opacity-90 transition">
+                    Verifikasi OTP
+                </button>
+            </div>
+
+            <!-- STEP 3: INPUT PASSWORD BARU -->
+            <div v-if="forgotStep === 3">
+                <h2 class="text-xl font-semibold mb-4">Buat Password Baru</h2>
+
+                <input v-model="newPassword" type="password" placeholder="Masukkan password baru"
+                    class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#0f766e]" />
+
+                <button @click="handleResetPassword" :disabled="forgotLoading"
+                    class="mt-4 w-full bg-[#0f766e] text-white py-3 rounded-lg hover:opacity-90 transition">
+                    {{ forgotLoading ? "Memproses..." : "Reset Password" }}
+                </button>
+            </div>
+
+        </div>
     </div>
 </template>
 
@@ -151,11 +200,74 @@ const password = ref('')
 const showPassword = ref(false)
 const loading = ref(false)
 const errorMessage = ref('')
+const newPassword = ref('')
 
 const googleLoading = ref(false)
 const router = useRouter()
 
 const { login, googleLogin, user } = useAuth()
+
+const forgotOpen = ref(false)
+const forgotStep = ref(1)
+const forgotEmail = ref('')
+const forgotOtp = ref('')
+const forgotLoading = ref(false)
+
+const openForgotModal = () => {
+    forgotOpen.value = true
+    forgotStep.value = 1
+    forgotEmail.value = ''
+    forgotOtp.value = ''
+}
+
+
+const {
+    sendForgotEmail,
+    verifyOtp,
+    resetPassword
+} = useForgotPassword()
+
+
+const handleSendForgot = async () => {
+    try {
+        forgotLoading.value = true
+        await sendForgotEmail(forgotEmail.value)
+        forgotStep.value = 2
+    } catch (err: any) {
+        alert(err?.data?.message || 'Gagal mengirim OTP')
+    } finally {
+        forgotLoading.value = false
+    }
+}
+
+const handleVerifyOtp = async () => {
+    try {
+        await verifyOtp(forgotEmail.value, forgotOtp.value)
+        alert("OTP valid!")
+        forgotStep.value = 3
+    } catch (err: any) {
+        alert(err?.data?.message || "OTP salah")
+    }
+}
+
+const handleResetPassword = async () => {
+    try {
+        forgotLoading.value = true
+
+        await resetPassword(
+            forgotOtp.value,
+            newPassword.value
+        )
+
+        alert("Password berhasil direset!")
+        forgotOpen.value = false
+
+    } catch (err: any) {
+        alert(err?.data?.message || "Gagal reset password")
+    } finally {
+        forgotLoading.value = false
+    }
+}
 
 const handleLogin = async () => {
     try {
@@ -194,7 +306,6 @@ const handleCredentialResponse = async (response: any) => {
 }
 
 onMounted(() => {
-    // tunggu sampai script google siap
     const checkGoogle = setInterval(() => {
         // @ts-ignore
         if (window.google && window.google.accounts) {
