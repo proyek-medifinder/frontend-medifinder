@@ -33,7 +33,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /var/www/proyek_noval
-            git pull origin main
+            git pull origin master
             npm install
             npm run build
             pm2 restart proyek-noval
