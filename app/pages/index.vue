@@ -16,7 +16,7 @@
 
         <h1 class="hero-item text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
           Platform <br />
-          <span class="text-white">Apotek Online 2</span>
+          <span class="text-white">Apotek Online 3</span>
         </h1>
 
         <p class="hero-item mt-6 text-lg text-white/90 max-w-xl">
