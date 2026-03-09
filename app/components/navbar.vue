@@ -135,28 +135,28 @@ const cartItems = ref([
 
                         <li>
                             <NuxtLink to="/" @click="mobileOpen = false"
-                                :class="isActive('/') ? 'text-emerald-600 font-semibold' : 'text-gray-700'">
+                                :class="isActive('/') ? 'text-[#0f766e] font-semibold' : 'text-gray-700'">
                                 Kemitraan
                             </NuxtLink>
                         </li>
 
                         <li>
                             <NuxtLink to="/katalog" @click="mobileOpen = false"
-                                :class="isActive('/katalog') ? 'text-emerald-600 font-semibold' : 'text-gray-700'">
+                                :class="isActive('/katalog') ? 'text-[#0f766e] font-semibold' : 'text-gray-700'">
                                 Katalog Produk
                             </NuxtLink>
                         </li>
 
                         <li>
                             <NuxtLink to="/artikel" @click="mobileOpen = false"
-                                :class="isActive('/artikel') ? 'text-emerald-600 font-semibold' : 'text-gray-700'">
+                                :class="isActive('/artikel') ? 'text-[#0f766e] font-semibold' : 'text-gray-700'">
                                 Artikel
                             </NuxtLink>
                         </li>
 
                         <li>
                             <NuxtLink to="/kontak" @click="mobileOpen = false"
-                                :class="isActive('/kontak') ? 'text-emerald-600 font-semibold' : 'text-gray-700'">
+                                :class="isActive('/kontak') ? 'text-[#0f766e] font-semibold' : 'text-gray-700'">
                                 Kontak Kami
                             </NuxtLink>
                         </li>
@@ -171,7 +171,7 @@ const cartItems = ref([
 
                         <!-- LOGIN MOBILE -->
                         <li v-if="!user" class="pt-3">
-                            <NuxtLink to="/login" class="block bg-emerald-500 text-white py-2 rounded-full">
+                            <NuxtLink to="/login" class="block bg-[#0f766e] text-white py-2 rounded-full">
                                 Login / Daftar
                             </NuxtLink>
                         </li>
@@ -185,7 +185,7 @@ const cartItems = ref([
                                     {{ user?.name }}
                                 </p>
 
-                                <NuxtLink to="/profile" class="text-sm text-gray-600 hover:text-emerald-600">
+                                <NuxtLink to="/profile" class="text-sm text-gray-600 hover:text-[#0f766e]">
                                     Profile
                                 </NuxtLink>
 

@@ -114,30 +114,17 @@
         </div>
       </div>
 
-      <!-- RIGHT MAP (DUMMY) -->
       <div>
         <h3 class="text-lg font-semibold text-gray-900 mb-4">
           Lokasi Anda
         </h3>
 
-        <div class="map-card relative w-full h-[420px] rounded-2xl overflow-hidden shadow-lg bg-gray-200">
-          <!-- Dummy Map Background -->
-          <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/images/map-dummy.png');">
-          </div>
-
-          <!-- Marker -->
-          <div class="absolute inset-0 flex items-center justify-center">
-            <div class="relative">
-              <span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-white px-3 py-1 text-sm rounded-lg shadow">
-                Lokasi Anda
-              </span>
-              <div class="w-6 h-6 bg-[#0f766e] rounded-full border-4 border-white shadow-lg"></div>
-            </div>
-          </div>
-        </div>
+        <ClientOnly>
+          <UserMap @location="userLocation = $event" />
+        </ClientOnly>
 
         <p class="mt-3 text-sm text-[#0f766e] font-medium">
-          Lohbener, Kec. Indramayu, Jawa Barat
+          {{ userLocation }}
         </p>
       </div>
 
@@ -151,7 +138,7 @@
       <h2 class="pharmacy-item text-2xl md:text-3xl font-bold text-gray-900 mb-12">
         Daftar Apotek di Wilayah
         <span class="text-[#0f766e]">
-          Lohbener, Kec.Indramayu, Jawa Barat
+          {{ userLocation }}
         </span>
       </h2>
 
@@ -201,9 +188,10 @@
 import { onMounted, nextTick } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+const userLocation = ref("Mendeteksi lokasi...")
 
 useHead({
-    title: "Kemitraan"
+  title: "Kemitraan"
 })
 
 gsap.registerPlugin(ScrollTrigger)
