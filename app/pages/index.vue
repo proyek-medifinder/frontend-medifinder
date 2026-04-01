@@ -36,7 +36,7 @@
            hover:bg-white/10 font-semibold px-6 py-3 rounded-full
            transition-all duration-200 ease-out
            hover:scale-105 hover:-translate-y-1 hover:shadow-lg">
-            Daftarkan Apotek
+            Daftarkan Apotek anda
           </NuxtLink>
         </div>
 
