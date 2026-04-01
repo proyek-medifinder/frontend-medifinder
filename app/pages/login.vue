@@ -297,8 +297,11 @@ const handleCredentialResponse = async (response: any) => {
     try {
         await googleLogin(response.credential)
 
-        // redirect setelah login
-        router.push('/')
+        if (user.value?.role === 'super_admin') {
+            router.push('/admin')
+        } else {
+            router.push('/')
+        }
 
     } catch (err: any) {
         errorMessage.value = 'Login Google gagal'
@@ -307,6 +310,7 @@ const handleCredentialResponse = async (response: any) => {
 
 onMounted(() => {
     const checkGoogle = setInterval(() => {
+
         // @ts-ignore
         if (window.google && window.google.accounts) {
             clearInterval(checkGoogle)
@@ -321,15 +325,16 @@ onMounted(() => {
             window.google.accounts.id.renderButton(
                 document.getElementById("google-buttonDiv"),
                 {
-                    theme: "outline",     // outline | filled_blue | filled_black
+                    theme: "outline",
                     size: "large",
-                    shape: "pill",        // pill | rectangular
-                    text: "signin_with",  // signin_with | continue_with | signup_with
+                    shape: "pill",
+                    text: "signin_with",
                     logo_alignment: "left",
                     width: 320
                 }
             )
         }
+
     }, 100)
 })
 </script>
