@@ -95,12 +95,14 @@ const cartItems = ref([
 
                         <!-- PROFILE -->
                         <div v-if="user" class="relative ">
-                            <button @click="dropdownOpen = !dropdownOpen" class="flex items-center gap-3 cursor-pointer">
+                            <button @click="dropdownOpen = !dropdownOpen"
+                                class="flex items-center gap-3 cursor-pointer">
 
-                                <img src="/images/istri.png" class="w-10 h-10 rounded-full object-cover border" />
+                                <img :src="user?.picture || '/images/istri.png'"
+                                    class="w-10 h-10 rounded-full object-cover border" />
 
                                 <span class="font-medium text-gray-700">
-                                    {{ user?.name }}
+                                    {{ user?.name || 'User' }}
                                 </span>
                             </button>
 

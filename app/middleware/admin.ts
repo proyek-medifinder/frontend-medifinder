@@ -1,31 +1,14 @@
-// export default defineNuxtRouteMiddleware(() => {
-//     const user = useState<any>('auth_user')
-
-//     if (!user.value) {
-//         return navigateTo('/login')
-//     }
-
-//     if (user.value.role !== 'super_admin') {
-//         return navigateTo('/')
-//     }
-// })
-
-export default defineNuxtRouteMiddleware(() => {
+export default defineNuxtRouteMiddleware(async () => {
     const token = useCookie<string | null>('auth_token')
-    const user = useState<any>('auth_user')
+    const { user, ensureUser } = useAuth()
 
-    // Tidak ada token = pasti belum login
     if (!token.value) {
         return navigateTo('/login')
     }
 
-    // Kalau user belum ter-restore tapi token ada, biarkan dulu
-    if (!user.value) {
-        return
-    }
+    await ensureUser()
 
-    // Cek role saja
-    if (user.value.role !== 'super_admin') {
+    if (user.value?.role !== 'super_admin') {
         return navigateTo('/')
     }
 })

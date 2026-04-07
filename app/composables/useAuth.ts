@@ -29,72 +29,47 @@ export const useAuth = () => {
         if (!token.value) return
 
         try {
-            const data = await $fetch<{
-                user_id: string
-                name: string
-                email: string
-                role: string
-                picture?: string
+            const res = await $fetch<{
+                data: {
+                    id: string
+                    name: string
+                    email: string
+                    role: string
+                }
             }>(`${config.public.apiBase}/me`, {
                 headers: {
-                    Authorization: `Bearer ${token.value}`
+                    Authorization: `Bearer ${token.value}`,
+                    'ngrok-skip-browser-warning': 'true'
                 }
             })
 
-            user.value = data
-        } catch {
-            logout()
-        }
-    }
-
-
-
-    // if (token.value && !user.value) {
-    //     const decoded: any = jwtDecode(token.value)
-
-    //     user.value = {
-    //         name: decoded.name,
-    //         email: decoded.email,
-    //         role: decoded.role
-    //     }
-    //     console.log("DECODED JWT:", decoded)
-    // }
-    if (token.value && !user.value) {
-        try {
-            const decoded: any = jwtDecode(token.value)
-
             user.value = {
-                user_id: decoded.user_id,
-                role: decoded.role
+                user_id: res.data.id,
+                name: res.data.name,
+                email: res.data.email,
+                role: res.data.role
             }
-        } catch (e) {
+        } catch (err) {
+            console.error("FETCH USER ERROR:", err)
             logout()
         }
     }
 
 
-    // const setAuthData = (data: AuthResponse, email: string) => {
-    //     token.value = data.token
-    //     emailCookie.value = email
+    if (import.meta.client) {
+        onMounted(() => {
+            if (token.value && !user.value) {
+                fetchUser()
+            }
+        })
+    }
 
-    //     user.value = {
-    //         name: data.name,
-    //         role: data.role,
-    //         email
-    //     }
-    // }
-    const setAuthData = (data: AuthResponse, email: string) => {
+    const setAuthData = async (data: AuthResponse, email: string) => {
         token.value = data.token
         emailCookie.value = email
 
-        const decoded: any = jwtDecode(data.token)
-
-        user.value = {
-            user_id: decoded.user_id,
-            name: data.name,
-            role: data.role,
-            email
-        }
+        // langsung ambil data dari backend
+        await fetchUser()
     }
 
     const login = async (email: string, password: string) => {
@@ -107,7 +82,9 @@ export const useAuth = () => {
                 }
             )
 
-            setAuthData(data, email)
+            // ❗ WAJIB return await
+            return await setAuthData(data, email)
+
         } catch (err: any) {
             throw new Error(err?.data?.message || 'Email atau password salah')
         }
@@ -145,6 +122,11 @@ export const useAuth = () => {
         }
     }
 
+    const ensureUser = async () => {
+        if (!user.value && token.value) {
+            await fetchUser()
+        }
+    }
 
 
     return {
@@ -153,6 +135,7 @@ export const useAuth = () => {
         login,
         register,
         googleLogin,
-        logout
+        logout,
+        ensureUser
     }
 }

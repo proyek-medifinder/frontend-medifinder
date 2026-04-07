@@ -276,7 +276,6 @@ const handleLogin = async () => {
 
         await login(email.value, password.value)
 
-        // 🔥 Redirect berdasarkan role
         if (user.value?.role === 'super_admin') {
             router.push('/admin')
         } else {

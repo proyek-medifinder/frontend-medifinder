@@ -145,12 +145,13 @@
       <!-- GRID -->
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <div v-for="i in 4" :key="i"
-          class="pharmacy-item bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden">
+          class="pharmacy-item bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden flex flex-col">
+
           <!-- IMAGE -->
           <img src="/images/istri.png" class="w-full h-40 object-cover" />
 
           <!-- CONTENT -->
-          <div class="p-5 text-center">
+          <div class="p-5 text-center flex flex-col flex-1">
             <h3 class="font-semibold text-lg text-gray-900">
               Apotek Test {{ i }}
             </h3>
@@ -167,10 +168,10 @@
             </div>
 
             <!-- BUTTON -->
-            <button
-              class="mt-4 bg-yellow-400 hover:bg-yellow-300 px-5 py-2 rounded-full text-sm font-semibold shadow transition hover:scale-105">
+            <NuxtLink to="/detailApotek"
+              class="mt-4 bg-yellow-400 hover:bg-yellow-300 px-4 py-1.5 rounded-full text-xs font-semibold shadow transition hover:scale-105 w-fit mx-auto">
               Lihat Detail
-            </button>
+            </NuxtLink>
           </div>
         </div>
       </div>

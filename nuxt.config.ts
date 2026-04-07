@@ -25,7 +25,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: 'https://medifinder-backend-production.up.railway.app'
+      apiBase: 'https://nonregressive-kyoko-supercelestially.ngrok-free.dev'
     }
   }
 })
