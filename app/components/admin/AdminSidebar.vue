@@ -89,7 +89,7 @@
         </nav>
 
         <!-- LOGOUT -->
-        <div class="p-4">
+        <div class="p-4">   
 
             <button @click="handleLogout"
                 class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-medium transition">

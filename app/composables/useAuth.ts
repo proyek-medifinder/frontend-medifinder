@@ -82,7 +82,6 @@ export const useAuth = () => {
                 }
             )
 
-            // ❗ WAJIB return await
             return await setAuthData(data, email)
 
         } catch (err: any) {
