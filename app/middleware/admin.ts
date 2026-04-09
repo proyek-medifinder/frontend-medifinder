@@ -1,10 +1,14 @@
-export default defineNuxtRouteMiddleware((to) => {
-    const user = useState<any>('auth_user', () => null)
+export default defineNuxtRouteMiddleware(async () => {
+    const token = useCookie<string | null>('auth_token')
+    const { user, ensureUser } = useAuth()
 
-    // halaman login bebas
-    if (to.path === '/') return
+    if (!token.value) {
+        return navigateTo('/login')
+    }
 
-    if (!user.value) {
+    await ensureUser()
+
+    if (user.value?.role !== 'super_admin') {
         return navigateTo('/')
     }
 })
