@@ -2,7 +2,7 @@
     <div class="space-y-6">
 
         <!-- TITLE -->
-        <h1 class="text-2xl font-bold text-white">
+        <h1 class="text-3xl font-bold tracking-tight text-slate-900">
             Data Admin Apotek
         </h1>
 
@@ -20,7 +20,7 @@
         <!-- TABLE -->
         <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
 
-            <div class="border-b px-6 py-4 font-semibold text-gray-700 text-center">
+            <div class="border-b px-6 py-4 text-center font-semibold text-slate-700">
                 Daftar Admin
             </div>
 
@@ -35,9 +35,7 @@
                     </tr>
                 </thead>
 
-                <tbody v-if="!loading">
-
-                    <!-- LOADING -->
+                <tbody>
                     <tr v-if="loading">
                         <td colspan="5" class="px-6 py-6 text-center text-gray-500">
                             Loading data...
@@ -51,7 +49,7 @@
                         </td>
                     </tr>
 
-                    <tr v-for="(admin, index) in paginatedAdmins" :key="admin.id" class="border-t hover:bg-gray-50">
+                    <tr v-for="(admin, index) in paginatedAdmins" :key="admin.id" class="border-t hover:bg-slate-50">
                         <td class="px-6 py-4">
                             {{ (currentPage - 1) * perPage + index + 1 }}
                         </td>
@@ -153,7 +151,9 @@ const fetchAdmins = async () => {
             `${config.public.apiBase}/superadmin/admin`,
             {
                 headers: {
-                    Authorization: `Bearer ${token.value}`
+                    Authorization: `Bearer ${token.value}`,
+                    'ngrok-skip-browser-warning': 'true'
+
                 }
             }
         )
@@ -161,7 +161,7 @@ const fetchAdmins = async () => {
         admins.value = data.data
 
     } catch (err: any) {
-        errorMessage.value = err?.data?.message || "Gagal mengambil data admin"
+        errorMessage.value = err?.data?.message || "Data admin belum bisa dimuat sekarang. Coba refresh sebentar lagi."
     } finally {
         loading.value = false
     }
@@ -179,7 +179,7 @@ const filteredAdmins = computed(() => {
     if (!keyword.value) return admins.value
 
     return admins.value.filter((a: any) =>
-        a.username.toLowerCase().includes(keyword.value.toLowerCase())
+        `${a.name} ${a.email}`.toLowerCase().includes(keyword.value.toLowerCase())
     )
 })
 

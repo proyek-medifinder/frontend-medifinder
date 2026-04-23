@@ -120,7 +120,7 @@
         </h3>
 
         <ClientOnly>
-          <UserMap @location="userLocation = $event" />
+          <UserMap @location="handleLocation" />
         </ClientOnly>
 
         <p class="mt-3 text-sm text-[#0f766e] font-medium">
@@ -142,38 +142,60 @@
         </span>
       </h2>
 
+
       <!-- GRID -->
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div v-for="i in 4" :key="i"
-          class="pharmacy-item bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden flex flex-col">
+
+        <div v-if="apoteks.length === 0" class="text-center py-10 text-gray-400">
+          Tidak ada apotek terdekat 😢
+        </div>
+
+        <div v-for="apotek in apoteks" :key="apotek.id"
+          class="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden flex flex-col">
 
           <!-- IMAGE -->
           <img src="/images/istri.png" class="w-full h-40 object-cover" />
 
           <!-- CONTENT -->
-          <div class="p-5 text-center flex flex-col flex-1">
+          <div class="p-5 flex flex-col flex-1 text-center">
+
+            <!-- NAMA -->
             <h3 class="font-semibold text-lg text-gray-900">
-              Apotek Test {{ i }}
+              {{ apotek.nama }}
             </h3>
 
+            <!-- ALAMAT -->
             <p class="text-sm text-gray-500 mt-1">
-              Lohbener
+              {{ apotek.alamat }}
             </p>
 
             <!-- STATUS -->
             <div class="mt-3">
-              <span class="bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full font-medium">
-                Tutup
+              <span class="text-xs px-3 py-1 rounded-full font-medium"
+                :class="apotek.jam_buka ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'">
+                {{ apotek.jam_buka ? 'Buka' : 'Tutup' }}
               </span>
             </div>
 
-            <!-- BUTTON -->
-            <NuxtLink to="/detailApotek"
-              class="mt-4 bg-yellow-400 hover:bg-yellow-300 px-4 py-1.5 rounded-full text-xs font-semibold shadow transition hover:scale-105 w-fit mx-auto">
+            <!-- JAM -->
+            <p class="text-xs text-gray-400 mt-2">
+              {{ apotek.jam_buka || '-' }} - {{ apotek.jam_tutup || '-' }}
+            </p>
+
+            <!-- DISTANCE -->
+            <p v-if="apotek.distance" class="text-xs text-gray-400">
+              {{ apotek.distance.toFixed(2) }} km
+            </p>
+
+            <!-- 🔥 BUTTON DETAIL -->
+            <NuxtLink :to="`/detailApotek/${apotek.id}`"
+              class="mt-4 inline-block bg-yellow-400 hover:bg-yellow-300 text-gray-900 text-xs font-semibold px-4 py-2 rounded-full transition hover:scale-105">
               Lihat Detail
             </NuxtLink>
+
           </div>
         </div>
+
       </div>
 
     </div>
@@ -189,7 +211,10 @@
 import { onMounted, nextTick } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-const userLocation = ref("Mendeteksi lokasi...")
+
+definePageMeta({
+  layout: 'default'
+})
 
 useHead({
   title: "Kemitraan"
@@ -197,8 +222,41 @@ useHead({
 
 gsap.registerPlugin(ScrollTrigger)
 
+// ========================
+// STATE
+// ========================
+const userLocation = ref("Mendeteksi lokasi...")
+
+// ========================
+// COMPOSABLE
+// ========================
+const { apoteks, initNearby } = useNearbyApotek()
+const { getLocationName } = useLocation()
+
+// ========================
+// MAIN
+// ========================
+
+
+
 onMounted(async () => {
   await nextTick()
+
+  // 🔥 ambil lokasi + apotek
+  // optional: auto load pertama
+  const loc = await initNearby()
+
+  if (loc) {
+    const name = await getLocationName(loc.lat, loc.lng)
+    userLocation.value = name
+  }
+
+  console.log("📦 APOTEK:", apoteks.value)
+
+
+  // ========================
+  // ANIMASI (TIDAK DIUBAH)
+  // ========================
 
   /* HERO */
   gsap.from('.hero-item', {
@@ -222,27 +280,13 @@ onMounted(async () => {
     ease: 'power3.out',
   })
 
-  /* MAP */
-  gsap.from('.map-card', {
-    scrollTrigger: {
-      trigger: '.map-card',
-      start: 'top 80%',
-    },
-    opacity: 0,
-    x: 40,
-    duration: 0.8,
-    ease: 'power3.out',
-  })
-
-  /* PHARMACY (FIXED) */
+  /* PHARMACY */
   const cards = gsap.utils.toArray('.pharmacy-item')
 
   gsap.from(cards, {
     scrollTrigger: {
       trigger: '.pharmacy-section',
       start: 'top 85%',
-      toggleActions: 'play none none none',
-      invalidateOnRefresh: true
     },
     opacity: 0,
     y: 60,
@@ -252,6 +296,18 @@ onMounted(async () => {
   })
 
   ScrollTrigger.refresh()
-
 })
+
+const handleLocation = async (loc: any) => {
+  console.log("📍 lokasi user:", loc)
+
+  if (!loc?.lat || !loc?.lng) return
+
+  userLocation.value = loc.name
+
+  // 🔥 fetch apotek berdasarkan lokasi user
+  await initNearby(loc.lat, loc.lng)
+
+  console.log("📦 apotek:", apoteks.value)
+}
 </script>

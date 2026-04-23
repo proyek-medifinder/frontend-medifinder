@@ -40,15 +40,15 @@ const paginatedData = computed(() => {
 </script>
 
 <template>
-    <div class="p-8">
+    <div class="space-y-6">
 
         <!-- TITLE -->
-        <h1 class="text-3xl font-bold text-white mb-8">
+        <h1 class="text-3xl font-bold tracking-tight text-slate-900">
             Data Pesan
         </h1>
 
         <!-- TABLE CARD -->
-        <div class="bg-[#f3f4f6] rounded-2xl shadow-sm overflow-hidden">
+        <div class="overflow-hidden rounded-[28px] border border-slate-200/70 bg-white/90 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
 
             <!-- SUB TITLE -->
             <div class="text-center font-semibold py-4 border-b border-gray-300">

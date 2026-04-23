@@ -1,4 +1,155 @@
+<template>
+    <div class="min-h-screen grid lg:grid-cols-2">
+
+        <!-- LEFT -->
+        <div class="hidden lg:flex items-center bg-teal-700 text-white">
+            <div class="max-w-md mx-auto px-12">
+                <h1 class="text-4xl font-bold mb-6">
+                    Daftarkan Apotek Anda
+                </h1>
+
+                <p class="text-white/80 leading-relaxed">
+                    Bergabung dengan MediFinder dan kelola apotek Anda secara digital.
+                </p>
+
+                <div class="mt-10 space-y-3 text-white/90">
+                    <div>✓ Kelola produk obat</div>
+                    <div>✓ Pantau transaksi</div>
+                    <div>✓ Jangkau lebih banyak pelanggan</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="flex items-center justify-center bg-slate-50 py-10">
+            <div class="w-full max-w-5xl px-8 py-8 bg-white rounded-2xl shadow">
+
+                <h2 class="text-2xl font-semibold text-center mb-8">
+                    Pendaftaran Admin Apotek
+                </h2>
+
+                <form @submit.prevent="handleSubmit" class="grid md:grid-cols-2 gap-8">
+
+                    <!-- LEFT -->
+                    <div class="space-y-4 w-full">
+
+                        <h3 class="text-sm font-semibold text-gray-500">Informasi Apotek</h3>
+
+                        <input v-model="namaApotek" type="text" placeholder="Nama Apotek"
+                            class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-teal-700" />
+
+                        <input v-model="namaPemilik" type="text" placeholder="Nama Pemilik"
+                            class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-teal-700" />
+
+                        <input v-model="email" type="email" placeholder="Email"
+                            class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-teal-700" />
+
+                        <input v-model="noHp" type="text" placeholder="Nomor HP"
+                            class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-teal-700" />
+
+                        <textarea v-model="alamat" rows="3" placeholder="Alamat Lengkap"
+                            class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-teal-700"></textarea>
+
+                        <textarea v-model="deskripsi" rows="2" placeholder="Deskripsi Apotek"
+                            class="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-teal-700"></textarea>
+
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="space-y-4 w-full">
+
+                        <h3 class="text-sm font-semibold text-gray-500">Lokasi & Keamanan</h3>
+
+                        <!-- MAP -->
+                        <div>
+                            <p class="text-xs text-gray-500 mb-2">Klik map untuk menentukan lokasi</p>
+
+                            <ClientOnly>
+                                <div id="map" class="w-full h-44 rounded-lg"></div>
+                            </ClientOnly>
+
+                            <p class="text-xs text-gray-400 mt-2">
+                                Lat: {{ latitude }} | Lng: {{ longitude }}
+                            </p>
+                        </div>
+
+                        <!-- PASSWORD -->
+                        <div class="relative">
+                            <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Password"
+                                class="w-full px-4 py-3 pr-10 rounded-lg border focus:ring-2 focus:ring-teal-700" />
+
+                            <button type="button" @click="showPassword = !showPassword"
+                                class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 cursor-pointer">
+                                <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5
+                      c4.477 0 8.268 2.943 9.542 7
+                      -1.274 4.057-5.065 7-9.542 7
+                      -4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+
+                                <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 3l18 18" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- CONFIRM -->
+                        <div class="relative">
+                            <input v-model="confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
+                                placeholder="Konfirmasi Password"
+                                class="w-full px-4 py-3 pr-10 rounded-lg border focus:ring-2 focus:ring-teal-700" />
+
+                            <button type="button" @click="showConfirmPassword = !showConfirmPassword"
+                                class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 cursor-pointer">
+                                <svg v-if="!showConfirmPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5
+                      c4.477 0 8.268 2.943 9.542 7
+                      -1.274 4.057-5.065 7-9.542 7
+                      -4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+
+                                <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 3l18 18" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- BUTTON -->
+                        <button type="submit"
+                            class="w-full bg-yellow-400 hover:bg-yellow-300 font-semibold py-3 rounded-lg">
+                            Ajukan Pendaftaran
+                        </button>
+
+                    </div>
+
+                </form>
+                <p class="text-center text-sm mt-6 text-gray-500">
+                    Sudah punya akun?
+                    <NuxtLink to="/admin/login" class="text-teal-600 font-medium">
+                        Masuk
+                    </NuxtLink>
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+</template>
+
 <script setup lang="ts">
+let L: any
+
+
 definePageMeta({
     layout: 'auth'
 })
@@ -12,8 +163,13 @@ const namaPemilik = ref('')
 const email = ref('')
 const noHp = ref('')
 const alamat = ref('')
+const deskripsi = ref('')
+
 const password = ref('')
 const confirmPassword = ref('')
+
+const latitude = ref<number | null>(null)
+const longitude = ref<number | null>(null)
 
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
@@ -21,6 +177,51 @@ const showConfirmPassword = ref(false)
 const loading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
+
+const config = useRuntimeConfig()
+
+let map: any = null
+let marker: any = null
+
+onMounted(async () => {
+    const leaflet = await import("leaflet")
+    L = leaflet.default
+    map = L.map('map').setView([-6.4, 108.2], 13)
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
+
+    // 📍 DETEKSI LOKASI USER
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const lat = pos.coords.latitude
+                const lng = pos.coords.longitude
+
+                latitude.value = lat
+                longitude.value = lng
+
+                map.setView([lat, lng], 15)
+
+                marker = L.marker([lat, lng]).addTo(map)
+            },
+            (err) => {
+                console.warn("Gagal ambil lokasi:", err.message)
+            }
+        )
+    }
+
+    // 🖱️ klik map manual
+    map.on("click", (e: any) => {
+        latitude.value = e.latlng.lat
+        longitude.value = e.latlng.lng
+
+        if (marker) {
+            marker.setLatLng(e.latlng)
+        } else {
+            marker = L.marker(e.latlng).addTo(map)
+        }
+    })
+})
 
 const handleSubmit = async () => {
     errorMessage.value = ''
@@ -35,170 +236,63 @@ const handleSubmit = async () => {
         !password.value ||
         !confirmPassword.value
     ) {
-        errorMessage.value = 'Semua field wajib diisi'
+        errorMessage.value = 'Formulirnya belum lengkap. Mohon isi dulu semua data yang diperlukan.'
         return
     }
 
     if (password.value !== confirmPassword.value) {
-        errorMessage.value = 'Konfirmasi password tidak sama'
+        errorMessage.value = 'Konfirmasi kata sandinya belum sama. Coba periksa lagi, ya.'
         return
     }
 
-    loading.value = true
+    if (!latitude.value || !longitude.value) {
+        errorMessage.value = 'Tentukan dulu lokasi apotek di peta supaya kami bisa memproses pengajuanmu.'
+        return
+    }
 
-    // 🔥 SEMENTARA (Belum ada API)
-    setTimeout(() => {
+    try {
+        loading.value = true
+
+        await $fetch('/register-admin', {
+            baseURL: config.public.apiBase,
+            method: 'POST',
+            body: {
+                name: namaPemilik.value,
+                email: email.value,
+                password: password.value,
+                nama_apotek: namaApotek.value,
+                alamat: alamat.value,
+                latitude: Number(latitude.value),
+                longitude: Number(longitude.value),
+                phone_number: noHp.value,
+                deskripsi: deskripsi.value
+            }
+        })
+
+        // ✅ SUCCESS ACTION
+        successMessage.value = 'Pengajuan berhasil dikirim. Kamu akan diarahkan ke halaman login.'
+
+        // ✅ RESET FORM
+        namaApotek.value = ''
+        namaPemilik.value = ''
+        email.value = ''
+        noHp.value = ''
+        alamat.value = ''
+        deskripsi.value = ''
+        password.value = ''
+        confirmPassword.value = ''
+        latitude.value = null
+        longitude.value = null
+
+        // ✅ REDIRECT
+        setTimeout(() => {
+            navigateTo('/admin/login')
+        }, 1500)
+
+    } catch (err: any) {
+        errorMessage.value = err?.data?.message || err.message || 'Pengajuan belum berhasil dikirim. Coba lagi sebentar lagi.'
+    } finally {
         loading.value = false
-        successMessage.value =
-            'Pengajuan pendaftaran apotek berhasil dikirim. Menunggu verifikasi Super Admin.'
-    }, 1200)
+    }
 }
 </script>
-
-<template>
-    <div class="min-h-screen grid lg:grid-cols-2">
-
-        <!-- LEFT PANEL -->
-        <div class="hidden lg:flex items-center bg-[#0f766e] text-white">
-            <div class="max-w-md mx-auto px-12">
-                <h1 class="text-4xl font-bold mb-6">
-                    Daftarkan Apotek Anda
-                </h1>
-
-                <p class="text-white/80 leading-relaxed">
-                    Bergabunglah sebagai mitra MediFinder dan kelola apotek Anda
-                    secara digital. Tingkatkan visibilitas dan jangkauan pelanggan
-                    dengan sistem modern dan terintegrasi.
-                </p>
-
-                <div class="mt-10 space-y-3 text-white/90">
-                    <div>✓ Kelola produk obat</div>
-                    <div>✓ Pantau transaksi</div>
-                    <div>✓ Terhubung dengan pelanggan</div>
-                </div>
-
-                <div class="mt-16 text-white/60 text-sm">
-                    © 2026 MediFinder Partner Program
-                </div>
-            </div>
-        </div>
-
-        <!-- RIGHT PANEL -->
-        <div class="flex items-center justify-center bg-slate-50">
-            <div class="w-full max-w-md px-8 py-12  rounded-2xl">
-
-                <h2 class="text-2xl font-semibold text-gray-900 text-center mb-6">
-                    Pendaftaran Admin Apotek
-                </h2>
-
-                <form @submit.prevent="handleSubmit" class="space-y-4">
-
-                    <input v-model="namaApotek" type="text" placeholder="Nama Apotek"
-                        class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#134e4a]" />
-
-                    <input v-model="namaPemilik" type="text" placeholder="Nama Pemilik / Penanggung Jawab"
-                        class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#134e4a]" />
-
-                    <input v-model="email" type="email" placeholder="Email"
-                        class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#134e4a]" />
-
-                    <input v-model="noHp" type="text" placeholder="Nomor HP"
-                        class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#134e4a]" />
-
-                    <textarea v-model="alamat" rows="3" placeholder="Alamat Lengkap Apotek"
-                        class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#134e4a]"></textarea>
-
-                    <!-- PASSWORD -->
-                    <div class="relative">
-                        <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Password"
-                            class="w-full px-4 py-3 pr-12 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#134e4a]" />
-
-                        <button type="button" @click="showPassword = !showPassword"
-                            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 cursor-pointer transition">
-                            <!-- Eye -->
-                            <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5
-           c4.477 0 8.268 2.943 9.542 7
-           -1.274 4.057-5.065 7-9.542 7
-           -4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-
-                            <!-- Eye Slash -->
-                            <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19
-           c-4.477 0-8.268-2.943-9.542-7
-           a9.956 9.956 0 012.042-3.368m3.03-2.249A9.956
-           9.956 0 0112 5c4.477 0 8.268 2.943
-           9.542 7a9.978 9.978 0 01-4.043 5.143M15
-           12a3 3 0 00-4.243-2.829M9.88
-           9.88A3 3 0 0012 15a3 3 0 002.121-.879M3
-           3l18 18" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <!-- CONFIRM PASSWORD -->
-                    <div class="relative">
-                        <input v-model="confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
-                            placeholder="Konfirmasi Password"
-                            class="w-full px-4 py-3 pr-12 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#134e4a]" />
-
-                        <button type="button" @click="showConfirmPassword = !showConfirmPassword"
-                            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 cursor-pointer transition">
-                            <!-- Eye -->
-                            <svg v-if="!showConfirmPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5
-           c4.477 0 8.268 2.943 9.542 7
-           -1.274 4.057-5.065 7-9.542 7
-           -4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-
-                            <!-- Eye Slash -->
-                            <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19
-           c-4.477 0-8.268-2.943-9.542-7
-           a9.956 9.956 0 012.042-3.368m3.03-2.249A9.956
-           9.956 0 0112 5c4.477 0 8.268 2.943
-           9.542 7a9.978 9.978 0 01-4.043 5.143M15
-           12a3 3 0 00-4.243-2.829M9.88
-           9.88A3 3 0 0012 15a3 3 0 002.121-.879M3
-           3l18 18" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <p v-if="errorMessage" class="text-red-500 text-sm text-center">
-                        {{ errorMessage }}
-                    </p>
-
-                    <p v-if="successMessage" class="text-green-600 text-sm text-center">
-                        {{ successMessage }}
-                    </p>
-
-                    <button type="submit" :disabled="loading"
-                        class="w-full bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-semibold py-3 rounded-lg transition disabled:opacity-70">
-                        {{ loading ? 'Mengirim...' : 'Ajukan Pendaftaran' }}
-                    </button>
-
-                </form>
-
-                <p class="text-center text-sm mt-6 text-gray-500">
-                    Sudah terdaftar?
-                    <NuxtLink to="/admin/login" class="text-[#0f766e] font-medium">
-                        Masuk sebagai Admin
-                    </NuxtLink>
-                </p>
-
-            </div>
-        </div>
-
-    </div>
-</template>

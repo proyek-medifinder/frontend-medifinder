@@ -118,12 +118,19 @@ const loading = ref(false)
 const errorMessage = ref('')
 
 const router = useRouter()
-const { login, googleLogin, user } = useAuth()
+
+import { onMounted } from 'vue'
+const { login, googleLogin, user, ensureUser } = useAuth()
 
 const handleLogin = async () => {
     try {
         loading.value = true
         errorMessage.value = ''
+
+        if (!email.value || !password.value) {
+            errorMessage.value = 'Masukkan email admin dan kata sandi dulu, ya.'
+            return
+        }
 
         await login(email.value, password.value)
 
@@ -134,7 +141,7 @@ const handleLogin = async () => {
         ) {
             router.push('/admin')
         } else {
-            errorMessage.value = 'Akses hanya untuk Admin'
+            errorMessage.value = 'Akun ini berhasil masuk, tapi belum punya akses ke panel admin.'
         }
 
     } catch (err: any) {
@@ -144,11 +151,13 @@ const handleLogin = async () => {
     }
 }
 
-import { onMounted } from 'vue'
 
 const handleCredentialResponse = async (response: any) => {
     try {
         await googleLogin(response.credential)
+
+        // 🔥 tunggu user ke-load
+        await ensureUser()
 
         if (
             user.value?.role === 'super_admin' ||
@@ -156,11 +165,11 @@ const handleCredentialResponse = async (response: any) => {
         ) {
             router.push('/admin')
         } else {
-            errorMessage.value = 'Akses hanya untuk Admin'
+            errorMessage.value = 'Akun Google ini belum punya akses ke panel admin.'
         }
 
     } catch {
-        errorMessage.value = 'Login Google gagal'
+        errorMessage.value = 'Login dengan Google belum berhasil. Coba ulang sebentar lagi.'
     }
 }
 

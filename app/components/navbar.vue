@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useRoute } from '#app'
 
 const route = useRoute()
@@ -16,10 +15,17 @@ const isActive = (path: string) => {
 
 const cartOpen = ref(false)
 
-const cartItems = ref([
-    { id: 1, name: "Paracetamol 500mg", qty: 2 },
-    { id: 2, name: "Vitamin C 1000mg", qty: 1 }
-])
+import { ref, computed, onMounted } from 'vue'
+
+const { cart, fetchCart, removeItem, checkout } = useCart()
+
+const cartItems = computed(() => cart.value?.items || [])
+
+onMounted(() => {
+    fetchCart()
+})
+
+
 </script>
 
 <template>
@@ -105,6 +111,52 @@ const cartItems = ref([
                                     {{ user?.name || 'User' }}
                                 </span>
                             </button>
+
+                            <!-- CART DROPDOWN -->
+                            <div v-if="cartOpen"
+                                class="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-lg border p-4 z-50">
+
+                                <h3 class="font-semibold text-gray-800 mb-3">
+                                    Keranjang
+                                </h3>
+
+                                <!-- EMPTY -->
+                                <div v-if="cartItems.length === 0" class="text-sm text-gray-400 text-center py-4">
+                                    Keranjang kosong
+                                </div>
+
+                                <!-- ITEMS -->
+                                <div v-else class="space-y-3 max-h-60 overflow-y-auto">
+
+                                    <div v-for="item in cartItems" :key="item.id"
+                                        class="flex justify-between items-center text-sm border-b pb-2">
+
+                                        <div>
+                                            <p class="font-medium text-gray-800">
+                                                {{ item.nama_obat }}
+                                            </p>
+                                            <p class="text-gray-500">
+                                                Qty: {{ item.jumlah }}
+                                            </p>
+                                        </div>
+
+                                        <button @click="removeItem(item.id)" class="text-red-500 text-xs">
+                                            Hapus
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- ACTION -->
+                                <div v-if="checkout.length" class="mt-4">
+                                    <button
+                                        class="w-full bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700 text-sm">
+                                        Checkout
+                                    </button>
+                                </div>
+
+                            </div>
 
                             <div v-if="dropdownOpen"
                                 class="absolute right-0 mt-3 w-44 bg-white rounded-xl shadow-lg border py-2">

@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@iconify/vue": "^5.0.0",
     "@nuxt/a11y": "^1.0.0-alpha.1",
     "@nuxt/fonts": "^0.13.0",
     "@nuxt/image": "^2.0.0",
@@ -22,5 +23,8 @@
     "typescript": "^5.9.3",
     "vue": "^3.5.27",
     "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.21"
   }
 }

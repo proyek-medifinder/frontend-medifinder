@@ -78,38 +78,39 @@ const totalSelesai = computed(() =>
 </script>
 
 <template>
-    <div class="p-8">
+    <div class="space-y-6">
 
         <!-- TITLE -->
-        <h1 class="text-3xl font-bold text-white mb-8">
+        <h1 class="text-3xl font-bold tracking-tight text-slate-900">
             Daftar Riwayat Transaksi
         </h1>
 
         <!-- STATS -->
-        <div class="grid md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white rounded-xl p-5 shadow-sm">
+        <div class="grid gap-5 md:grid-cols-3">
+            <div class="rounded-[28px] border border-slate-200/70 bg-white/90 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
                 <p class="text-sm text-gray-500">Total Transaksi</p>
                 <p class="text-2xl font-bold">{{ totalTransaksi }}</p>
             </div>
 
-            <div class="bg-white rounded-xl p-5 shadow-sm">
+            <div class="rounded-[28px] border border-slate-200/70 bg-white/90 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
                 <p class="text-sm text-gray-500">Total Pendapatan</p>
                 <p class="text-2xl font-bold">Rp {{ totalPendapatan.toLocaleString() }}</p>
             </div>
 
-            <div class="bg-white rounded-xl p-5 shadow-sm">
+            <div class="rounded-[28px] border border-slate-200/70 bg-white/90 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
                 <p class="text-sm text-gray-500">Transaksi Selesai</p>
                 <p class="text-2xl font-bold">{{ totalSelesai }}</p>
             </div>
         </div>
 
         <!-- FILTER AREA -->
-        <div class="flex flex-col md:flex-row gap-4 mb-6">
+        <div class="flex flex-col gap-4 md:flex-row">
 
             <input v-model="search" placeholder="Cari nama obat..."
-                class="px-5 py-3 rounded-xl bg-white outline-none w-full md:max-w-md" />
+                class="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3 outline-none md:max-w-md" />
 
-            <select v-model="statusFilter" class="px-5 py-3 rounded-xl bg-white outline-none w-full md:w-65">
+            <select v-model="statusFilter"
+                class="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3 outline-none md:w-65">
                 <option value="all">Semua Status</option>
                 <option value="pending">Pending</option>
                 <option value="completed">Completed</option>
@@ -119,7 +120,7 @@ const totalSelesai = computed(() =>
         </div>
 
         <!-- TABLE -->
-        <div class="bg-[#f3f4f6] rounded-2xl shadow-sm overflow-hidden">
+        <div class="overflow-hidden rounded-[28px] border border-slate-200/70 bg-white/90 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
 
             <table class="w-full text-sm">
                 <thead class="border-b border-gray-300 text-gray-700">

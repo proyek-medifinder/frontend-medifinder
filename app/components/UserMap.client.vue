@@ -27,7 +27,6 @@ onMounted(async () => {
     }).addTo(map)
 
     navigator.geolocation.getCurrentPosition(async (pos) => {
-
         const lat = pos.coords.latitude
         const lng = pos.coords.longitude
 
@@ -40,8 +39,11 @@ onMounted(async () => {
 
         const locationName = await getLocationName(lat, lng)
 
-        emit("location", locationName)
-
+        emit("location", {
+            name: locationName,
+            lat,
+            lng
+        })
     })
 
 })

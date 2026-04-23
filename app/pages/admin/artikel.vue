@@ -59,29 +59,29 @@ const prevPage = () => {
 </script>
 
 <template>
-    <div class="p-8">
+    <div class="space-y-6">
 
         <!-- TITLE -->
-        <h1 class="text-3xl font-bold text-white mb-6">
+        <h1 class="text-3xl font-bold tracking-tight text-slate-900">
             Artikel
         </h1>
 
         <!-- SEARCH + BUTTON -->
-        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
             <div class="w-full md:max-w-xl">
                 <input v-model="search" type="text" placeholder="Cari Judul Artikel"
-                    class="w-full px-5 py-3 rounded-xl bg-white outline-none" />
+                    class="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3 outline-none" />
             </div>
 
-            <button class="bg-blue-600 text-white px-5 py-3 rounded-xl font-medium hover:bg-blue-700 transition">
+            <button class="rounded-2xl bg-emerald-600 px-5 py-3 font-medium text-white transition hover:bg-emerald-700">
                 + Tambah Artikel
             </button>
 
         </div>
 
         <!-- TABLE -->
-        <div class="bg-[#f3f4f6] rounded-2xl shadow-sm overflow-hidden">
+        <div class="overflow-hidden rounded-[28px] border border-slate-200/70 bg-white/90 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
 
             <table class="w-full text-sm">
                 <thead class="border-b border-gray-300 text-gray-700">

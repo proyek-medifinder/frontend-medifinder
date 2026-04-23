@@ -78,19 +78,19 @@
                 </p>
 
                 <!-- RESULT FOUND -->
-                <div v-if="filteredApotek.length > 0" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div v-if="resultApotek.length > 0" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                    <div v-for="item in filteredApotek" :key="item.id"
+                    <div v-for="item in resultApotek" :key="item.id"
                         class="apotek-card bg-white rounded-2xl shadow-sm hover:shadow-xl transition overflow-hidden">
                         <img :src="item.image" class="w-full h-40 object-cover" />
 
                         <div class="p-5 text-center">
                             <h3 class="font-semibold text-lg text-gray-900">
-                                {{ item.name }}
+                                {{ item.nama }}
                             </h3>
 
                             <p class="text-sm text-gray-500 mt-1">
-                                {{ item.location }}
+                                {{ item.alamat }}
                             </p>
 
                             <div class="mt-3">
@@ -112,7 +112,6 @@
                 <div v-else class="text-center py-16 text-gray-400">
                     Obat tidak ditemukan di apotek terdekat.
                 </div>
-
             </div>
         </section>
 
@@ -131,34 +130,35 @@ useHead({
 const keyword = ref('')
 const searched = ref(false)
 
-const apotek = ref([
-    {
-        id: 1,
-        name: "Apotek Test",
-        location: "Lohbener Legok",
-        image: "/images/image.png",
-        obat: "paracetamol"
-    },
-    {
-        id: 2,
-        name: "Apotek Sehat",
-        location: "Indramayu",
-        image: "/images/image.png",
-        obat: "amoxicillin"
-    }
-])
+const { apoteks, initNearby } = useNearbyApotek()
+const { data: obatList, fetchObat } = useObatApotek()
 
-const filteredApotek = computed(() => {
-    const key = keyword.value.trim().toLowerCase()
-    if (!key) return []
-
-    return apotek.value.filter(a =>
-        a.obat.includes(key)
-    )
-})
+const resultApotek = ref<any[]>([])
 
 const searchObat = async () => {
     searched.value = true
+
+    const loc = await initNearby()
+    if (!loc) return
+
+    const results: any[] = []
+
+    for (const apotek of apoteks.value) {
+        await fetchObat(apotek.id, keyword.value)
+
+        if (obatList.value.length > 0) {
+            results.push({
+                id: apotek.id,
+                nama: apotek.nama,
+                alamat: apotek.alamat,
+                image: "/images/istri.png",
+                obat: [...obatList.value] // 🔥 penting (clone)
+            })
+        }
+    }
+
+    resultApotek.value = results
+
     await nextTick()
 
     gsap.from('.apotek-card', {

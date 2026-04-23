@@ -1,4 +1,6 @@
 import { jwtDecode } from "jwt-decode"
+import { useRouter } from 'vue-router'
+
 interface AuthResponse {
     name: string
     role: string
@@ -19,12 +21,63 @@ export const useAuth = () => {
         token.value = null
         emailCookie.value = null
         user.value = null
-        navigateTo('/')
+
+        navigateTo('/', { replace: true })
     }
 
     const token = useCookie<string | null>('auth_token')
     const emailCookie = useCookie<string | null>('auth_email')
     const config = useRuntimeConfig()
+
+    const toFriendlyAuthMessage = (err: any, fallback: string) => {
+        const rawMessage = String(
+            err?.data?.message ||
+            err?.message ||
+            ''
+        ).toLowerCase()
+
+        if (
+            rawMessage.includes('password salah') ||
+            rawMessage.includes('kata sandi salah') ||
+            rawMessage.includes('wrong password') ||
+            rawMessage.includes('invalid password') ||
+            rawMessage.includes('email atau password salah') ||
+            rawMessage.includes('invalid credentials') ||
+            rawMessage.includes('unauthorized')
+        ) {
+            return 'Email atau kata sandi yang kamu masukkan belum cocok. Coba cek lagi, ya.'
+        }
+
+        if (
+            rawMessage.includes('user not found') ||
+            rawMessage.includes('username not found') ||
+            rawMessage.includes('email not found') ||
+            rawMessage.includes('akun tidak ditemukan') ||
+            rawMessage.includes('user tidak ditemukan') ||
+            rawMessage.includes('username tidak ditemukan')
+        ) {
+            return 'Akun dengan email atau username itu belum kami temukan.'
+        }
+
+        if (
+            rawMessage.includes('already') ||
+            rawMessage.includes('exists') ||
+            rawMessage.includes('duplicate') ||
+            rawMessage.includes('sudah terdaftar')
+        ) {
+            return 'Akun dengan data ini sudah terdaftar. Coba masuk atau gunakan data lain.'
+        }
+
+        if (
+            rawMessage.includes('forbidden') ||
+            rawMessage.includes('access denied')
+        ) {
+            return 'Akun ini belum punya akses ke halaman tersebut.'
+        }
+
+        return fallback
+    }
+
     const fetchUser = async () => {
         if (!token.value) return
 
@@ -85,7 +138,9 @@ export const useAuth = () => {
             return await setAuthData(data, email)
 
         } catch (err: any) {
-            throw new Error(err?.data?.message || 'Email atau password salah')
+            throw new Error(
+                toFriendlyAuthMessage(err, 'Belum bisa masuk sekarang. Coba lagi beberapa saat lagi.')
+            )
         }
     }
 
@@ -103,7 +158,9 @@ export const useAuth = () => {
 
             setAuthData(data, data.email ?? '')
         } catch (err: any) {
-            throw new Error(err?.data?.message || 'Login Google gagal')
+            throw new Error(
+                toFriendlyAuthMessage(err, 'Login dengan Google belum berhasil. Coba lagi sebentar.')
+            )
         }
     }
 
@@ -117,7 +174,9 @@ export const useAuth = () => {
                 }
             )
         } catch (err: any) {
-            throw new Error(err?.data?.message || 'Registrasi gagal')
+            throw new Error(
+                toFriendlyAuthMessage(err, 'Pendaftaran belum berhasil. Coba lagi beberapa saat lagi.')
+            )
         }
     }
 
