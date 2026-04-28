@@ -1,5 +1,6 @@
 export const useForgotPassword = () => {
     const config = useRuntimeConfig()
+    const token = useCookie<string | null>('auth_token')
 
     const sendForgotEmail = async (email: string) => {
         return await $fetch(`${config.public.apiBase}/forgot-password`, {
@@ -8,21 +9,26 @@ export const useForgotPassword = () => {
         })
     }
 
-    const verifyOtp = async (email: string, otp: string) => {
-        return await $fetch(`${config.public.apiBase}/verify-otp`, {
+    const resetPassword = async (tokenReset: string, newPassword: string) => {
+        return await $fetch(`${config.public.apiBase}/reset-password`, {
             method: 'POST',
             body: {
-                email,
-                otp
+                token: tokenReset,
+                new_password: newPassword
             }
         })
     }
 
-    const resetPassword = async (token: string, newPassword: string) => {
-        return await $fetch(`${config.public.apiBase}/reset-password`, {
+    // 🔥 NEW: CHANGE PASSWORD (LOGIN REQUIRED)
+    const changePassword = async (oldPassword: string, newPassword: string) => {
+        return await $fetch(`${config.public.apiBase}/change-password`, {
             method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+                'ngrok-skip-browser-warning': 'true'
+            },
             body: {
-                token,
+                old_password: oldPassword,
                 new_password: newPassword
             }
         })
@@ -30,7 +36,7 @@ export const useForgotPassword = () => {
 
     return {
         sendForgotEmail,
-        verifyOtp,
-        resetPassword
+        resetPassword,
+        changePassword 
     }
 }

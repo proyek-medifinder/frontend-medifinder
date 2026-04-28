@@ -6,7 +6,7 @@ export const useCart = () => {
     const loading = ref(false)
 
     /* =========================
-       GET CART
+    GET CART
     ========================= */
     const fetchCart = async () => {
         try {
@@ -20,7 +20,10 @@ export const useCart = () => {
                 }
             )
 
-            cart.value = res.data || { items: [], total: 0 }
+            console.log("🛒 CART API:", res)
+
+            // 🔥 FIX DISINI
+            cart.value = res || { items: [], total: 0 }
 
         } catch (err) {
             console.error(err)
@@ -29,7 +32,7 @@ export const useCart = () => {
     }
 
     /* =========================
-       ADD ITEM
+    ADD ITEM
     ========================= */
     const addToCart = async (obat: any) => {
         if (!token.value) return { needLogin: true }
@@ -58,7 +61,7 @@ export const useCart = () => {
     }
 
     /* =========================
-       UPDATE QTY
+    UPDATE QTY
     ========================= */
     const updateQty = async (id: string, jumlah: number) => {
         try {
@@ -79,7 +82,7 @@ export const useCart = () => {
     }
 
     /* =========================
-       DELETE ITEM
+    DELETE ITEM
     ========================= */
     const removeItem = async (id: string) => {
         try {
@@ -99,11 +102,11 @@ export const useCart = () => {
     }
 
     /* =========================
-       CHECKOUT
+    CHECKOUT
     ========================= */
     const checkout = async () => {
         try {
-            const res = await $fetch(`${config.public.apiBase}/cart/checkout`, {
+            const res: any = await $fetch(`${config.public.apiBase}/cart/checkout`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token.value}`,
@@ -111,7 +114,15 @@ export const useCart = () => {
                 }
             })
 
-            await fetchCart() // kosongkan cart setelah checkout
+            console.log("💳 CHECKOUT:", res)
+
+            // 🔥 buka tab baru
+            if (res.redirect_url) {
+                window.open(res.redirect_url, '_blank')
+            }
+
+            // refresh cart (biar kosong)
+            await fetchCart()
 
             return res
 

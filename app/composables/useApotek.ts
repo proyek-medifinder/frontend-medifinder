@@ -1,6 +1,7 @@
 export const useApotek = () => {
     const config = useRuntimeConfig()
     const token = useCookie<string | null>('auth_token')
+    const photoFile = ref<File | null>(null)
 
     const form = useState<any>('apotek_form', () => ({
         nama: '',
@@ -29,7 +30,6 @@ export const useApotek = () => {
         form.value = {
             ...res.data,
 
-            // 🔥 convert ke format input time
             jam_buka: res.data.jam_buka
                 ? res.data.jam_buka.slice(0, 5)
                 : '',
@@ -38,6 +38,24 @@ export const useApotek = () => {
                 ? res.data.jam_tutup.slice(0, 5)
                 : ''
         }
+    }
+
+
+
+    const uploadPhoto = async () => {
+        if (!photoFile.value) return
+
+        const formData = new FormData()
+        formData.append('photo', photoFile.value)
+
+        await $fetch(`${config.public.apiBase}/admin/foto`, {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+                'ngrok-skip-browser-warning': 'true'
+            },
+            body: formData
+        })
     }
 
 
@@ -66,7 +84,9 @@ export const useApotek = () => {
                 longitude: form.value.longitude,
 
                 jam_buka: formatTime(form.value.jam_buka),
-                jam_tutup: formatTime(form.value.jam_tutup)
+                jam_tutup: formatTime(form.value.jam_tutup),
+
+                photo_url: form.value.photo_url || form.value.PhotoURL || ''
             }
             console.log("📤 KIRIM:", payload)
 
@@ -88,6 +108,8 @@ export const useApotek = () => {
         form,
         loading,
         fetchApotek,
-        updateApotek
+        updateApotek,
+        photoFile,      // 🔥 WAJIB ADA
+        uploadPhoto     // 🔥 WAJIB ADA
     }
 }

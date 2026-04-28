@@ -32,6 +32,7 @@
                         <th class="px-6 py-3 text-left">Nama Apotek</th>
                         <th class="px-6 py-3 text-left">Email</th>
                         <th class="px-6 py-3 text-left">Status</th>
+                        <th class="px-6 py-3 text-left">Aksi</th>
                     </tr>
                 </thead>
 
@@ -57,9 +58,31 @@
                         <td class="px-6 py-3">{{ admin.name }}</td>
                         <td class="px-6 py-3">{{ admin.email }}</td>
                         <td class="px-6 py-3">
-                            <span class="bg-emerald-100 text-emerald-700 texDt-xs px-3 py-1 rounded-full">
-                                Aktif
+                            <span :class="[
+                                'text-xs px-3 py-1 rounded-full',
+                                admin.status === 'approved'
+                                    ? 'bg-emerald-100 text-emerald-700'
+                                    : 'bg-red-100 text-red-700'
+                            ]">
+                                {{ admin.status }}
                             </span>
+                        </td>
+
+                        <td class="px-6 py-3 flex gap-2">
+                            <button v-if="admin.status === 'approved'" @click="handleSuspend(admin.id)"
+                                class="px-3 py-1 text-xs bg-yellow-400 rounded">
+                                Suspend
+                            </button>
+
+                            <button v-else @click="handleApprove(admin.id)"
+                                class="px-3 py-1 text-xs bg-emerald-500 text-white rounded">
+                                Activate
+                            </button>
+
+                            <button @click="handleDelete(admin.id)"
+                                class="px-3 py-1 text-xs bg-red-500 text-white rounded">
+                                Hapus
+                            </button>
                         </td>
                     </tr>
                 </tbody>
@@ -165,6 +188,31 @@ const fetchAdmins = async () => {
     } finally {
         loading.value = false
     }
+}
+
+const { updateStatusAdmin, deleteAdmin } = useAdminApotek()
+
+const selected = ref<any>(null)
+
+const handleEdit = (admin: any) => {
+    selected.value = { ...admin }
+}
+
+const handleApprove = async (id: string) => {
+    await updateStatusAdmin(id, 'approved')
+    await fetchAdmins()
+}
+
+const handleSuspend = async (id: string) => {
+    await updateStatusAdmin(id, 'suspended')
+    await fetchAdmins()
+}
+
+const handleDelete = async (id: string) => {
+    if (!confirm("Yakin hapus admin?")) return
+
+    await deleteAdmin(id)
+    await fetchAdmins()
 }
 
 onMounted(() => {

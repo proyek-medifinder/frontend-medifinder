@@ -1,5 +1,4 @@
-import { jwtDecode } from "jwt-decode"
-import { useRouter } from 'vue-router'
+
 
 interface AuthResponse {
     name: string
@@ -116,13 +115,17 @@ export const useAuth = () => {
             }
         })
     }
-
     const setAuthData = async (data: AuthResponse, email: string) => {
         token.value = data.token
         emailCookie.value = email
 
-        // langsung ambil data dari backend
         await fetchUser()
+
+        // // 🔥 GLOBAL BLOCK
+        // if (user.value?.role === 'admin_apotek') {
+        //     logout()
+        //     throw new Error('Gunakan halaman login apotek')
+        // }
     }
 
     const login = async (email: string, password: string) => {
@@ -156,7 +159,11 @@ export const useAuth = () => {
 
             console.log('GOOGLE LOGIN RESPONSE:', data)
 
-            setAuthData(data, data.email ?? '')
+            // 🔥 WAJIB AWAIT
+            await setAuthData(data, data.email ?? '')
+
+            return data
+
         } catch (err: any) {
             throw new Error(
                 toFriendlyAuthMessage(err, 'Login dengan Google belum berhasil. Coba lagi sebentar.')

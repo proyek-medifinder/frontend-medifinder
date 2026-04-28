@@ -10,12 +10,13 @@ useHead({
 const name = ref('')
 const email = ref('')
 const password = ref('')
+const confirmPassword = ref('')
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
-const confirmPassword = ref('')
 
 const loading = ref(false)
 const errorMessage = ref('')
+const successMessage = ref('')
 
 const { register } = useAuth()
 const router = useRouter()
@@ -23,21 +24,27 @@ const router = useRouter()
 const handleRegister = async () => {
     try {
         errorMessage.value = ''
+        successMessage.value = ''
 
-        if (!name.value || !email.value || !password.value) {
-            errorMessage.value = 'Semua field wajib diisi'
+        if (!name.value || !email.value || !password.value || !confirmPassword.value) {
+            errorMessage.value = 'Lengkapi dulu nama, email, dan kata sandinya, ya.'
             return
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
         if (!emailRegex.test(email.value)) {
-            errorMessage.value = 'Format email tidak valid'
+            errorMessage.value = 'Format emailnya belum tepat. Coba cek lagi, ya.'
+            return
+        }
+
+        if (password.value.length < 6) {
+            errorMessage.value = 'Kata sandi minimal 6 karakter supaya akunmu lebih aman.'
             return
         }
 
         if (password.value !== confirmPassword.value) {
-            errorMessage.value = 'Konfirmasi password tidak sama'
+            errorMessage.value = 'Konfirmasi kata sandinya belum sama. Coba cek lagi, ya.'
             return
         }
 
@@ -45,9 +52,11 @@ const handleRegister = async () => {
 
         await register(name.value, email.value, password.value)
 
-        // ✅ redirect ke login setelah sukses
-        router.push('/login')
+        successMessage.value = 'Akun berhasil dibuat. Kamu akan diarahkan ke halaman login.'
 
+        setTimeout(() => {
+            router.push('/login')
+        }, 1200)
     } catch (err: any) {
         errorMessage.value = err.message
     } finally {
@@ -57,127 +66,158 @@ const handleRegister = async () => {
 </script>
 
 <template>
-    <div class="min-h-screen grid lg:grid-cols-2">
-
-        <!-- LEFT SIDE -->
-        <div class="hidden lg:flex items-center justify-center bg-teal-700 text-white">
-            <div class="max-w-md px-12">
-                <h1 class="text-4xl font-bold mb-6">
-                    Daftarkan Diri anda
-                </h1>
-                <p class="text-white/80 leading-relaxed">
-                    Dengan MediFinder, temukan apotek terdekat dengan mudah dan cepat. Daftar sekarang untuk akses penuh
-                    ke fitur pencarian apotek, informasi obat, dan banyak lagi. Bergabunglah dengan komunitas kami dan
-                    nikmati kemudahan menemukan apotek kapan saja, di mana saja.
-                </p>
-            </div>
+    <div
+        class="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,#eefaf7_0%,#ffffff_44%,#fff9ef_100%)] px-4 py-6 sm:px-6 lg:px-8">
+        <div
+            class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.18),_transparent_26%),radial-gradient(circle_at_bottom_right,_rgba(250,204,21,0.12),_transparent_22%)]">
         </div>
 
-        <!-- RIGHT SIDE -->
-        <div class="flex items-center justify-center bg-gray-100">
-
-            <div class="w-full max-w-md px-8 py-12 bg-gray-100 rounded-xl">
-
-                <h2 class="text-2xl font-semibold text-gray-900 text-center mb-6">
-                    Daftar Akun Baru
-                </h2>
-
-                <form @submit.prevent="handleRegister" class="space-y-4">
-
-                    <input v-model="name" type="text" placeholder="Nama Lengkap"
-                        class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-teal-600" />
-
-                    <input v-model="email" type="email" placeholder="Email"
-                        class="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-teal-600" />
-
-                    <!-- PASSWORD -->
-                    <div class="relative">
-                        <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Password"
-                            class="w-full px-4 py-3 pr-12 rounded-lg border focus:outline-none focus:ring-2 focus:ring-teal-600" />
-
-                        <button type="button" @click="showPassword = !showPassword"
-                            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 cursor-pointer">
-                            <!-- Eye -->
-                            <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5
-           c4.477 0 8.268 2.943 9.542 7
-           -1.274 4.057-5.065 7-9.542 7
-           -4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-
-                            <!-- Eye Slash -->
-                            <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19
-           c-4.477 0-8.268-2.943-9.542-7
-           a9.956 9.956 0 012.042-3.368m3.03-2.249A9.956
-           9.956 0 0112 5c4.477 0 8.268 2.943
-           9.542 7a9.978 9.978 0 01-4.043 5.143M15
-           12a3 3 0 00-4.243-2.829M9.88
-           9.88A3 3 0 0012 15a3 3 0 002.121-.879M3
-           3l18 18" />
-                            </svg>
-                        </button>
-                    </div>
-
-
-                    <!-- CONFIRM PASSWORD -->
-                    <div class="relative">
-                        <input v-model="confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
-                            placeholder="Konfirmasi Password"
-                            class="w-full px-4 py-3 pr-12 rounded-lg border focus:outline-none focus:ring-2 focus:ring-teal-600" />
-
-                        <button type="button" @click="showConfirmPassword = !showConfirmPassword"
-                            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 cursor-pointer">
-                            <!-- Eye -->
-                            <svg v-if="!showConfirmPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5
-           c4.477 0 8.268 2.943 9.542 7
-           -1.274 4.057-5.065 7-9.542 7
-           -4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-
-                            <!-- Eye Slash -->
-                            <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19
-           c-4.477 0-8.268-2.943-9.542-7
-           a9.956 9.956 0 012.042-3.368m3.03-2.249A9.956
-           9.956 0 0112 5c4.477 0 8.268 2.943
-           9.542 7a9.978 9.978 0 01-4.043 5.143M15
-           12a3 3 0 00-4.243-2.829M9.88
-           9.88A3 3 0 0012 15a3 3 0 002.121-.879M3
-           3l18 18" />
-                            </svg>
-                        </button>
-                    </div>
-                    <p v-if="errorMessage" class="text-red-500 text-sm text-center">
-                        {{ errorMessage }}
-                    </p>
-
-                    <button type="submit" :disabled="loading"
-                        class="w-full bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-semibold py-3 rounded-lg transition">
-                        {{ loading ? 'Loading...' : 'Daftar' }}
-                    </button>
-
-                </form>
-
-                <p class="text-center text-sm mt-6">
-                    Sudah punya akun?
-                    <NuxtLink to="/login" class="text-teal-600 font-medium">
-                        Masuk
+        <div
+            class="relative mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[34px] border border-white/70 bg-white/85 shadow-[0_30px_90px_rgba(15,23,42,0.12)] backdrop-blur lg:grid-cols-[1.05fr_0.95fr]">
+            <div class="hidden bg-[#0f766e] p-8 text-white lg:flex lg:flex-col lg:justify-between xl:p-10">
+                <div>
+                    <NuxtLink to="/" class="inline-flex items-center gap-3">
+                        <img src="/images/Logo_remove.png" alt="MediFinder" class="h-14" />
                     </NuxtLink>
-                </p>
 
+                    <p class="mt-10 text-sm font-semibold uppercase tracking-[0.28em] text-emerald-100/80">
+                        Buat Akun Baru
+                    </p>
+                    <h1 class="mt-5 max-w-xl text-4xl font-semibold leading-tight">
+                        Mulai pakai MediFinder untuk cari apotek, obat, dan kebutuhan kesehatan dengan lebih mudah.
+                    </h1>
+                    <p class="mt-5 max-w-lg text-sm leading-7 text-emerald-50/85">
+                        Sekali daftar, kamu bisa lanjut ke pencarian apotek terdekat, lihat detail produk, dan kelola aktivitas akunmu dengan lebih rapi.
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="rounded-2xl bg-white/12 px-4 py-4">
+                        <p class="text-sm font-semibold">Cari apotek dengan lebih cepat</p>
+                        <p class="mt-1 text-sm text-emerald-50/75">Akunmu membantu semua proses terasa lebih praktis.</p>
+                    </div>
+                    <div class="rounded-2xl bg-white/12 px-4 py-4">
+                        <p class="text-sm font-semibold">Pantau kebutuhan keluarga dalam satu tempat</p>
+                        <p class="mt-1 text-sm text-emerald-50/75">Lebih mudah lanjutkan aktivitas kesehatan harianmu.</p>
+                    </div>
+                    <div class="rounded-2xl bg-white/12 px-4 py-4">
+                        <p class="text-sm font-semibold">Masuk dan lanjut tanpa ribet</p>
+                        <p class="mt-1 text-sm text-emerald-50/75">Daftar sekali, lalu gunakan seluruh layanan MediFinder.</p>
+                    </div>
+                </div>
             </div>
 
-        </div>
+            <div class="flex items-center justify-center p-5 sm:p-8 lg:p-10">
+                <div class="w-full max-w-md">
+                    <div class="rounded-[30px] border border-slate-200/80 bg-white/90 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:p-8">
+                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#0f766e]/70 lg:hidden">
+                            Buat Akun Baru
+                        </p>
+                        <h2 class="mt-3 text-3xl font-semibold text-slate-900">
+                            Daftar akun MediFinder
+                        </h2>
+                        <p class="mt-2 text-sm leading-6 text-slate-500">
+                            Isi data singkat di bawah ini untuk mulai memakai MediFinder.
+                        </p>
 
+                        <form @submit.prevent="handleRegister" class="mt-8 space-y-5">
+                            <div>
+                                <label class="mb-2 block text-sm font-medium text-slate-700">
+                                    Nama Lengkap
+                                </label>
+                                <input v-model="name" type="text" placeholder="Masukkan nama lengkap"
+                                    class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100" />
+                            </div>
+
+                            <div>
+                                <label class="mb-2 block text-sm font-medium text-slate-700">
+                                    Email
+                                </label>
+                                <input v-model="email" type="email" placeholder="contoh@email.com"
+                                    class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100" />
+                            </div>
+
+                            <div>
+                                <label class="mb-2 block text-sm font-medium text-slate-700">
+                                    Kata Sandi
+                                </label>
+                                <div class="relative">
+                                    <input v-model="password" :type="showPassword ? 'text' : 'password'"
+                                        placeholder="Masukkan kata sandi"
+                                        class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 pr-12 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100" />
+
+                                    <button type="button" @click="showPassword = !showPassword"
+                                        class="absolute inset-y-0 right-3 flex items-center text-slate-400 transition hover:text-slate-700">
+                                        <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0a3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7c-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+
+                                        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 3l18 18M10.584 10.587A2 2 0 0012 14a2 2 0 001.414-.586M9.363 5.365A9.466 9.466 0 0112 5c4.478 0 8.27 2.944 9.543 7a9.97 9.97 0 01-4.132 5.411M6.228 6.228C4.438 7.38 3.045 9.077 2.458 12c1.274 4.056 5.066 7 9.542 7a9.96 9.96 0 005.227-1.477" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="mb-2 block text-sm font-medium text-slate-700">
+                                    Konfirmasi Kata Sandi
+                                </label>
+                                <div class="relative">
+                                    <input v-model="confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
+                                        placeholder="Ulangi kata sandi"
+                                        class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 pr-12 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100" />
+
+                                    <button type="button" @click="showConfirmPassword = !showConfirmPassword"
+                                        class="absolute inset-y-0 right-3 flex items-center text-slate-400 transition hover:text-slate-700">
+                                        <svg v-if="!showConfirmPassword" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0a3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7c-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+
+                                        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 3l18 18M10.584 10.587A2 2 0 0012 14a2 2 0 001.414-.586M9.363 5.365A9.466 9.466 0 0112 5c4.478 0 8.27 2.944 9.543 7a9.97 9.97 0 01-4.132 5.411M6.228 6.228C4.438 7.38 3.045 9.077 2.458 12c1.274 4.056 5.066 7 9.542 7a9.96 9.96 0 005.227-1.477" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div v-if="errorMessage"
+                                class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                                {{ errorMessage }}
+                            </div>
+
+                            <div v-if="successMessage"
+                                class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                                {{ successMessage }}
+                            </div>
+
+                            <button type="submit" :disabled="loading"
+                                class="w-full rounded-2xl bg-yellow-400 py-3.5 text-sm font-semibold text-slate-900 transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-70">
+                                {{ loading ? 'Sedang membuat akun...' : 'Daftar Sekarang' }}
+                            </button>
+                        </form>
+
+                        <div class="mt-6 rounded-2xl bg-slate-50 px-4 py-4 text-sm text-slate-500">
+                            Sudah punya akun?
+                            <NuxtLink to="/login" class="font-semibold text-[#0f766e]">
+                                Masuk di sini
+                            </NuxtLink>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
