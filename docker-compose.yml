@@ -1,6 +1,6 @@
 services:
     nuxt-app:
-        image: ghcr.io/novalardi21/frontend-medifinder:latest
+        image: ghcr.io/proyek-medifinder/frontend-medifinder:latest
         container_name: nuxt-app
         restart: always
         ports:
