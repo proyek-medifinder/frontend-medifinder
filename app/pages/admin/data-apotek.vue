@@ -143,7 +143,7 @@ onBeforeUnmount(() => {
                     <p class="font-semibold">
                         {{ saveState === 'success' ? 'Perubahan tersimpan' : 'Masih ada yang perlu dicek' }}
                     </p>
-                    <p class="mt-1 text-sm">
+                    <p class="mt-1 text-sm">o
                         {{ saveMessage }}
                     </p>
                 </div>

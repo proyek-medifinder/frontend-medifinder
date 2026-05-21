@@ -16,6 +16,7 @@ const loading = ref(false)
 const errorMessage = ref('')
 
 const router = useRouter()
+
 const { login, googleLogin, user, logout } = useAuth()
 
 const forgotOpen = ref(false)

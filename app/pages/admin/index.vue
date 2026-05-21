@@ -775,7 +775,6 @@ onMounted(async () => {
         await fetchPendingAdmins()
     }
 
-    // 🔥 TAMBAH INI
     if (userRole.value === 'admin_apotek') {
         await fetchApotekOrders()
     }

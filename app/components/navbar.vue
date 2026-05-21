@@ -38,15 +38,16 @@ const handleCheckout = async () => {
     }
 }
 
-/* 🔥 INIT */
+
 onMounted(() => {
     fetchCart()
 })
 
-/* 🔥 FIX ASYNC USER */
 watch(user, (val) => {
     if (val) fetchCart()
 })
+
+
 </script>
 
 <template>
