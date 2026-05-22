@@ -17,8 +17,9 @@ const config = useRuntimeConfig()
 
 const currentPhotoUrl = computed(() => {
     if (preview.value) return preview.value
-    if (form.value?.PhotoURL) {
-        return config.public.apiBase + form.value.PhotoURL.replace('/public', '')
+    const photoPath = form.value?.photo_url || form.value?.PhotoURL
+    if (photoPath) {
+        return config.public.apiBase + photoPath.replace('/public', '')
     }
     return null
 })
@@ -95,10 +96,7 @@ const handleSave = async () => {
             await uploadPhoto()
         }
 
-        // 2️⃣ ambil data terbaru (biar dapet PhotoURL)
-        await fetchApotek()
-
-        // 3️⃣ baru update data (bawa photo_url yang sudah ada)
+        // Simpan form yang sedang diedit tanpa menimpa jam operasional dari data lama.
         await updateApotek()
 
         await fetchApotek()
@@ -143,7 +141,7 @@ onBeforeUnmount(() => {
                     <p class="font-semibold">
                         {{ saveState === 'success' ? 'Perubahan tersimpan' : 'Masih ada yang perlu dicek' }}
                     </p>
-                    <p class="mt-1 text-sm">o
+                    <p class="mt-1 text-sm">
                         {{ saveMessage }}
                     </p>
                 </div>

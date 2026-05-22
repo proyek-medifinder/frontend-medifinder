@@ -29,6 +29,8 @@ const totalPending = computed(() =>
     transaksi.value.filter(t => t.status === 'pending').length
 )
 
+const formatCurrency = (value: number | string | null | undefined) =>
+    new Intl.NumberFormat('id-ID').format(Number(value || 0))
 
 
 onMounted(loadData)
@@ -99,7 +101,7 @@ onMounted(loadData)
                         </div>
 
                         <p class="text-sm font-semibold text-slate-800">
-                            Rp {{ order.total }}
+                            Rp {{ formatCurrency(order.total_harga ?? order.total) }}
                         </p>
                     </div>
                 </div>

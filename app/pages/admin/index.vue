@@ -149,6 +149,59 @@
             </div>
         </div>
 
+        <div v-if="showTransactionModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 px-4">
+            <div class="w-full max-w-2xl rounded-[32px] bg-white p-6 shadow-2xl">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <h2 class="text-lg font-semibold">
+                            Detail Transaksi
+                        </h2>
+                        <p class="mt-1 text-sm text-slate-500">
+                            Ringkasan transaksi pengguna yang tercatat di platform.
+                        </p>
+                    </div>
+
+                    <button @click="showTransactionModal = false" class="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600 hover:bg-slate-200">
+                        Tutup
+                    </button>
+                </div>
+
+                <div v-if="transactionDetailLoading" class="mt-6 text-sm text-slate-500">
+                    Memuat detail transaksi...
+                </div>
+
+                <div v-else-if="selectedTransaction" class="mt-6 space-y-4 text-sm text-slate-700">
+                    <p><b>ID Transaksi:</b> {{ selectedTransaction.id }}</p>
+                    <p><b>User ID:</b> {{ selectedTransaction.user_id || '-' }}</p>
+                    <p><b>Apotek ID:</b> {{ selectedTransaction.apotek_id || '-' }}</p>
+                    <p><b>Status:</b> {{ selectedTransaction.status || '-' }}</p>
+                    <p><b>Total Harga:</b> {{ formatCurrency(totalTransactionField(selectedTransaction)) }}</p>
+                    <p><b>Snap Token:</b> {{ selectedTransaction.snap_token || '-' }}</p>
+                    <p><b>Payment URL:</b> <span class="break-all">{{ selectedTransaction.payment_url || '-' }}</span></p>
+                    <p><b>Dibuat:</b> {{ formatDateTime(selectedTransaction.created_at) }}</p>
+                    <p><b>Diperbarui:</b> {{ formatDateTime(selectedTransaction.updated_at) }}</p>
+
+                    <div class="pt-3">
+                        <p class="mb-2 font-semibold text-slate-900">Item Transaksi</p>
+
+                        <div v-if="selectedTransactionItems.length === 0" class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-5 text-sm text-slate-500">
+                            Detail item transaksi tidak tersedia.
+                        </div>
+
+                        <div v-else class="space-y-3">
+                            <div v-for="item in selectedTransactionItems" :key="item.id" class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+                                <p><b>Detail ID:</b> {{ item.id }}</p>
+                                <p><b>Transaksi ID:</b> {{ item.transaksi_id || '-' }}</p>
+                                <p><b>Obat ID:</b> {{ item.obat_id || '-' }}</p>
+                                <p><b>Jumlah:</b> {{ item.jumlah ?? 0 }}</p>
+                                <p><b>Harga:</b> {{ formatCurrency(item.harga) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 🔥 DASHBOARD SUPER ADMIN -->
         <div class="space-y-8">
 
@@ -205,6 +258,30 @@
                     :labels="['Admin Aktif', 'Admin Suspend', 'Pengajuan', 'Kontak']" :summary="superAdminCompositionSummary" />
             </section>
 
+            <section class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+                <AdminMetricCard title="Total Transaksi" :value="totalPlatformTransactions" icon="solar:wallet-money-bold-duotone"
+                    :badge="`${paidPlatformTransactions} paid`" description="Seluruh transaksi user yang tercatat"
+                    icon-class="bg-emerald-50 text-emerald-700" badge-class="bg-emerald-50 text-emerald-700" />
+                <AdminMetricCard title="Omzet Platform" :value="formattedPlatformRevenue" icon="solar:card-send-bold-duotone"
+                    :badge="`${pendingPlatformTransactions} pending`" description="Akumulasi total harga transaksi"
+                    icon-class="bg-cyan-50 text-cyan-700" badge-class="bg-cyan-50 text-cyan-700" />
+                <AdminMetricCard title="Transaksi Failed" :value="failedPlatformTransactions" icon="solar:close-circle-bold-duotone"
+                    badge="Perlu pantau" description="Transaksi dengan pembayaran gagal"
+                    icon-class="bg-rose-50 text-rose-700" badge-class="bg-rose-50 text-rose-700" />
+                <AdminMetricCard title="Transaksi Pending" :value="pendingPlatformTransactions" icon="solar:clock-circle-bold-duotone"
+                    badge="Menunggu pembayaran" description="Belum selesai dibayar"
+                    icon-class="bg-amber-50 text-amber-700" badge-class="bg-amber-50 text-amber-700" />
+            </section>
+
+            <section class="grid gap-7 xl:grid-cols-[1.2fr_0.8fr]">
+                <AdminTrendChart title="Tren Nilai Transaksi" subtitle="Nominal dari 6 transaksi terbaru di platform"
+                    :values="superTransactionTrendValues" :labels="superTransactionTrendLabels"
+                    :summary="superTransactionTrendSummary" />
+                <AdminBarChart title="Status Transaksi" subtitle="Distribusi status pembayaran saat ini"
+                    :values="superTransactionCompositionValues"
+                    :labels="['Paid', 'Pending', 'Failed', 'Lainnya']" :summary="superTransactionCompositionSummary" />
+            </section>
+
             <!-- TABLE -->
             <div class="rounded-[28px] border border-slate-200/70 bg-white/90 p-7 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
                 <h2 class="font-semibold text-gray-800 mb-4">
@@ -241,9 +318,65 @@
                                         Detail
                                     </button>
 
-                                    <button @click="verifyAdmin(admin.id)"
+                                    <button @click="verifyAdmin(admin)"
                                         class="px-3 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600">
                                         Verifikasi
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="rounded-[28px] border border-slate-200/70 bg-white/90 p-7 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <h2 class="font-semibold text-gray-800">
+                            Transaksi Platform
+                        </h2>
+                        <p class="mt-1 text-sm text-slate-500">
+                            Daftar transaksi user terbaru beserta akses ke detail transaksinya.
+                        </p>
+                    </div>
+                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                        {{ superTransactions.length }} transaksi dimuat
+                    </span>
+                </div>
+
+                <div v-if="superTransactions.length === 0"
+                    class="mt-5 rounded-3xl border border-dashed border-slate-200 bg-slate-50 px-5 py-8 text-sm text-gray-400">
+                    Belum ada transaksi yang tampil.
+                </div>
+
+                <div v-else class="mt-5 overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-gray-500 border-b">
+                            <tr>
+                                <th class="py-3">ID</th>
+                                <th>User ID</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Dibuat</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr v-for="transaction in superTransactions" :key="transaction.id" class="border-b hover:bg-gray-50">
+                                <td class="py-3 font-medium text-gray-800">{{ transaction.id }}</td>
+                                <td>{{ shortValue(transaction.user_id) }}</td>
+                                <td>
+                                    <span class="rounded-full px-3 py-1 text-xs font-semibold" :class="getBadge(transaction.status)">
+                                        {{ transaction.status }}
+                                    </span>
+                                </td>
+                                <td>{{ formatCurrency(totalTransactionField(transaction)) }}</td>
+                                <td>{{ formatDateTime(transaction.created_at) }}</td>
+                                <td>
+                                    <button @click="openTransactionDetail(transaction)"
+                                        class="px-3 py-1 text-xs bg-gray-200 rounded hover:bg-gray-300">
+                                        Detail
                                     </button>
                                 </td>
                             </tr>
@@ -281,6 +414,11 @@ const apotekTransactions = ref<any[]>([])
 const superAdminList = ref<any[]>([])
 const superApotekList = ref<any[]>([])
 const superContactList = ref<any[]>([])
+const superTransactions = ref<any[]>([])
+const selectedTransaction = ref<any | null>(null)
+const selectedTransactionItems = ref<any[]>([])
+const showTransactionModal = ref(false)
+const transactionDetailLoading = ref(false)
 
 const totalOrders = computed(() => apotekTransactions.value.length)
 const totalPendingOrders = computed(() =>
@@ -385,6 +523,29 @@ const scheduledApotekCount = computed(() =>
 )
 
 const totalKontak = computed(() => superContactList.value.length)
+const totalPlatformTransactions = computed(() => superTransactions.value.length)
+const paidPlatformTransactions = computed(() =>
+    superTransactions.value.filter((item: any) => normalizeStatus(item?.status) === 'paid').length
+)
+const pendingPlatformTransactions = computed(() =>
+    superTransactions.value.filter((item: any) => normalizeStatus(item?.status) === 'pending').length
+)
+const failedPlatformTransactions = computed(() =>
+    superTransactions.value.filter((item: any) => normalizeStatus(item?.status) === 'failed').length
+)
+const otherPlatformTransactions = computed(() =>
+    Math.max(
+        totalPlatformTransactions.value -
+        paidPlatformTransactions.value -
+        pendingPlatformTransactions.value -
+        failedPlatformTransactions.value,
+        0
+    )
+)
+const totalPlatformRevenue = computed(() =>
+    superTransactions.value.reduce((sum: number, item: any) => sum + Number(totalTransactionField(item) || 0), 0)
+)
+const formattedPlatformRevenue = computed(() => formatCurrency(totalPlatformRevenue.value))
 
 const unresolvedKontak = computed(() =>
     superContactList.value.filter((item: any) => {
@@ -398,6 +559,26 @@ const contactBadgeText = computed(() =>
         ? `${unresolvedKontak.value} belum ditindak`
         : 'Semua sudah ditinjau'
 )
+
+const formatCurrency = (value: number | string | null | undefined) =>
+    new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        maximumFractionDigits: 0
+    }).format(Number(value || 0))
+
+const formatDateTime = (value?: string | null) => {
+    if (!value) return '-'
+    return new Date(value).toLocaleString('id-ID')
+}
+
+const shortValue = (value?: string | null) => {
+    if (!value) return '-'
+    return value.length > 12 ? `${value.slice(0, 12)}...` : value
+}
+
+const totalTransactionField = (item: any) =>
+    Number(item?.total_harga ?? item?.total ?? 0)
 
 const normalizeListResponse = (response: any) => {
     if (Array.isArray(response?.data)) return response.data
@@ -513,6 +694,43 @@ const superAdminCompositionValues = computed(() => [
     pendingAdmins.value.length,
     unresolvedKontak.value
 ])
+
+const superTransactionTrendSource = computed(() => superTransactions.value.slice(0, 6).reverse())
+const superTransactionTrendValues = computed(() => {
+    const values = superTransactionTrendSource.value.map((item: any) => totalTransactionField(item))
+    return values.length ? values : [0]
+})
+const superTransactionTrendLabels = computed(() => {
+    const labels = superTransactionTrendSource.value.map((item: any) =>
+        new Date(item.created_at).toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'short'
+        })
+    )
+    return labels.length ? labels : ['-']
+})
+const superTransactionTrendSummary = computed(() =>
+    totalPlatformTransactions.value > 0
+        ? `${totalPlatformTransactions.value} transaksi termuat`
+        : 'Belum ada transaksi tercatat'
+)
+const superTransactionCompositionValues = computed(() => [
+    paidPlatformTransactions.value,
+    pendingPlatformTransactions.value,
+    failedPlatformTransactions.value,
+    otherPlatformTransactions.value
+])
+const superTransactionCompositionSummary = computed(() => {
+    if (paidPlatformTransactions.value > 0) {
+        return `${paidPlatformTransactions.value} transaksi berhasil dibayar`
+    }
+
+    if (pendingPlatformTransactions.value > 0) {
+        return `${pendingPlatformTransactions.value} transaksi menunggu pembayaran`
+    }
+
+    return 'Belum ada distribusi transaksi'
+})
 
 const superAdminCompositionSummary = computed(() => {
     if (pendingAdmins.value.length > 0) {
@@ -672,10 +890,20 @@ const fetchSuperAdminOverview = async () => {
                     Authorization: `Bearer ${token.value}`,
                     'ngrok-skip-browser-warning': 'true'
                 }
+            }),
+            $fetch<any>(`${config.public.apiBase}/superadmin/transaksi`, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                    'ngrok-skip-browser-warning': 'true'
+                },
+                query: {
+                    page: 1,
+                    limit: 100
+                }
             })
         ])
 
-        const [adminResult, apotekResult, pendingResult, kontakResult] = results
+        const [adminResult, apotekResult, pendingResult, kontakResult, transaksiResult] = results
 
         if (adminResult.status === 'fulfilled') {
             superAdminList.value = normalizeListResponse(adminResult.value)
@@ -708,6 +936,13 @@ const fetchSuperAdminOverview = async () => {
             console.error('Gagal ambil data kontak', kontakResult.reason)
             superContactList.value = []
         }
+
+        if (transaksiResult.status === 'fulfilled') {
+            superTransactions.value = normalizeListResponse(transaksiResult.value)
+        } else {
+            console.error('Gagal ambil data transaksi platform', transaksiResult.reason)
+            superTransactions.value = []
+        }
     } catch (err) {
         console.error('Gagal ambil overview super admin', err)
     }
@@ -716,6 +951,15 @@ const fetchSuperAdminOverview = async () => {
 const fetchPendingAdmins = async () => {
     await fetchSuperAdminOverview()
 }
+
+const getPendingAdminUuid = (admin: any) =>
+    admin?.admin_id ||
+    admin?.admin_uuid ||
+    admin?.user_id ||
+    admin?.user_uuid ||
+    admin?.uuid ||
+    admin?.id ||
+    null
 
 let detailMap: any = null
 
@@ -743,7 +987,14 @@ const openDetail = async (admin: any) => {
     L.marker([admin.latitude, admin.longitude]).addTo(detailMap)
 }
 
-const verifyAdmin = async (id: string) => {
+const verifyAdmin = async (admin: any) => {
+    const adminUuid = getPendingAdminUuid(admin)
+
+    if (!adminUuid) {
+        console.error('UUID admin pengajuan tidak ditemukan', admin)
+        return
+    }
+
     try {
         await $fetch(`${config.public.apiBase}/superadmin/verifikasi`, {
             method: 'POST',
@@ -753,7 +1004,7 @@ const verifyAdmin = async (id: string) => {
             },
             body: {
                 action: 'approved',
-                admin_id: id,
+                admin_id: adminUuid,
                 notes: 'Disetujui oleh admin'
             }
         })
@@ -762,6 +1013,29 @@ const verifyAdmin = async (id: string) => {
 
     } catch (err) {
         console.error('Gagal verifikasi', err)
+    }
+}
+
+const openTransactionDetail = async (transaction: any) => {
+    try {
+        transactionDetailLoading.value = true
+        showTransactionModal.value = true
+        selectedTransaction.value = transaction
+
+        const res: any = await $fetch(`${config.public.apiBase}/superadmin/transaksi/${transaction.id}`, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+                'ngrok-skip-browser-warning': 'true'
+            }
+        })
+
+        selectedTransactionItems.value = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : []
+    } catch (err) {
+        console.error('Gagal ambil detail transaksi', err)
+        selectedTransaction.value = null
+        selectedTransactionItems.value = []
+    } finally {
+        transactionDetailLoading.value = false
     }
 }
 

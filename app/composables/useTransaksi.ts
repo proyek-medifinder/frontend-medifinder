@@ -4,6 +4,8 @@ export const useTransaksi = () => {
 
     const transaksi = useState<any[]>('transaksi_data', () => [])
     const loading = ref(false)
+    const totalPage = ref(1)
+    const error = ref('')
 
     const fetchTransaksi = async (params?: {
         status?: string
@@ -12,6 +14,7 @@ export const useTransaksi = () => {
     }) => {
         try {
             loading.value = true
+            error.value = ''
 
             const query = new URLSearchParams()
 
@@ -20,7 +23,7 @@ export const useTransaksi = () => {
             if (params?.limit) query.append('limit', String(params.limit))
 
             const res: any = await $fetch(
-                `${config.public.apiBase}/transaksi?${query.toString()}`,
+                `${config.public.apiBase}/superadmin/transaksi?${query.toString()}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
@@ -30,9 +33,12 @@ export const useTransaksi = () => {
             )
 
             transaksi.value = res.data || []
-
-        } catch (err) {
-            console.error("❌ transaksi:", err)
+            totalPage.value = res.meta?.total_page || 1
+        } catch (err: any) {
+            console.error('Transaksi error:', err)
+            transaksi.value = []
+            totalPage.value = 1
+            error.value = err?.data?.message || err?.message || 'Transaksi belum bisa dimuat.'
         } finally {
             loading.value = false
         }
@@ -40,7 +46,7 @@ export const useTransaksi = () => {
 
     const getDetail = async (id: string) => {
         return await $fetch(
-            `${config.public.apiBase}/transaksi/${id}`,
+            `${config.public.apiBase}/superadmin/transaksi/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
@@ -53,6 +59,8 @@ export const useTransaksi = () => {
     return {
         transaksi,
         loading,
+        totalPage,
+        error,
         fetchTransaksi,
         getDetail
     }

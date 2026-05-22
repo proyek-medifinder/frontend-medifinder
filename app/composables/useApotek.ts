@@ -3,6 +3,17 @@ export const useApotek = () => {
     const token = useCookie<string | null>('auth_token')
     const photoFile = ref<File | null>(null)
 
+    const normalizeTime = (time?: string | null) => {
+        if (!time) return ''
+        return String(time).slice(0, 5)
+    }
+
+    const getPhotoPath = (data: any) =>
+        data?.photo_url ||
+        data?.PhotoURL ||
+        data?.photoUrl ||
+        ''
+
     const form = useState<any>('apotek_form', () => ({
         nama: '',
         alamat: '',
@@ -11,7 +22,9 @@ export const useApotek = () => {
         latitude: null,
         longitude: null,
         jam_buka: '',
-        jam_tutup: ''
+        jam_tutup: '',
+        photo_url: '',
+        PhotoURL: ''
     }))
 
     const loading = ref(false)
@@ -29,14 +42,10 @@ export const useApotek = () => {
 
         form.value = {
             ...res.data,
-
-            jam_buka: res.data.jam_buka
-                ? res.data.jam_buka.slice(0, 5)
-                : '',
-
-            jam_tutup: res.data.jam_tutup
-                ? res.data.jam_tutup.slice(0, 5)
-                : ''
+            jam_buka: normalizeTime(res.data?.jam_buka),
+            jam_tutup: normalizeTime(res.data?.jam_tutup),
+            photo_url: getPhotoPath(res.data),
+            PhotoURL: getPhotoPath(res.data)
         }
     }
 
@@ -48,7 +57,7 @@ export const useApotek = () => {
         const formData = new FormData()
         formData.append('photo', photoFile.value)
 
-        await $fetch(`${config.public.apiBase}/admin/foto`, {
+        const res: any = await $fetch(`${config.public.apiBase}/admin/foto`, {
             method: 'PUT',
             headers: {
                 Authorization: `Bearer ${token.value}`,
@@ -56,6 +65,14 @@ export const useApotek = () => {
             },
             body: formData
         })
+
+        const uploadedPath = getPhotoPath(res?.data || res)
+        if (uploadedPath) {
+            form.value.photo_url = uploadedPath
+            form.value.PhotoURL = uploadedPath
+        }
+
+        return res
     }
 
 
@@ -86,7 +103,7 @@ export const useApotek = () => {
                 jam_buka: formatTime(form.value.jam_buka),
                 jam_tutup: formatTime(form.value.jam_tutup),
 
-                photo_url: form.value.photo_url || form.value.PhotoURL || ''
+                photo_url: getPhotoPath(form.value)
             }
             console.log("📤 KIRIM:", payload)
 
