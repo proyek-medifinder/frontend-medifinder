@@ -1,6 +1,6 @@
 services:
     nuxt-app:
-        image: ghcr.io/proyek-medifinder/frontend-medifinder:latest
+        build: .
         container_name: nuxt-app
         restart: always
         ports:
