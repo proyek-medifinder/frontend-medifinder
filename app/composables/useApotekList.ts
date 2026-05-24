@@ -5,6 +5,19 @@ export const useApotekList = () => {
     const apoteks = ref<any[]>([])
     const loading = ref(false)
 
+    const getPhotoPath = (item: any) =>
+        item?.photo_url ||
+        item?.PhotoURL ||
+        item?.photoUrl ||
+        item?.secure_url ||
+        item?.cloudinary_url ||
+        item?.cloudinaryUrl ||
+        item?.image_url ||
+        item?.imageUrl ||
+        item?.foto_url ||
+        item?.fotoUrl ||
+        ''
+
     const fetchApotek = async () => {
         try {
             loading.value = true
@@ -21,7 +34,11 @@ export const useApotekList = () => {
 
             console.log("📦 APOTEK:", res)
 
-            apoteks.value = res.data || []
+            apoteks.value = (res.data || []).map((item: any) => ({
+                ...item,
+                photo_url: getPhotoPath(item),
+                PhotoURL: getPhotoPath(item)
+            }))
 
         } catch (err) {
             console.error("❌ gagal ambil apotek", err)

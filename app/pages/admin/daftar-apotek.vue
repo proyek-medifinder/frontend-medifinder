@@ -24,7 +24,18 @@ onMounted(() => {
 })
 
 const resolveImageUrl = (item: any) => {
-    const url = item?.photo_url || item?.PhotoURL || item?.photoUrl || ''
+    const url =
+        item?.photo_url ||
+        item?.PhotoURL ||
+        item?.photoUrl ||
+        item?.secure_url ||
+        item?.cloudinary_url ||
+        item?.cloudinaryUrl ||
+        item?.image_url ||
+        item?.imageUrl ||
+        item?.foto_url ||
+        item?.fotoUrl ||
+        ''
 
     if (!url) return '/images/istri.png'
     if (String(url).startsWith('http://') || String(url).startsWith('https://')) return url

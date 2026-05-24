@@ -44,6 +44,21 @@ const getImage = (url: string | null) => {
     return `${config.public.apiBase}${slash}${url}`
 }
 
+const getApotekImage = (item: any) =>
+    getImage(
+        item?.photo_url ||
+        item?.PhotoURL ||
+        item?.photoUrl ||
+        item?.secure_url ||
+        item?.cloudinary_url ||
+        item?.cloudinaryUrl ||
+        item?.image_url ||
+        item?.imageUrl ||
+        item?.foto_url ||
+        item?.fotoUrl ||
+        null
+    )
+
 const formatTime = (time: string | null) => {
     if (!time) return '-'
     return time.length >= 5 ? time.slice(0, 5) : time
@@ -189,7 +204,7 @@ useHead({
             <section class="mx-auto max-w-6xl px-4">
                 <div
                     class="relative overflow-hidden rounded-[36px] border border-white/60 shadow-[0_30px_80px_rgba(15,118,110,0.18)]">
-                    <img :src="getImage(apotek.PhotoURL)" class="h-[380px] w-full object-cover md:h-[440px]" />
+                    <img :src="getApotekImage(apotek)" class="h-[380px] w-full object-cover md:h-[440px]" />
                     <div
                         class="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,89,80,0.12)_0%,rgba(6,78,59,0.45)_40%,rgba(2,44,34,0.86)_100%)]" />
 
