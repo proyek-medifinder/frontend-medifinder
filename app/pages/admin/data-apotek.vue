@@ -16,11 +16,22 @@ const { initMap } = useMapPicker()
 const config = useRuntimeConfig()
 
 const currentPhotoUrl = computed(() => {
+    // Kalau lagi pilih foto baru (preview)
     if (preview.value) return preview.value
+    
     const photoPath = form.value?.photo_url || form.value?.PhotoURL
+    
     if (photoPath) {
-        return config.public.apiBase + photoPath.replace('/public', '')
+        // 🔥 TAMBAHAN BARU: Kalau dari Cloudinary (udah ada http/https), langsung pakai aja!
+        if (photoPath.startsWith('http://') || photoPath.startsWith('https://')) {
+            return photoPath
+        }
+        
+        // Kalau format path lokal lama, baru ditambahin apiBase
+        const slash = photoPath.startsWith('/') ? '' : '/'
+        return config.public.apiBase + slash + photoPath
     }
+    
     return null
 })
 

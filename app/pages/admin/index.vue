@@ -116,36 +116,106 @@
     <div v-else class="space-y-8 pb-8">
 
         <!-- MODAL -->
-        <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 px-4">
-            <div class="w-full max-w-2xl rounded-[32px] bg-white p-6 shadow-2xl">
+        <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4">
+            <div class="w-full max-w-4xl rounded-[32px] bg-white p-6 shadow-2xl">
+                <div class="flex flex-col gap-4 border-b border-slate-200 pb-5 md:flex-row md:items-start md:justify-between">
+                    <div>
+                        <p class="text-sm uppercase tracking-[0.22em] text-emerald-600/80">
+                            Detail Pengajuan
+                        </p>
+                        <h2 class="mt-2 text-2xl font-semibold text-slate-900">
+                            {{ selectedAdmin?.nama_apotek || 'Apotek belum bernama' }}
+                        </h2>
+                        <p class="mt-2 text-sm text-slate-500">
+                            Ringkasan profil apotek, data pemilik, dan titik lokasi yang diajukan untuk proses verifikasi.
+                        </p>
+                    </div>
 
-                <h2 class="text-lg font-semibold mb-4">
-                    Detail Pendaftar
-                </h2>
-
-                <div class="space-y-2 text-sm text-gray-700">
-                    <p><b>Nama Apotek:</b> {{ selectedAdmin?.nama_apotek }}</p>
-                    <p><b>Nama Pemilik:</b> {{ selectedAdmin?.name }}</p>
-                    <p><b>Email:</b> {{ selectedAdmin?.email }}</p>
-                    <p><b>No HP:</b> {{ selectedAdmin?.phone_number }}</p>
-                    <p><b>Alamat:</b> {{ selectedAdmin?.alamat }}</p>
-                    <p><b>Deskripsi:</b> {{ selectedAdmin?.deskripsi }}</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+                            Menunggu review
+                        </span>
+                        <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                            {{ formatDateTime(getDateField(selectedAdmin)) }}
+                        </span>
+                        <button @click="closePendingDetail"
+                            class="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600 transition hover:bg-slate-200">
+                            Tutup
+                        </button>
+                    </div>
                 </div>
 
-                <div class="mt-4">
-                    <p class="text-sm font-semibold mb-2">Lokasi:</p>
+                <div class="mt-6 grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+                    <div class="space-y-4">
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <div class="rounded-3xl border border-slate-200 bg-slate-50/80 p-4">
+                                <p class="text-xs uppercase tracking-[0.16em] text-slate-400">Nama Pemilik</p>
+                                <p class="mt-2 font-semibold text-slate-900">{{ selectedAdmin?.name || '-' }}</p>
+                            </div>
+                            <div class="rounded-3xl border border-slate-200 bg-slate-50/80 p-4">
+                                <p class="text-xs uppercase tracking-[0.16em] text-slate-400">Kontak</p>
+                                <p class="mt-2 font-semibold text-slate-900">{{ selectedAdmin?.phone_number || '-' }}</p>
+                            </div>
+                            <div class="rounded-3xl border border-slate-200 bg-slate-50/80 p-4 sm:col-span-2">
+                                <p class="text-xs uppercase tracking-[0.16em] text-slate-400">Email</p>
+                                <p class="mt-2 break-all font-semibold text-slate-900">{{ selectedAdmin?.email || '-' }}</p>
+                            </div>
+                            <div class="rounded-3xl border border-slate-200 bg-slate-50/80 p-4 sm:col-span-2">
+                                <p class="text-xs uppercase tracking-[0.16em] text-slate-400">Alamat</p>
+                                <p class="mt-2 leading-7 text-slate-700">{{ selectedAdmin?.alamat || '-' }}</p>
+                            </div>
+                            <div class="rounded-3xl border border-slate-200 bg-slate-50/80 p-4 sm:col-span-2">
+                                <p class="text-xs uppercase tracking-[0.16em] text-slate-400">Deskripsi</p>
+                                <p class="mt-2 leading-7 text-slate-700">{{ selectedAdmin?.deskripsi || 'Belum ada deskripsi tambahan.' }}</p>
+                            </div>
+                        </div>
 
-                    <ClientOnly>
-                        <div id="detail-map" class="w-full h-40 rounded-lg"></div>
-                    </ClientOnly>
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <div class="rounded-3xl border border-slate-200 bg-white p-4">
+                                <p class="text-xs uppercase tracking-[0.16em] text-slate-400">Koordinat</p>
+                                <p class="mt-2 font-semibold text-slate-900">{{ pendingAdminCoordinateText(selectedAdmin) }}</p>
+                            </div>
+                            <div class="rounded-3xl border border-slate-200 bg-white p-4">
+                                <p class="text-xs uppercase tracking-[0.16em] text-slate-400">ID Admin</p>
+                                <p class="mt-2 font-semibold text-slate-900">{{ shortValue(getPendingAdminUuid(selectedAdmin)) }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-[28px] border border-slate-200 bg-slate-50/70 p-4">
+                        <div class="flex items-center justify-between gap-3">
+                            <div>
+                                <p class="text-sm font-semibold text-slate-900">Lokasi Apotek</p>
+                                <p class="mt-1 text-xs text-slate-500">
+                                    {{ hasPendingAdminCoordinates(selectedAdmin) ? 'Titik lokasi berhasil dimuat dari pengajuan.' : 'Koordinat belum tersedia pada pengajuan ini.' }}
+                                </p>
+                            </div>
+                            <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                                {{ hasPendingAdminCoordinates(selectedAdmin) ? 'Map aktif' : 'Tanpa koordinat' }}
+                            </span>
+                        </div>
+
+                        <ClientOnly>
+                            <div v-if="hasPendingAdminCoordinates(selectedAdmin)" id="detail-map"
+                                class="mt-4 h-72 w-full overflow-hidden rounded-[24px] border border-slate-200 bg-white"></div>
+                            <div v-else
+                                class="mt-4 flex h-72 w-full items-center justify-center rounded-[24px] border border-dashed border-slate-200 bg-white px-6 text-center text-sm text-slate-500">
+                                Pengajuan ini belum menyertakan titik koordinat, jadi peta belum bisa ditampilkan.
+                            </div>
+                        </ClientOnly>
+                    </div>
                 </div>
 
-                <div class="flex justify-end mt-6">
-                    <button @click="showModal = false" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
+                <div class="mt-6 flex flex-col-reverse gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end">
+                    <button @click="closePendingDetail"
+                        class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">
                         Tutup
                     </button>
+                    <button @click="verifyAdmin(selectedAdmin)" :disabled="verifyingAdminId === getPendingAdminUuid(selectedAdmin)"
+                        class="rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60">
+                        {{ verifyingAdminId === getPendingAdminUuid(selectedAdmin) ? 'Memverifikasi...' : 'Verifikasi Sekarang' }}
+                    </button>
                 </div>
-
             </div>
         </div>
 
@@ -284,44 +354,78 @@
 
             <!-- TABLE -->
             <div class="rounded-[28px] border border-slate-200/70 bg-white/90 p-7 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
-                <h2 class="font-semibold text-gray-800 mb-4">
-                    Menunggu Verifikasi
-                </h2>
+                <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                    <div>
+                        <h2 class="font-semibold text-gray-800">
+                            Menunggu Verifikasi
+                        </h2>
+                        <p class="mt-1 text-sm text-slate-500">
+                            Tinjau data pengajuan apotek, cek lokasi, lalu verifikasi langsung dari dashboard.
+                        </p>
+                    </div>
+                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                        {{ pendingAdmins.length }} pengajuan aktif
+                    </span>
+                </div>
 
                 <div v-if="pendingAdmins.length === 0"
-                    class="rounded-3xl border border-dashed border-slate-200 bg-slate-50 px-5 py-8 text-sm text-gray-400">
+                    class="mt-5 rounded-3xl border border-dashed border-slate-200 bg-slate-50 px-5 py-8 text-sm text-gray-400">
                     Belum ada apotek yang menunggu verifikasi
                 </div>
 
-                <div v-else class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-gray-500 border-b">
+                <div v-else class="mt-5 overflow-x-auto">
+                    <table class="w-full min-w-[880px] text-sm text-left">
+                        <thead class="border-b text-gray-500">
                             <tr>
-                                <th class="py-3">Nama Apotek</th>
-                                <th>Email</th>
-                                <th>No HP</th>
-                                <th>Aksi</th>
+                                <th class="py-3 pr-4">Apotek</th>
+                                <th class="px-4 py-3">Pemilik</th>
+                                <th class="px-4 py-3">Kontak</th>
+                                <th class="px-4 py-3">Lokasi</th>
+                                <th class="px-4 py-3">Dikirim</th>
+                                <th class="px-4 py-3">Aksi</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            <tr v-for="admin in pendingAdmins" :key="admin.id" class="border-b hover:bg-gray-50">
-                                <td class="py-3 font-medium text-gray-800">
-                                    {{ admin.nama_apotek }}
+                            <tr v-for="admin in pendingAdmins" :key="admin.id" class="border-b border-slate-100 align-top transition hover:bg-slate-50/80">
+                                <td class="py-4 pr-4">
+                                    <p class="font-semibold text-slate-900">
+                                        {{ admin.nama_apotek || '-' }}
+                                    </p>
+                                    <p class="mt-1 text-xs text-slate-500">
+                                        {{ admin.deskripsi || 'Belum ada deskripsi singkat.' }}
+                                    </p>
                                 </td>
-                                <td>{{ admin.email }}</td>
-                                <td>{{ admin.phone_number }}</td>
+                                <td class="px-4 py-4">
+                                    <p class="font-medium text-slate-800">{{ admin.name || '-' }}</p>
+                                    <p class="mt-1 text-xs text-slate-500">
+                                        UUID: {{ shortValue(getPendingAdminUuid(admin)) }}
+                                    </p>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <p class="font-medium text-slate-800">{{ admin.phone_number || '-' }}</p>
+                                    <p class="mt-1 text-xs text-slate-500 break-all">{{ admin.email || '-' }}</p>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <p class="font-medium text-slate-800">{{ shortAddress(admin.alamat) }}</p>
+                                    <p class="mt-1 text-xs text-slate-500">{{ pendingAdminCoordinateText(admin) }}</p>
+                                </td>
+                                <td class="px-4 py-4 text-slate-600">
+                                    {{ formatDateTime(getDateField(admin)) }}
+                                </td>
 
-                                <td class="flex gap-2 py-2">
+                                <td class="px-4 py-4">
+                                    <div class="flex flex-wrap gap-2">
                                     <button @click="openDetail(admin)"
-                                        class="px-3 py-1 text-xs bg-gray-200 rounded hover:bg-gray-300">
+                                        class="rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-200">
                                         Detail
                                     </button>
 
-                                    <button @click="verifyAdmin(admin)"
-                                        class="px-3 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600">
-                                        Verifikasi
+                                    <button @click="verifyAdmin(admin)" :disabled="verifyingAdminId === getPendingAdminUuid(admin)"
+                                        class="rounded-xl bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60">
+                                        {{ verifyingAdminId === getPendingAdminUuid(admin) ? 'Memverifikasi...' : 'Verifikasi' }}
                                     </button>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -509,6 +613,7 @@ const apotekStatusBadgeClass = computed(() => {
 const pendingAdmins = ref<any[]>([])
 const selectedAdmin = ref<any | null>(null)
 const showModal = ref(false)
+const verifyingAdminId = ref<string | null>(null)
 
 const approvedAdminCount = computed(() =>
     superAdminList.value.filter((item: any) => normalizeStatus(item?.status) === 'approved').length
@@ -570,6 +675,11 @@ const formatCurrency = (value: number | string | null | undefined) =>
 const formatDateTime = (value?: string | null) => {
     if (!value) return '-'
     return new Date(value).toLocaleString('id-ID')
+}
+
+const shortAddress = (value?: string | null) => {
+    if (!value) return '-'
+    return value.length > 60 ? `${value.slice(0, 60)}...` : value
 }
 
 const shortValue = (value?: string | null) => {
@@ -961,7 +1071,25 @@ const getPendingAdminUuid = (admin: any) =>
     admin?.id ||
     null
 
+const hasPendingAdminCoordinates = (admin: any) =>
+    Number.isFinite(Number(admin?.latitude)) && Number.isFinite(Number(admin?.longitude))
+
+const pendingAdminCoordinateText = (admin: any) => {
+    if (!hasPendingAdminCoordinates(admin)) return 'Koordinat belum tersedia'
+    return `Lat ${Number(admin.latitude).toFixed(5)} | Lng ${Number(admin.longitude).toFixed(5)}`
+}
+
 let detailMap: any = null
+
+const closePendingDetail = () => {
+    showModal.value = false
+    selectedAdmin.value = null
+
+    if (detailMap) {
+        detailMap.remove()
+        detailMap = null
+    }
+}
 
 const openDetail = async (admin: any) => {
     selectedAdmin.value = admin
@@ -969,22 +1097,23 @@ const openDetail = async (admin: any) => {
 
     await nextTick()
 
-    if (!admin.latitude || !admin.longitude) return
+    if (detailMap) {
+        detailMap.remove()
+        detailMap = null
+    }
+
+    if (!hasPendingAdminCoordinates(admin)) return
 
     const leaflet = await import('leaflet')
     const L = leaflet.default
 
-    if (detailMap) {
-        detailMap.remove()
-    }
-
     detailMap = L.map('detail-map').setView(
-        [admin.latitude, admin.longitude],
+        [Number(admin.latitude), Number(admin.longitude)],
         15
     )
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(detailMap)
-    L.marker([admin.latitude, admin.longitude]).addTo(detailMap)
+    L.marker([Number(admin.latitude), Number(admin.longitude)]).addTo(detailMap)
 }
 
 const verifyAdmin = async (admin: any) => {
@@ -996,6 +1125,7 @@ const verifyAdmin = async (admin: any) => {
     }
 
     try {
+        verifyingAdminId.value = adminUuid
         await $fetch(`${config.public.apiBase}/superadmin/verifikasi`, {
             method: 'POST',
             headers: {
@@ -1010,9 +1140,14 @@ const verifyAdmin = async (admin: any) => {
         })
 
         await fetchSuperAdminOverview()
+        if (selectedAdmin.value && getPendingAdminUuid(selectedAdmin.value) === adminUuid) {
+            closePendingDetail()
+        }
 
     } catch (err) {
         console.error('Gagal verifikasi', err)
+    } finally {
+        verifyingAdminId.value = null
     }
 }
 

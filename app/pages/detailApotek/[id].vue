@@ -34,10 +34,14 @@ const fetchDetail = async () => {
 }
 
 const getImage = (url: string | null) => {
-    if (!url) return '/images/istri.png'
+    if (!url || url.trim() === '') return '/images/istri.png'
 
-    const clean = url.replace('/public', '')
-    return config.public.apiBase + clean
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url
+    }
+
+    const slash = url.startsWith('/') ? '' : '/'
+    return `${config.public.apiBase}${slash}${url}`
 }
 
 const formatTime = (time: string | null) => {

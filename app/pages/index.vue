@@ -207,7 +207,7 @@
 
           <!-- IMAGE -->
           <div class="relative overflow-hidden">
-            <img :src="getImage(apotek.PhotoURL)"
+            <img :src="getImage(apotek.photo_url)"
               class="h-48 w-full object-cover transition duration-500 group-hover:scale-105" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent"></div>
 
@@ -382,10 +382,17 @@ const handleLocation = async (loc: any) => {
 const config = useRuntimeConfig()
 
 const getImage = (url: string | null) => {
-  if (!url) return '/images/istri.png'
+  // 🔥 fallback kalau tidak ada foto
+  if (!url || url.trim() === '') {
+    return '/images/istri.png'
+  }
 
-  const clean = url.replace('/public', '')
+  // 🔥 kalau sudah URL cloudinary/full URL
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url
+  }
 
-  return config.public.apiBase + clean
+  // 🔥 kalau path lokal lama
+  return `${config.public.apiBase}${url}`
 }
 </script>
