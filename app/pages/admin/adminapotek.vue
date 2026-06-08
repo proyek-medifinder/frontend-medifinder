@@ -1,4 +1,6 @@
 <template>
+    <AppLoadingOverlay v-if="loading" label="Memuat admin apotek..." description="Daftar admin sedang diambil dari API." />
+
     <div class="space-y-6">
         <section class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>

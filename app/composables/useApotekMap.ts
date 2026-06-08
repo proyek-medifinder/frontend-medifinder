@@ -5,6 +5,8 @@ export const useApotekMap = () => {
     const initMap = async (elId: string, apoteks: any[], center?: any) => {
         const leaflet = await import("leaflet")
         const L = leaflet.default
+        const { setupLeafletDefaultIcon } = await import('@/utils/leaflet')
+        await setupLeafletDefaultIcon()
 
         // default center (kalau belum ada lokasi user)
         const lat = center?.lat || -6.4

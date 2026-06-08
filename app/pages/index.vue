@@ -25,12 +25,12 @@
         </p>
 
         <div class="mt-8 flex flex-wrap gap-4">
-          <NuxtLink to="/tentang" class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300
+          <button type="button" @click="scrollToAbout" class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300
            text-gray-900 font-semibold px-6 py-3 rounded-full
            transition-all duration-200 ease-out
            hover:scale-105 hover:-translate-y-1 hover:shadow-lg">
             Tentang MediFinder →
-          </NuxtLink>
+          </button>
 
           <NuxtLink to="/admin/login" class="inline-flex items-center gap-2 border border-white/70 text-white
            hover:bg-white/10 font-semibold px-6 py-3 rounded-full
@@ -47,7 +47,7 @@
     </div>
   </section>
 
-  <section class="about-section relative overflow-hidden bg-[linear-gradient(180deg,#ffffff_0%,#f3fbf8_100%)] py-24">
+  <section id="about-section" class="about-section relative overflow-hidden bg-[linear-gradient(180deg,#ffffff_0%,#f3fbf8_100%)] py-24">
     <div
       class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.1),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(250,204,21,0.08),_transparent_28%)]">
     </div>
@@ -379,12 +379,21 @@ const handleLocation = async (loc: any) => {
   console.log("📦 apotek:", apoteks.value)
 }
 
+const scrollToAbout = () => {
+  const section = document.getElementById('about-section')
+
+  section?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  })
+}
+
 const config = useRuntimeConfig()
 
 const getImage = (url: string | null) => {
   // 🔥 fallback kalau tidak ada foto
   if (!url || url.trim() === '') {
-    return '/images/istri.png'
+    return '/images/apotek1.jpg'
   }
 
   // 🔥 kalau sudah URL cloudinary/full URL

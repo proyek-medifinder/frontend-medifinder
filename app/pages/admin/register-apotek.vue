@@ -1,6 +1,4 @@
 <script setup lang="ts">
-let L: any
-
 definePageMeta({
     layout: 'auth'
 })
@@ -35,8 +33,8 @@ let map: any = null
 let marker: any = null
 
 onMounted(async () => {
-    const leaflet = await import('leaflet')
-    L = leaflet.default
+    const { setupLeafletDefaultIcon } = await import('@/utils/leaflet')
+    const L = await setupLeafletDefaultIcon()
     map = L.map('map').setView([-6.4, 108.2], 13)
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
@@ -155,6 +153,8 @@ const handleSubmit = async () => {
 </script>
 
 <template>
+    <AppLoadingOverlay v-if="loading" label="Mengirim pengajuan..." description="Data pendaftaran apotek sedang diproses." />
+
     <div
         class="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,#eefaf7_0%,#ffffff_46%,#f7fbff_100%)] px-4 py-6 sm:px-6 lg:px-8">
         <div

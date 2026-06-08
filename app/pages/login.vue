@@ -190,6 +190,8 @@ onMounted(() => {
 </script>
 
 <template>
+    <AppLoadingOverlay v-if="loading" label="Memproses login..." description="Kami sedang memverifikasi akunmu." />
+
     <div
         class="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,#eefaf7_0%,#ffffff_45%,#fffaf0_100%)] px-4 py-6 sm:px-6 lg:px-8">
         <div

@@ -5,6 +5,8 @@ export const useMapPicker = () => {
     const initMap = async (elId: string, form: any, isEdit: any) => {
         const leaflet = await import("leaflet")
         const L = leaflet.default
+        const { setupLeafletDefaultIcon } = await import('@/utils/leaflet')
+        await setupLeafletDefaultIcon()
 
         map = L.map(elId).setView(
             [form.value.latitude || -6.4, form.value.longitude || 108.2],

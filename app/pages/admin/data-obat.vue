@@ -102,6 +102,8 @@ const handleDelete = async (id: string) => {
 </script>
 
 <template>
+    <AppLoadingOverlay v-if="loading" label="Memuat data obat..." description="Katalog obat sedang diambil dari API." />
+
     <div class="space-y-6">
         <section class="grid gap-5 md:grid-cols-3">
             <AdminMetricCard title="Total Produk" :value="totalProduk" icon="solar:pills-3-bold-duotone"

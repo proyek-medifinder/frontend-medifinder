@@ -3,7 +3,6 @@
 </template>
 
 <script setup>
-import L from "leaflet"
 import { ref, onMounted, nextTick } from "vue"
 import { useLocation } from "@/composables/useLocation"
 
@@ -20,9 +19,12 @@ onMounted(async () => {
 
     if (!mapContainer.value) return
 
-    map = L.map(mapContainer.value).setView([-6.326, 108.324], 13)
+    const { setupLeafletDefaultIcon } = await import('@/utils/leaflet')
+    const leaflet = await setupLeafletDefaultIcon()
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    map = leaflet.map(mapContainer.value).setView([-6.326, 108.324], 13)
+
+    leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap contributors"
     }).addTo(map)
 
@@ -32,7 +34,7 @@ onMounted(async () => {
 
         map.setView([lat, lng], 15)
 
-        L.marker([lat, lng])
+        leaflet.marker([lat, lng])
             .addTo(map)
             .bindPopup("Lokasi Anda")
             .openPopup()

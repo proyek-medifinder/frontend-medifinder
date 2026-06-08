@@ -65,6 +65,8 @@ const handleReset = async () => {
 </script>
 
 <template>
+    <AppLoadingOverlay v-if="loading" label="Memproses reset password..." description="Mohon tunggu sebentar." />
+
     <div
         class="relative flex min-h-screen items-center justify-center overflow-hidden bg-[linear-gradient(135deg,#eaf8f4_0%,#ffffff_45%,#f9fafb_100%)] px-4 py-10">
         <div

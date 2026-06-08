@@ -38,6 +38,8 @@ onMounted(loadData)
 </script>
 
 <template>
+    <AppLoadingOverlay v-if="loading" label="Memuat pesanan obat..." description="Daftar pesanan sedang diambil dari API." />
+
     <div class="space-y-6">
         <section class="grid gap-5 md:grid-cols-3">
             <AdminMetricCard title="Pesanan Masuk" icon="solar:bag-smile-bold-duotone" badge="Hari ini"

@@ -183,6 +183,8 @@ onMounted(() => {
 </script>
 
 <template>
+    <AppLoadingOverlay v-if="loading" label="Memproses login admin..." description="Kami sedang memverifikasi akun admin." />
+
     <div
         class="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,#edf9f7_0%,#ffffff_46%,#f7fbff_100%)] px-4 py-6 sm:px-6 lg:px-8">
         <div

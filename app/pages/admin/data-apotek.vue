@@ -143,6 +143,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+    <AppLoadingOverlay v-if="loading" label="Memuat profil apotek..." description="Data apotek sedang diambil dari API." />
+
     <div class="space-y-6 pb-8">
         <div v-if="saveMessage" class="rounded-[24px] border px-5 py-4 shadow-sm" :class="saveState === 'success'
             ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
@@ -219,7 +221,7 @@ onBeforeUnmount(() => {
                         <div class="w-full max-w-[220px]">
                             <div
                                 class="relative aspect-square overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-inner">
-                                <img v-if="currentPhotoUrl" :src="currentPhotoUrl" class="h-full w-full object-cover" />
+        <img v-if="currentPhotoUrl" :src="currentPhotoUrl" class="h-full w-full object-cover" />
                                 <div v-else class="flex h-full items-center justify-center text-sm text-slate-400">
                                     Belum ada foto
                                 </div>

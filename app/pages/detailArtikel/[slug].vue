@@ -61,6 +61,8 @@ onMounted(() => {
 </script>
 
 <template>
+    <AppLoadingOverlay v-if="loading" label="Memuat artikel..." description="Detail artikel sedang diambil dari API." />
+
     <div class="min-h-screen overflow-hidden bg-[linear-gradient(180deg,#f4fbf8_0%,#ffffff_32%,#f8fafc_100%)] pb-20 pt-24">
         <div
             class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.14),_transparent_24%),radial-gradient(circle_at_bottom_right,_rgba(250,204,21,0.1),_transparent_18%)]">

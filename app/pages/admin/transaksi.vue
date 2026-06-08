@@ -92,6 +92,8 @@ onMounted(loadData)
 </script>
 
 <template>
+    <AppLoadingOverlay v-if="loading" label="Memuat transaksi..." description="Riwayat transaksi sedang diambil dari API." />
+
     <div class="space-y-6">
         <div v-if="showDetailModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 px-4">
             <div class="w-full max-w-2xl rounded-[32px] bg-white p-6 shadow-2xl">

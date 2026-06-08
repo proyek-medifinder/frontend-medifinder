@@ -51,6 +51,8 @@ const openDetail = async (id: string) => {
 </script>
 
 <template>
+    <AppLoadingOverlay v-if="loading" label="Memuat pesan kontak..." description="Pesan masuk sedang diambil dari API." />
+
     <div v-if="openModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
         <div class="bg-white rounded-xl p-6 w-[400px]">
 

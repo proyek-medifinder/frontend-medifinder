@@ -130,6 +130,8 @@ onMounted(async () => {
 </script>
 
 <template>
+    <AppLoadingOverlay v-if="loading" label="Memuat profil..." description="Data akun dan riwayat transaksi sedang diproses." />
+
     <section class="relative overflow-hidden bg-[linear-gradient(180deg,#f4fbf8_0%,#ffffff_35%,#f8fafc_100%)]">
         <div
             class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.16),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(250,204,21,0.14),_transparent_22%)]">

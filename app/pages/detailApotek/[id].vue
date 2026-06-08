@@ -34,7 +34,7 @@ const fetchDetail = async () => {
 }
 
 const getImage = (url: string | null) => {
-    if (!url || url.trim() === '') return '/images/istri.png'
+    if (!url || url.trim() === '') return '/images/apotek1.jpg'
 
     if (url.startsWith('http://') || url.startsWith('https://')) {
         return url
@@ -157,6 +157,8 @@ useHead({
 </script>
 
 <template>
+    <AppLoadingOverlay v-if="loading" label="Memuat detail apotek..." description="Profil apotek sedang diambil dari API." />
+
     <div v-if="showLoginDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4">
         <div class="w-full max-w-md rounded-[28px] bg-white p-6 text-center shadow-2xl">
             <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">

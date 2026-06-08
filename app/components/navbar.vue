@@ -131,7 +131,7 @@ watch(user, (val) => {
                                 <img v-if="userAvatar && !userAvatarFailed" :src="userAvatar" referrerpolicy="no-referrer"
                                     crossorigin="anonymous" @error="userAvatarFailed = true"
                                     class="w-10 h-10 rounded-full object-cover border" />
-                                <img v-else src="/images/istri.png" class="w-10 h-10 rounded-full object-cover border" />
+                                <img v-else src="/images/profile.png" class="w-10 h-10 rounded-full object-cover border" />
 
                                 <span class="font-medium text-gray-700">
                                     {{ user?.name || 'User' }}
@@ -317,7 +317,7 @@ watch(user, (val) => {
                                 <img v-if="userAvatar && !userAvatarFailed" :src="userAvatar" referrerpolicy="no-referrer"
                                     crossorigin="anonymous" @error="userAvatarFailed = true"
                                     class="w-14 h-14 rounded-full object-cover border" />
-                                <img v-else src="/images/istri.png" class="w-14 h-14 rounded-full object-cover border" />
+                                <img v-else src="/images/profile.png" class="w-14 h-14 rounded-full object-cover border" />
 
                                 <p class="font-semibold text-gray-800">
                                     {{ user?.name }}

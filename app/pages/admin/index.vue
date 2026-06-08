@@ -1,4 +1,6 @@
 <template>
+    <AppLoadingOverlay v-if="loading" label="Memuat dashboard..." description="Data admin, apotek, pengajuan, dan transaksi sedang diambil dari API." />
+
     <div v-if="!isLoaded" class="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
         <div class="h-72 animate-pulse rounded-[32px] bg-white/70" />
         <div class="h-72 animate-pulse rounded-[32px] bg-white/70" />
@@ -1106,6 +1108,8 @@ const openDetail = async (admin: any) => {
 
     const leaflet = await import('leaflet')
     const L = leaflet.default
+    const { setupLeafletDefaultIcon } = await import('@/utils/leaflet')
+    await setupLeafletDefaultIcon()
 
     detailMap = L.map('detail-map').setView(
         [Number(admin.latitude), Number(admin.longitude)],

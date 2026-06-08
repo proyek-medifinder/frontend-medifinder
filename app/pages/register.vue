@@ -66,6 +66,8 @@ const handleRegister = async () => {
 </script>
 
 <template>
+    <AppLoadingOverlay v-if="loading" label="Mendaftarkan akun..." description="Akunmu sedang diproses ke server." />
+
     <div
         class="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,#eefaf7_0%,#ffffff_44%,#fff9ef_100%)] px-4 py-6 sm:px-6 lg:px-8">
         <div

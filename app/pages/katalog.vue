@@ -74,7 +74,7 @@ const searchObat = async () => {
                     id: apotek.id,
                     nama: apotek.nama,
                     alamat: apotek.alamat,
-                    image: '/images/istri.png',
+                    image: '/images/apotek1.jpg',
                     jam_buka: apotek.jam_buka,
                     jam_tutup: apotek.jam_tutup,
                     distance: apotek.distance,
@@ -138,7 +138,9 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="min-h-screen overflow-hidden bg-[linear-gradient(180deg,#f4fbf8_0%,#ffffff_32%,#f8fafc_100%)] pb-24 pt-24">
+  <AppLoadingOverlay v-if="loading" label="Memuat katalog..." description="Apotek dan obat sedang diambil dari API." />
+
+  <div class="min-h-screen overflow-hidden bg-[linear-gradient(180deg,#f4fbf8_0%,#ffffff_32%,#f8fafc_100%)] pb-24 pt-24">
         <div
             class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.14),_transparent_24%),radial-gradient(circle_at_bottom_right,_rgba(250,204,21,0.1),_transparent_18%)]">
         </div>

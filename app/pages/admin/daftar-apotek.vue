@@ -37,7 +37,7 @@ const resolveImageUrl = (item: any) => {
         item?.fotoUrl ||
         ''
 
-    if (!url) return '/images/istri.png'
+    if (!url) return '/images/apotek1.jpg'
     if (String(url).startsWith('http://') || String(url).startsWith('https://')) return url
 
     const slash = String(url).startsWith('/') ? '' : '/'
@@ -122,7 +122,9 @@ const prevPage = () => {
 </script>
 
 <template>
-    <div class="space-y-6">
+    <div class="relative space-y-6">
+        <AppLoadingOverlay v-if="loading" label="Memuat data apotek..." description="Mohon tunggu sebentar, data sedang diambil dari API." />
+
         <section class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
                 <p class="text-sm uppercase tracking-[0.24em] text-cyan-700/80">
@@ -238,10 +240,6 @@ const prevPage = () => {
                                         class="rounded-xl bg-cyan-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-cyan-700">
                                         Detail Cepat
                                     </button>
-                                    <NuxtLink :to="`/detailApotek/${item.id}`"
-                                        class="rounded-xl border border-cyan-200 px-3 py-2 text-xs font-semibold text-cyan-700 transition hover:bg-cyan-50">
-                                        Halaman Detail
-                                    </NuxtLink>
                                 </div>
                             </td>
                         </tr>

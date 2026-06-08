@@ -208,6 +208,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+    <AppLoadingOverlay v-if="loading" label="Memuat artikel..." description="Daftar artikel sedang diambil dari API." />
+
     <div class="space-y-6 pb-8">
         <section
             class="overflow-hidden rounded-[32px] border border-white/60 bg-gradient-to-br from-[#0f766e] via-[#14967f] to-[#0e7490] px-7 py-8 text-white shadow-[0_28px_70px_rgba(15,118,110,0.22)]">
