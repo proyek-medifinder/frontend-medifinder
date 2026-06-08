@@ -23,7 +23,9 @@
                     </p>
                 </div>
 
-                <div
+                <img v-if="userPicture && !avatarFailed" :src="userPicture" referrerpolicy="no-referrer" crossorigin="anonymous" @error="avatarFailed = true"
+                    class="h-12 w-12 rounded-2xl border border-slate-200 object-cover" />
+                <div v-else
                     class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 via-teal-100 to-amber-100 font-semibold text-emerald-700">
                     {{ userInitial }}
                 </div>
@@ -36,6 +38,7 @@
 const route = useRoute()
 const config = useRuntimeConfig()
 const token = useCookie<string | null>('auth_token')
+const { user, ensureUser } = useAuth()
 
 const userName = ref('')
 const userRole = ref('')
@@ -83,8 +86,10 @@ const routeMeta: Record<string, { title: string, description: string }> = {
 const currentMeta = computed(() => routeMeta[route.path] || routeMeta['/admin'])
 const pageTitle = computed(() => currentMeta.value.title)
 const pageDescription = computed(() => currentMeta.value.description)
-const roleLabel = computed(() => (userRole.value || 'admin').replace('_', ' '))
-const userInitial = computed(() => (userName.value || 'A').charAt(0).toUpperCase())
+const roleLabel = computed(() => (user.value?.role || userRole.value || 'admin').replace('_', ' '))
+const userInitial = computed(() => (user.value?.name || userName.value || 'A').charAt(0).toUpperCase())
+const userPicture = computed(() => user.value?.picture || '')
+const avatarFailed = ref(false)
 
 const fetchUser = async () => {
     try {
@@ -98,6 +103,14 @@ const fetchUser = async () => {
         userName.value = res.data.name
         userRole.value = res.data.role
 
+        if (user.value) {
+            user.value.name = res.data.name
+            user.value.email = res.data.email
+            user.value.role = res.data.role
+            user.value.picture = res.data.profile_picture || user.value.picture || ''
+            user.value.profile_picture = res.data.profile_picture || ''
+        }
+
     } catch (err) {
         console.error('Gagal ambil user', err)
     } finally {
@@ -106,6 +119,7 @@ const fetchUser = async () => {
 }
 
 onMounted(() => {
+    ensureUser()
     fetchUser()
 })
 </script>

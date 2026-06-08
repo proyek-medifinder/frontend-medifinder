@@ -18,6 +18,8 @@ const { cart, fetchCart, removeItem, checkout } = useCart()
 const cartItems = computed(() => cart.value?.items || [])
 
 const loadingCheckout = ref(false)
+const userAvatar = computed(() => user.value?.picture || '')
+const userAvatarFailed = ref(false)
 
 const goToProfile = async () => {
     dropdownOpen.value = false
@@ -126,8 +128,10 @@ watch(user, (val) => {
                             <button @click="dropdownOpen = !dropdownOpen"
                                 class="flex items-center gap-3 cursor-pointer">
 
-                                <img :src="user?.picture || '/images/istri.png'"
+                                <img v-if="userAvatar && !userAvatarFailed" :src="userAvatar" referrerpolicy="no-referrer"
+                                    crossorigin="anonymous" @error="userAvatarFailed = true"
                                     class="w-10 h-10 rounded-full object-cover border" />
+                                <img v-else src="/images/istri.png" class="w-10 h-10 rounded-full object-cover border" />
 
                                 <span class="font-medium text-gray-700">
                                     {{ user?.name || 'User' }}
@@ -310,8 +314,10 @@ watch(user, (val) => {
                         <!-- PROFILE MOBILE -->
                         <li v-if="user" class="pt-4 border-t">
                             <div class="flex flex-col items-center gap-3 pt-4">
-                                <img :src="user?.picture || '/images/istri.png'"
+                                <img v-if="userAvatar && !userAvatarFailed" :src="userAvatar" referrerpolicy="no-referrer"
+                                    crossorigin="anonymous" @error="userAvatarFailed = true"
                                     class="w-14 h-14 rounded-full object-cover border" />
+                                <img v-else src="/images/istri.png" class="w-14 h-14 rounded-full object-cover border" />
 
                                 <p class="font-semibold text-gray-800">
                                     {{ user?.name }}

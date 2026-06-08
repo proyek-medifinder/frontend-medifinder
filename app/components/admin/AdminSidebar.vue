@@ -52,7 +52,9 @@
 
             <div class="relative mt-4 rounded-3xl border border-white/10 bg-white/8 p-4 backdrop-blur">
                 <div class="flex items-center gap-3">
-                    <div
+                    <img v-if="userPicture && !avatarFailed" :src="userPicture" referrerpolicy="no-referrer" crossorigin="anonymous" @error="avatarFailed = true"
+                        class="h-11 w-11 rounded-2xl border border-white/20 object-cover" />
+                    <div v-else
                         class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-white text-base font-semibold text-emerald-700">
                         {{ userInitial }}
                     </div>
@@ -139,6 +141,8 @@ const menuGroups = computed(() => {
 
 const displayName = computed(() => user.value?.name || 'Administrator')
 const userInitial = computed(() => displayName.value.charAt(0).toUpperCase())
+const userPicture = computed(() => user.value?.picture || '')
+const avatarFailed = ref(false)
 const roleLabel = computed(() => {
     if (isSuperAdmin.value) return 'super admin'
     if (isAdminApotek.value) return 'admin apotek'

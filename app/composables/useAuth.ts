@@ -14,6 +14,7 @@ export const useAuth = () => {
         email?: string
         role: string
         picture?: string
+        profile_picture?: string
     } | null>('auth_user', () => null)
 
     const logout = () => {
@@ -27,6 +28,16 @@ export const useAuth = () => {
     const token = useCookie<string | null>('auth_token')
     const emailCookie = useCookie<string | null>('auth_email')
     const config = useRuntimeConfig()
+
+    const resolvePictureUrl = (value?: string | null) => {
+        if (!value) return ''
+        if (value.startsWith('http://') || value.startsWith('https://')) {
+            return value
+        }
+
+        const slash = value.startsWith('/') ? '' : '/'
+        return `${config.public.apiBase}${slash}${value}`
+    }
 
     const toFriendlyAuthMessage = (err: any, fallback: string) => {
         const rawMessage = String(
@@ -87,6 +98,7 @@ export const useAuth = () => {
                     name: string
                     email: string
                     role: string
+                    profile_picture?: string | null
                 }
             }>(`${config.public.apiBase}/me`, {
                 headers: {
@@ -99,7 +111,9 @@ export const useAuth = () => {
                 user_id: res.data.id,
                 name: res.data.name,
                 email: res.data.email,
-                role: res.data.role
+                role: res.data.role,
+                picture: resolvePictureUrl(res.data.profile_picture || null),
+                profile_picture: res.data.profile_picture || ''
             }
         } catch (err) {
             console.error("FETCH USER ERROR:", err)

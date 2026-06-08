@@ -30,6 +30,9 @@ const initials = computed(() => {
         .join('')
 })
 
+const userPicture = computed(() => user.value?.picture || '')
+const avatarFailed = ref(false)
+
 const roleLabel = computed(() => {
     if (user.value?.role === 'super_admin') return 'Super Admin'
     if (user.value?.role === 'admin_apotek') return 'Admin Apotek'
@@ -189,8 +192,10 @@ onMounted(async () => {
                         <div class="rounded-[28px] border border-slate-200/80 bg-slate-50/90 p-6 sm:p-8">
                             <div class="flex items-center gap-4">
                                 <div
-                                    class="flex h-18 w-18 items-center justify-center rounded-3xl bg-[linear-gradient(135deg,#0f766e_0%,#14b8a6_100%)] text-2xl font-semibold text-white shadow-lg shadow-emerald-900/10">
-                                    {{ initials }}
+                                    class="flex h-18 w-18 items-center justify-center overflow-hidden rounded-3xl bg-[linear-gradient(135deg,#0f766e_0%,#14b8a6_100%)] text-2xl font-semibold text-white shadow-lg shadow-emerald-900/10">
+                                    <img v-if="userPicture && !avatarFailed" :src="userPicture" referrerpolicy="no-referrer"
+                                        crossorigin="anonymous" @error="avatarFailed = true" class="h-full w-full object-cover" />
+                                    <span v-else>{{ initials }}</span>
                                 </div>
 
                                 <div>
