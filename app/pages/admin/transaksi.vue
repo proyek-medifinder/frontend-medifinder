@@ -18,8 +18,10 @@ const showDetailModal = ref(false)
 const detailLoading = ref(false)
 const selectedTransaction = ref<any | null>(null)
 const selectedTransactionItems = ref<any[]>([])
+const transactionObatSummaryMap = ref<Record<string, string>>({})
 
 const { transaksi, loading, totalPage, error, fetchTransaksi, getDetail } = useTransaksi()
+const { enrichItems, summarizeItems } = useTransactionObatNames()
 
 const loadData = async () => {
     await fetchTransaksi({
@@ -27,6 +29,7 @@ const loadData = async () => {
         page: currentPage.value,
         limit: perPage
     })
+    await enrichTransactionHistory()
 }
 
 const filteredData = computed(() => {
@@ -58,6 +61,9 @@ const formatDateTime = (value?: string | null) => {
     return new Date(value).toLocaleString('id-ID')
 }
 
+const getTransactionObatSummary = (item: any) =>
+    transactionObatSummaryMap.value[item?.id] || item?.obat_nama || '-'
+
 const statusClass = (status?: string) => {
     const normalized = String(status || '').toLowerCase()
 
@@ -73,7 +79,8 @@ const openDetail = async (transaction: any) => {
         showDetailModal.value = true
         selectedTransaction.value = transaction
         const res: any = await getDetail(transaction.id)
-        selectedTransactionItems.value = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : []
+        const detailItems = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : []
+        selectedTransactionItems.value = await enrichItems(transaction.apotek_id, detailItems)
     } catch (err) {
         console.error('Gagal ambil detail transaksi', err)
         selectedTransaction.value = null
@@ -81,6 +88,21 @@ const openDetail = async (transaction: any) => {
     } finally {
         detailLoading.value = false
     }
+}
+
+const enrichTransactionHistory = async () => {
+    transactionObatSummaryMap.value = {}
+
+    await Promise.all(transaksi.value.map(async (item: any) => {
+        try {
+            const res: any = await getDetail(item.id)
+            const detailItems = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : []
+            await enrichItems(item.apotek_id, detailItems)
+            transactionObatSummaryMap.value[item.id] = await summarizeItems(item.apotek_id, detailItems)
+        } catch {
+            transactionObatSummaryMap.value[item.id] = '-'
+        }
+    }))
 }
 
 watch(statusFilter, async () => {
@@ -134,6 +156,7 @@ onMounted(loadData)
                             <div v-for="item in selectedTransactionItems" :key="item.id" class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
                                 <p><b>Detail ID:</b> {{ item.id }}</p>
                                 <p><b>Transaksi ID:</b> {{ item.transaksi_id || '-' }}</p>
+                                <p><b>Obat:</b> {{ item.obat_nama || '-' }}</p>
                                 <p><b>Obat ID:</b> {{ item.obat_id || '-' }}</p>
                                 <p><b>Jumlah:</b> {{ item.jumlah ?? 0 }}</p>
                                 <p><b>Harga:</b> {{ formatCurrency(item.harga) }}</p>
@@ -195,6 +218,7 @@ onMounted(loadData)
                             <th class="px-6 py-3">ID</th>
                             <th class="px-6 py-3">User ID</th>
                             <th class="px-6 py-3">Apotek ID</th>
+                            <th class="px-6 py-3">Obat</th>
                             <th class="px-6 py-3">Total</th>
                             <th class="px-6 py-3">Status</th>
                             <th class="px-6 py-3">Tanggal</th>
@@ -204,7 +228,7 @@ onMounted(loadData)
 
                     <tbody>
                         <tr v-if="filteredData.length === 0">
-                            <td colspan="7" class="px-6 py-6 text-center text-gray-400">
+                            <td colspan="8" class="px-6 py-6 text-center text-gray-400">
                                 Tidak ada transaksi yang cocok.
                             </td>
                         </tr>
@@ -213,6 +237,9 @@ onMounted(loadData)
                             <td class="px-6 py-4">{{ item.id }}</td>
                             <td class="px-6 py-4">{{ item.user_id }}</td>
                             <td class="px-6 py-4">{{ item.apotek_id }}</td>
+                            <td class="px-6 py-4 text-slate-600">
+                                {{ getTransactionObatSummary(item) }}
+                            </td>
                             <td class="px-6 py-4 font-semibold">
                                 {{ formatCurrency(item.total_harga ?? item.total) }}
                             </td>

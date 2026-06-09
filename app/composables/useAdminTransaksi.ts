@@ -33,12 +33,26 @@ export const useAdminTransaksi = () => {
         }
     }
 
+    const getDetail = async (id: string) => {
+        const headers = {
+            Authorization: `Bearer ${token.value}`,
+            'ngrok-skip-browser-warning': 'true'
+        }
+
+        try {
+            return await $fetch(`${config.public.apiBase}/admin/transaksi/${id}`, { headers })
+        } catch (adminErr) {
+            return await $fetch(`${config.public.apiBase}/superadmin/transaksi/${id}`, { headers })
+        }
+    }
+
  
 
     return {
         transaksi,
         loading,
         fetchTransaksi,
-        totalPage
+        totalPage,
+        getDetail
     }
 }

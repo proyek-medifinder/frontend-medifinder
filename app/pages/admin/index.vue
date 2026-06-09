@@ -102,6 +102,9 @@
                             <p class="mt-1 text-sm text-slate-500">
                                 {{ order.items }} - {{ order.time }}
                             </p>
+                            <p class="mt-2 text-sm text-slate-600">
+                                Obat: <span class="font-medium text-slate-900">{{ order.obat || '-' }}</span>
+                            </p>
                         </div>
 
                         <div class="text-right">
@@ -264,6 +267,7 @@
                             <div v-for="item in selectedTransactionItems" :key="item.id" class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
                                 <p><b>Detail ID:</b> {{ item.id }}</p>
                                 <p><b>Transaksi ID:</b> {{ item.transaksi_id || '-' }}</p>
+                                <p><b>Obat:</b> {{ item.obat_nama || '-' }}</p>
                                 <p><b>Obat ID:</b> {{ item.obat_id || '-' }}</p>
                                 <p><b>Jumlah:</b> {{ item.jumlah ?? 0 }}</p>
                                 <p><b>Harga:</b> {{ formatCurrency(item.harga) }}</p>
@@ -517,6 +521,7 @@ const apotekOrders = ref<any[]>([])
 const apotekProfile = ref<any | null>(null)
 const apotekMedicines = ref<any[]>([])
 const apotekTransactions = ref<any[]>([])
+const apotekOrderSummaryMap = ref<Record<string, string>>({})
 const superAdminList = ref<any[]>([])
 const superApotekList = ref<any[]>([])
 const superContactList = ref<any[]>([])
@@ -525,6 +530,7 @@ const selectedTransaction = ref<any | null>(null)
 const selectedTransactionItems = ref<any[]>([])
 const showTransactionModal = ref(false)
 const transactionDetailLoading = ref(false)
+const { enrichItems, summarizeItems } = useTransactionObatNames()
 
 const totalOrders = computed(() => apotekTransactions.value.length)
 const totalPendingOrders = computed(() =>
@@ -533,7 +539,7 @@ const totalPendingOrders = computed(() =>
 const totalRevenue = computed(() =>
     apotekTransactions.value
         .filter((item: any) => item.status === 'paid')
-        .reduce((sum: number, item: any) => sum + Number(item.total || 0), 0)
+        .reduce((sum: number, item: any) => sum + Number(item.total_harga ?? item.total ?? 0), 0)
 )
 const formattedRevenue = computed(() =>
     new Intl.NumberFormat('id-ID', {
@@ -565,7 +571,7 @@ const stockDistributionSummary = computed(() =>
 
 const orderTrendSource = computed(() => apotekTransactions.value.slice(0, 6).reverse())
 const orderTrendValues = computed(() => {
-    const values = orderTrendSource.value.map((item: any) => Number(item.total || 0))
+    const values = orderTrendSource.value.map((item: any) => Number(item.total_harga ?? item.total ?? 0))
     return values.length ? values : [0]
 })
 const orderTrendLabels = computed(() => {
@@ -873,17 +879,36 @@ const fetchApotekOrders = async () => {
         )
 
         apotekTransactions.value = res.data || []
+        apotekOrderSummaryMap.value = {}
+
+        await Promise.all(apotekTransactions.value.slice(0, 5).map(async (item: any) => {
+            try {
+                const detailRes: any = await $fetch(`${config.public.apiBase}/admin/transaksi/${item.id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                        'ngrok-skip-browser-warning': 'true'
+                    }
+                })
+
+                const detailItems = Array.isArray(detailRes?.data) ? detailRes.data : Array.isArray(detailRes) ? detailRes : []
+                await enrichItems(item.apotek_id, detailItems)
+                apotekOrderSummaryMap.value[item.id] = await summarizeItems(item.apotek_id, detailItems)
+            } catch {
+                apotekOrderSummaryMap.value[item.id] = '-'
+            }
+        }))
 
         apotekOrders.value = apotekTransactions.value.slice(0, 5).map((item: any) => ({
             id: item.id,
             customer: item.user_id?.slice(0, 8) || 'Pelanggan',
             items: `Pesanan ${item.id.slice(0, 10)}`,
             time: formatTime(item.created_at),
+            obat: apotekOrderSummaryMap.value[item.id] || '-',
             total: new Intl.NumberFormat('id-ID', {
                 style: 'currency',
                 currency: 'IDR',
                 maximumFractionDigits: 0
-            }).format(Number(item.total || 0)),
+            }).format(Number(item.total_harga ?? item.total ?? 0)),
             note: getNote(item.status),
             status: item.status,
             badgeClass: getBadge(item.status)
@@ -1168,7 +1193,8 @@ const openTransactionDetail = async (transaction: any) => {
             }
         })
 
-        selectedTransactionItems.value = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : []
+        const detailItems = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : []
+        selectedTransactionItems.value = await enrichItems(transaction.apotek_id, detailItems)
     } catch (err) {
         console.error('Gagal ambil detail transaksi', err)
         selectedTransaction.value = null

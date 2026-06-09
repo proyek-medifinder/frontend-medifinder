@@ -6,7 +6,8 @@ useHead({
 const router = useRouter()
 const { user, token, ensureUser } = useAuth()
 const { changePassword } = useForgotPassword()
-const { transaksi, fetchTransaksi, loading: loadingTransaksi } = useTransaksi()
+const { transaksi, fetchTransaksi, loading: loadingTransaksi, getDetail } = useUserTransaksi()
+const { summarizeItems } = useTransactionObatNames()
 
 const loading = ref(true)
 const loadingPassword = ref(false)
@@ -18,6 +19,7 @@ const passwordErrorMessage = ref('')
 const passwordSuccessMessage = ref('')
 const showOldPassword = ref(false)
 const showNewPassword = ref(false)
+const transactionObatSummaryMap = ref<Record<string, string>>({})
 
 const initials = computed(() => {
     const source = user.value?.name || user.value?.email || 'U'
@@ -54,6 +56,25 @@ const roleDescription = computed(() => {
 
 const transactionPreview = computed(() => transaksi.value.slice(0, 3))
 const hiddenTransactionCount = computed(() => Math.max(transaksi.value.length - transactionPreview.value.length, 0))
+
+const getTransactionObatSummary = (item: any) =>
+    transactionObatSummaryMap.value[item?.id] || item?.obat_nama || '-'
+
+const enrichTransactionHistory = async () => {
+    transactionObatSummaryMap.value = {}
+
+    await Promise.all(transaksi.value.map(async (item: any) => {
+        try {
+            const res: any = await getDetail(item.id)
+            const detailItems = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : []
+            const summary = await summarizeItems(item.apotek_id, detailItems)
+
+            transactionObatSummaryMap.value[item.id] = summary
+        } catch (err) {
+            transactionObatSummaryMap.value[item.id] = item?.obat_nama || '-'
+        }
+    }))
+}
 
 const formatCurrency = (value: number | string) => {
     const amount = Number(value || 0)
@@ -122,6 +143,7 @@ onMounted(async () => {
 
         if (token.value) {
             await fetchTransaksi()
+            await enrichTransactionHistory()
         }
     } finally {
         loading.value = false
@@ -382,7 +404,16 @@ onMounted(async () => {
                                                 Total pembayaran
                                             </p>
                                             <p class="font-semibold text-[#0f766e]">
-                                                {{ formatCurrency(item.total) }}
+                                                {{ formatCurrency(item.total_harga ?? item.total) }}
+                                            </p>
+                                        </div>
+
+                                        <div class="mt-3 rounded-2xl bg-slate-50 px-3 py-3 text-sm text-slate-600">
+                                            <p class="text-xs uppercase tracking-[0.16em] text-slate-400">
+                                                Obat
+                                            </p>
+                                            <p class="mt-1 font-medium text-slate-800">
+                                                {{ getTransactionObatSummary(item) }}
                                             </p>
                                         </div>
                                     </div>
@@ -461,7 +492,16 @@ onMounted(async () => {
                                 Total pembayaran
                             </p>
                             <p class="font-semibold text-[#0f766e]">
-                                {{ formatCurrency(item.total) }}
+                                {{ formatCurrency(item.total_harga ?? item.total) }}
+                            </p>
+                        </div>
+
+                        <div class="mt-3 rounded-2xl bg-white px-3 py-3 text-sm text-slate-600">
+                            <p class="text-xs uppercase tracking-[0.16em] text-slate-400">
+                                Obat
+                            </p>
+                            <p class="mt-1 font-medium text-slate-800">
+                                {{ getTransactionObatSummary(item) }}
                             </p>
                         </div>
                     </div>
