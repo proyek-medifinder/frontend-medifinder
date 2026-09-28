@@ -1,5 +1,5 @@
 <template>
-    <footer class="bg-[#0f766e] text-white">
+    <footer class="bg-[#0f766e] dark:bg-slate-950 dark:border-t dark:border-slate-800 text-white transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-6 py-16">
 
             <!-- GRID -->
@@ -7,7 +7,7 @@
 
                 <!-- BRAND -->
                 <div>
-                    <div class="inline-flex bg-white rounded-full px-4 py-2 mb-4 shadow-sm">
+                    <div class="inline-flex bg-white dark:bg-slate-900 rounded-full px-4 py-2 mb-4 shadow-sm border border-transparent dark:border-slate-800">
                         <img src="/images/Logo_remove.png" class="h-10" />
                     </div>
 

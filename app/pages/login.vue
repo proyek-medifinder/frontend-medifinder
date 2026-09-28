@@ -193,75 +193,75 @@ onMounted(() => {
     <AppLoadingOverlay v-if="loading" label="Memproses login..." description="Kami sedang memverifikasi akunmu." />
 
     <div
-        class="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,#eefaf7_0%,#ffffff_45%,#fffaf0_100%)] px-4 py-6 sm:px-6 lg:px-8">
+        class="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,#eefaf7_0%,#ffffff_45%,#fffaf0_100%)] dark:bg-[linear-gradient(135deg,#090d16_0%,#0f172a_50%,#020617_100%)] px-4 py-6 sm:px-6 lg:px-8 transition-colors duration-300">
         <div
-            class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.18),_transparent_26%),radial-gradient(circle_at_bottom_right,_rgba(250,204,21,0.12),_transparent_22%)]">
+            class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.18),_transparent_26%),radial-gradient(circle_at_bottom_right,_rgba(250,204,21,0.12),_transparent_22%)] dark:bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.25),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(20,184,166,0.1),_transparent_25%)]">
         </div>
 
         <div
-            class="relative mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[34px] border border-white/70 bg-white/85 shadow-[0_30px_90px_rgba(15,23,42,0.12)] backdrop-blur lg:grid-cols-[1.05fr_0.95fr]">
-            <div class="hidden bg-[#0f766e] p-8 text-white lg:flex lg:flex-col lg:justify-between xl:p-10">
+            class="relative mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[34px] border border-white/70 dark:border-slate-800 bg-white/85 dark:bg-slate-900/90 shadow-[0_30px_90px_rgba(15,23,42,0.12)] dark:shadow-none backdrop-blur lg:grid-cols-[1.05fr_0.95fr]">
+            <div class="hidden bg-[#0f766e] dark:bg-slate-950 dark:border-r dark:border-slate-800/80 p-8 text-white lg:flex lg:flex-col lg:justify-between xl:p-10">
                 <div>
                     <NuxtLink to="/" class="inline-flex items-center gap-3">
                         <img src="/images/Logo_remove.png" alt="MediFinder" class="h-14" />
                     </NuxtLink>
 
-                    <p class="mt-10 text-sm font-semibold uppercase tracking-[0.28em] text-emerald-100/80">
+                    <p class="mt-10 text-sm font-semibold uppercase tracking-[0.28em] text-emerald-100/80 dark:text-emerald-400">
                         Akun MediFinder
                     </p>
                     <h1 class="mt-5 max-w-xl text-4xl font-semibold leading-tight">
                         Masuk lebih cepat untuk cari apotek, pantau pesanan, dan lanjutkan kebutuhanmu.
                     </h1>
-                    <p class="mt-5 max-w-lg text-sm leading-7 text-emerald-50/85">
+                    <p class="mt-5 max-w-lg text-sm leading-7 text-emerald-50/85 dark:text-slate-300">
                         Semua akses penting ada dalam satu akun, mulai dari pencarian obat, detail apotek, sampai pesanan yang sedang berjalan.
                     </p>
                 </div>
 
                 <div class="space-y-3">
-                    <div class="rounded-2xl bg-white/12 px-4 py-4">
+                    <div class="rounded-2xl bg-white/12 dark:bg-slate-900/60 border border-transparent dark:border-slate-800 px-4 py-4">
                         <p class="text-sm font-semibold">Akses cepat ke apotek terdekat</p>
-                        <p class="mt-1 text-sm text-emerald-50/75">Lanjutkan pencarian tanpa mulai dari awal.</p>
+                        <p class="mt-1 text-sm text-emerald-50/75 dark:text-slate-400">Lanjutkan pencarian tanpa mulai dari awal.</p>
                     </div>
-                    <div class="rounded-2xl bg-white/12 px-4 py-4">
+                    <div class="rounded-2xl bg-white/12 dark:bg-slate-900/60 border border-transparent dark:border-slate-800 px-4 py-4">
                         <p class="text-sm font-semibold">Pantau pesanan dan kebutuhan keluarga</p>
-                        <p class="mt-1 text-sm text-emerald-50/75">Semua aktivitas akun terasa lebih rapi dan mudah dipantau.</p>
+                        <p class="mt-1 text-sm text-emerald-50/75 dark:text-slate-400">Semua aktivitas akun terasa lebih rapi dan mudah dipantau.</p>
                     </div>
-                    <div class="rounded-2xl bg-white/12 px-4 py-4">
+                    <div class="rounded-2xl bg-white/12 dark:bg-slate-900/60 border border-transparent dark:border-slate-800 px-4 py-4">
                         <p class="text-sm font-semibold">Satu akun untuk layanan MediFinder</p>
-                        <p class="mt-1 text-sm text-emerald-50/75">Masuk sekali, lalu lanjutkan semua kebutuhan kesehatanmu.</p>
+                        <p class="mt-1 text-sm text-emerald-50/75 dark:text-slate-400">Masuk sekali, lalu lanjutkan semua kebutuhan kesehatanmu.</p>
                     </div>
                 </div>
             </div>
 
             <div class="flex items-center justify-center p-5 sm:p-8 lg:p-10">
                 <div class="w-full max-w-md">
-                    <div class="rounded-[30px] border border-slate-200/80 bg-white/90 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:p-8">
-                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#0f766e]/70 lg:hidden">
+                    <div class="rounded-[30px] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:shadow-none sm:p-8">
+                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#0f766e]/70 dark:text-emerald-400 lg:hidden">
                             Akun MediFinder
                         </p>
-                        <h2 class="mt-3 text-3xl font-semibold text-slate-900">
+                        <h2 class="mt-3 text-3xl font-semibold text-slate-900 dark:text-white">
                             Masuk ke akunmu
                         </h2>
-                        <p class="mt-2 text-sm leading-6 text-slate-500">
+                        <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
                             Masukkan email dan kata sandi untuk lanjut memakai MediFinder.
                         </p>
 
                         <form class="mt-8 space-y-5" @submit.prevent="handleLogin">
                             <div>
-                                <label class="mb-2 block text-sm font-medium text-slate-700">
+                                <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
                                     Email
                                 </label>
                                 <input v-model="email" type="email" placeholder="contoh@email.com"
-                                    class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100" />
+                                    class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition focus:border-[#0f766e] dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-950/40" />
                             </div>
 
                             <div>
                                 <div class="mb-2 flex items-center justify-between">
-                                    <label class="block text-sm font-medium text-slate-700">
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">
                                         Kata Sandi
                                     </label>
                                     <button type="button" @click="openForgotModal"
-                                        class="text-sm font-medium text-slate-500 transition hover:text-[#0f766e]">
+                                        class="text-sm font-medium text-slate-500 dark:text-slate-400 transition hover:text-[#0f766e] dark:hover:text-emerald-400">
                                         Lupa password?
                                     </button>
                                 </div>
@@ -269,10 +269,10 @@ onMounted(() => {
                                 <div class="relative">
                                     <input v-model="password" :type="showPassword ? 'text' : 'password'"
                                         placeholder="Masukkan kata sandi"
-                                        class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 pr-12 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100" />
+                                        class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 pr-12 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition focus:border-[#0f766e] dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-950/40" />
 
                                     <button type="button" @click="showPassword = !showPassword"
-                                        class="absolute inset-y-0 right-3 flex items-center text-slate-400 transition hover:text-slate-700">
+                                        class="absolute inset-y-0 right-3 flex items-center text-slate-400 transition hover:text-slate-700 dark:hover:text-slate-200">
                                         <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
                                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -291,12 +291,12 @@ onMounted(() => {
                             </div>
 
                             <div v-if="errorMessage"
-                                class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                                class="rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 px-4 py-3 text-sm text-rose-700 dark:text-rose-400">
                                 {{ errorMessage }}
                             </div>
 
                             <button type="submit" :disabled="loading"
-                                class="w-full rounded-2xl bg-yellow-400 py-3.5 text-sm font-semibold text-slate-900 transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-70">
+                                class="w-full rounded-2xl bg-yellow-400 py-3.5 text-sm font-semibold text-slate-900 transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-70 shadow-md shadow-yellow-400/20">
                                 {{ loading ? 'Sedang memproses...' : 'Masuk ke MediFinder' }}
                             </button>
                         </form>
@@ -305,20 +305,20 @@ onMounted(() => {
                             <div id="google-buttonDiv" class="flex justify-center transition-all duration-200 hover:scale-[1.01]"></div>
                         </div>
 
-                        <div class="mt-6 rounded-2xl bg-slate-50 px-4 py-4 text-sm text-slate-500">
+                        <div class="mt-6 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-transparent dark:border-slate-800 px-4 py-4 text-sm text-slate-500 dark:text-slate-400 text-center">
                             Belum punya akun?
-                            <NuxtLink to="/register" class="font-semibold text-[#0f766e]">
+                            <NuxtLink to="/register" class="font-semibold text-[#0f766e] dark:text-emerald-400 ml-1 hover:underline">
                                 Daftar sekarang
                             </NuxtLink>
                         </div>
 
                         <NuxtLink to="/"
-                            class="mt-5 block text-center text-sm font-medium text-slate-500 transition hover:text-slate-700">
+                            class="mt-5 block text-center text-sm font-medium text-slate-500 dark:text-slate-400 transition hover:text-slate-700 dark:hover:text-slate-200">
                             Kembali ke beranda
                         </NuxtLink>
 
                         <p v-if="errorMessage.includes('apotek')" class="mt-3 text-center text-sm">
-                            <NuxtLink to="/admin/login" class="font-semibold text-[#0f766e]">
+                            <NuxtLink to="/admin/login" class="font-semibold text-[#0f766e] dark:text-emerald-400">
                                 Gunakan login apotek
                             </NuxtLink>
                         </p>
@@ -327,20 +327,20 @@ onMounted(() => {
             </div>
         </div>
 
-        <div v-if="forgotOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4">
-            <div class="w-full max-w-md rounded-[30px] border border-white/70 bg-white p-6 shadow-[0_30px_90px_rgba(15,23,42,0.18)] sm:p-7">
+        <div v-if="forgotOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm px-4">
+            <div class="w-full max-w-md rounded-[30px] border border-white/70 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-[0_30px_90px_rgba(15,23,42,0.18)] dark:shadow-none sm:p-7">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[#0f766e]/70">
+                        <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[#0f766e]/70 dark:text-emerald-400">
                             Bantuan Login
                         </p>
-                        <h3 class="mt-2 text-2xl font-semibold text-slate-900">
+                        <h3 class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">
                             {{ forgotStep === 1 ? 'Reset password' : 'Atur password baru' }}
                         </h3>
                     </div>
 
                     <button @click="closeForgotModal"
-                        class="rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
+                        class="rounded-full p-2 text-slate-400 transition hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -349,30 +349,30 @@ onMounted(() => {
                 </div>
 
                 <div v-if="forgotStep === 1" class="mt-6">
-                    <p class="text-sm leading-6 text-slate-500">
+                    <p class="text-sm leading-6 text-slate-500 dark:text-slate-400">
                         Masukkan email akun kamu yang terdaftar. Kami akan kirim link untuk atur password baru.
                     </p>
 
                     <input v-model="forgotEmail" type="email" placeholder="Masukkan email kamu"
-                        class="mt-5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100" />
+                        class="mt-5 w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition focus:border-[#0f766e] dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-950/40" />
                 </div>
 
                 <div v-if="forgotStep === 2" class="mt-6">
-                    <p class="text-sm leading-6 text-slate-500">
+                    <p class="text-sm leading-6 text-slate-500 dark:text-slate-400">
                         Buat password baru yang lebih aman, lalu gunakan untuk login kembali.
                     </p>
 
                     <input v-model="newPassword" type="password" placeholder="Masukkan password baru"
-                        class="mt-5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100" />
+                        class="mt-5 w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition focus:border-[#0f766e] dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-950/40" />
                 </div>
 
                 <div v-if="forgotErrorMessage"
-                    class="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                    class="mt-4 rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 px-4 py-3 text-sm text-rose-700 dark:text-rose-400">
                     {{ forgotErrorMessage }}
                 </div>
 
                 <div v-if="forgotSuccessMessage"
-                    class="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                    class="mt-4 rounded-2xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/40 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-400">
                     {{ forgotSuccessMessage }}
                 </div>
 

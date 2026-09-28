@@ -47,7 +47,7 @@
     </div>
   </section>
 
-  <section id="about-section" class="about-section relative overflow-hidden bg-[linear-gradient(180deg,#ffffff_0%,#f3fbf8_100%)] py-24">
+  <section id="about-section" class="about-section relative overflow-hidden bg-[linear-gradient(180deg,#ffffff_0%,#f3fbf8_100%)] dark:bg-[linear-gradient(180deg,#0f172a_0%,#020617_100%)] py-24 transition-colors duration-300">
     <div
       class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.1),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(250,204,21,0.08),_transparent_28%)]">
     </div>
@@ -57,19 +57,19 @@
       <!-- LEFT CONTENT -->
       <div>
         <span
-          class="about-item inline-flex rounded-full bg-[#0f766e]/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.22em] text-[#0f766e]">
+          class="about-item inline-flex rounded-full bg-[#0f766e]/10 dark:bg-emerald-950/60 px-4 py-2 text-sm font-semibold uppercase tracking-[0.22em] text-[#0f766e] dark:text-emerald-400">
           Tentang Medifinder
         </span>
 
-        <h2 class="about-item mt-6 text-3xl md:text-5xl font-bold text-gray-900 leading-tight">
+        <h2 class="about-item mt-6 text-3xl md:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
           Platform Khusus <br />
-          <span class="text-[#0f766e]">
+          <span class="text-[#0f766e] dark:text-emerald-400">
             Untuk Pencarian <br />
             Apotek Online
           </span>
         </h2>
 
-        <p class="about-item mt-6 max-w-xl text-gray-600 leading-8">
+        <p class="about-item mt-6 max-w-xl text-gray-600 dark:text-slate-300 leading-8">
           Unduh aplikasi MediFinder dan temukan kemudahan akses ke lebih dari
           50.000 produk kesehatan...
         </p>
@@ -77,45 +77,45 @@
         <!-- FEATURES -->
         <div class="mt-10 grid sm:grid-cols-2 gap-4">
           <div
-            class="about-item flex items-center gap-4 rounded-2xl border border-slate-200/70 bg-white/80 px-4 py-4 shadow-[0_14px_40px_rgba(15,23,42,0.05)] backdrop-blur">
+            class="about-item flex items-center gap-4 rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 px-4 py-4 shadow-[0_14px_40px_rgba(15,23,42,0.05)] backdrop-blur transition-colors">
 
-            <span class="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#0f766e]/10 text-[#0f766e]">
+            <span class="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#0f766e]/10 dark:bg-emerald-950/60 text-[#0f766e] dark:text-emerald-400">
               ✓
             </span>
-            <span class="text-gray-700 font-medium">
+            <span class="text-gray-700 dark:text-slate-200 font-medium">
               Pencarian apotek fleksibel
             </span>
           </div>
 
           <div
-            class="about-item flex items-center gap-4 rounded-2xl border border-slate-200/70 bg-white/80 px-4 py-4 shadow-[0_14px_40px_rgba(15,23,42,0.05)] backdrop-blur">
+            class="about-item flex items-center gap-4 rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 px-4 py-4 shadow-[0_14px_40px_rgba(15,23,42,0.05)] backdrop-blur transition-colors">
 
-            <span class="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#0f766e]/10 text-[#0f766e]">
+            <span class="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#0f766e]/10 dark:bg-emerald-950/60 text-[#0f766e] dark:text-emerald-400">
               ✓
             </span>
-            <span class="text-gray-700 font-medium">
+            <span class="text-gray-700 dark:text-slate-200 font-medium">
               Konsultasi online
             </span>
           </div>
 
           <div
-            class="about-item flex items-center gap-4 rounded-2xl border border-slate-200/70 bg-white/80 px-4 py-4 shadow-[0_14px_40px_rgba(15,23,42,0.05)] backdrop-blur">
+            class="about-item flex items-center gap-4 rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 px-4 py-4 shadow-[0_14px_40px_rgba(15,23,42,0.05)] backdrop-blur transition-colors">
 
-            <span class="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#0f766e]/10 text-[#0f766e]">
+            <span class="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#0f766e]/10 dark:bg-emerald-950/60 text-[#0f766e] dark:text-emerald-400">
               ✓
             </span>
-            <span class="text-gray-700 font-medium">
+            <span class="text-gray-700 dark:text-slate-200 font-medium">
               Beli obat dari rumah
             </span>
           </div>
 
           <div
-            class="about-item flex items-center gap-4 rounded-2xl border border-slate-200/70 bg-white/80 px-4 py-4 shadow-[0_14px_40px_rgba(15,23,42,0.05)] backdrop-blur">
+            class="about-item flex items-center gap-4 rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 px-4 py-4 shadow-[0_14px_40px_rgba(15,23,42,0.05)] backdrop-blur transition-colors">
 
-            <span class="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#0f766e]/10 text-[#0f766e]">
+            <span class="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#0f766e]/10 dark:bg-emerald-950/60 text-[#0f766e] dark:text-emerald-400">
               ✓
             </span>
-            <span class="text-gray-700 font-medium">
+            <span class="text-gray-700 dark:text-slate-200 font-medium">
               Pilih apotek favorit
             </span>
           </div>
@@ -123,33 +123,33 @@
       </div>
 
       <div
-        class="rounded-[32px] border border-slate-200/70 bg-white/85 p-5 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur">
+        class="rounded-[32px] border border-slate-200/70 dark:border-slate-800 bg-white/85 dark:bg-slate-900/85 p-5 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur transition-colors">
         <div class="mb-4 flex items-center justify-between gap-3">
           <div>
-            <h3 class="text-lg font-semibold text-gray-900">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
               Lokasi Anda
             </h3>
-            <p class="mt-1 text-sm text-slate-500">
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Pilih titik lokasi untuk menampilkan apotek yang paling relevan.
             </p>
           </div>
 
-          <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+          <span class="rounded-full bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
             Live area
           </span>
         </div>
 
-        <div class="overflow-hidden rounded-[28px] border border-slate-200">
+        <div class="overflow-hidden rounded-[28px] border border-slate-200 dark:border-slate-700">
           <ClientOnly>
             <UserMap @location="handleLocation" />
           </ClientOnly>
         </div>
 
-        <div class="mt-4 rounded-2xl bg-[#0f766e]/6 px-4 py-3">
-          <p class="text-xs uppercase tracking-[0.16em] text-[#0f766e]/70">
+        <div class="mt-4 rounded-2xl bg-[#0f766e]/6 dark:bg-emerald-950/40 px-4 py-3">
+          <p class="text-xs uppercase tracking-[0.16em] text-[#0f766e]/70 dark:text-emerald-400/80">
             Lokasi terdeteksi
           </p>
-          <p class="mt-1 text-sm font-semibold text-[#0f766e]">
+          <p class="mt-1 text-sm font-semibold text-[#0f766e] dark:text-emerald-400">
             {{ userLocation }}
           </p>
         </div>
@@ -158,52 +158,51 @@
     </div>
   </section>
 
-  <section class="pharmacy-section relative overflow-hidden bg-[#eef8f4] py-24">
+  <section class="pharmacy-section relative overflow-hidden bg-[#eef8f4] dark:bg-slate-950 py-24 transition-colors duration-300">
     <div
-      class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(15,118,110,0.11),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(255,255,255,0.65),_transparent_35%)]">
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(15,118,110,0.11),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(255,255,255,0.65),_transparent_35%)] dark:bg-[radial-gradient(circle_at_top_right,_rgba(15,118,110,0.15),_transparent_25%)]">
     </div>
     <div class="relative max-w-7xl mx-auto px-6">
 
       <!-- TITLE -->
-      <div class="pharmacy-item mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div class="pharmacy-header mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <span
-            class="inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold uppercase tracking-[0.2em] text-[#0f766e] shadow-sm">
+            class="inline-flex rounded-full bg-white dark:bg-slate-900 border border-transparent dark:border-slate-800 px-4 py-2 text-sm font-semibold uppercase tracking-[0.2em] text-[#0f766e] dark:text-emerald-400 shadow-sm">
             Apotek Terdekat
           </span>
-          <h2 class="mt-5 text-2xl md:text-4xl font-bold leading-tight text-gray-900">
+          <h2 class="mt-5 text-2xl md:text-4xl font-bold leading-tight text-gray-900 dark:text-white">
             Daftar Apotek di Wilayah
-            <span class="block text-[#0f766e]">
+            <span class="block text-[#0f766e] dark:text-emerald-400">
               {{ userLocation }}
             </span>
           </h2>
         </div>
 
         <div
-          class="rounded-[24px] border border-white/70 bg-white/80 px-5 py-4 shadow-[0_18px_40px_rgba(15,23,42,0.06)] backdrop-blur">
-          <p class="text-xs uppercase tracking-[0.16em] text-slate-400">
+          class="rounded-[24px] border border-white/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 px-5 py-4 shadow-[0_18px_40px_rgba(15,23,42,0.06)] backdrop-blur transition-colors">
+          <p class="text-xs uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
             Hasil ditemukan
           </p>
-          <p class="mt-2 text-2xl font-semibold text-slate-900">
+          <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">
             {{ apoteks.length }}
           </p>
-          <p class="mt-1 text-sm text-slate-500">
+          <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
             apotek aktif di sekitar lokasi
           </p>
         </div>
       </div>
 
+      <!-- EMPTY STATE -->
+      <div v-if="apoteks.length === 0"
+        class="rounded-[32px] border border-dashed border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 py-14 text-center text-gray-400 dark:text-slate-500 shadow-sm">
+        Tidak ada apotek terdekat
+      </div>
 
-      <!-- GRID -->
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-
-        <div v-if="apoteks.length === 0"
-          class="col-span-full rounded-[32px] border border-dashed border-slate-300 bg-white/80 py-14 text-center text-gray-400 shadow-sm">
-          Tidak ada apotek terdekat 😢
-        </div>
-
+      <!-- CARDS GRID -->
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div v-for="apotek in apoteks" :key="apotek.id"
-          class="group flex flex-col overflow-hidden rounded-[28px] border border-white/70 bg-white/90 shadow-[0_22px_60px_rgba(15,23,42,0.08)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_28px_80px_rgba(15,23,42,0.14)]">
+          class="pharmacy-card group flex flex-col overflow-hidden rounded-[28px] border border-white/70 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 shadow-[0_22px_60px_rgba(15,23,42,0.08)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_28px_80px_rgba(15,23,42,0.14)]">
 
           <!-- IMAGE -->
           <div class="relative overflow-hidden">
@@ -213,7 +212,7 @@
 
             <div class="absolute left-4 top-4">
               <span class="rounded-full px-3 py-1 text-xs font-semibold backdrop-blur"
-                :class="apotek.jam_buka ? 'bg-emerald-100/95 text-emerald-700' : 'bg-rose-100/95 text-rose-700'">
+                :class="apotek.jam_buka ? 'bg-emerald-100/95 text-emerald-700 dark:bg-emerald-950/90 dark:text-emerald-300' : 'bg-rose-100/95 text-rose-700 dark:bg-rose-950/90 dark:text-rose-300'">
                 {{ apotek.jam_buka ? 'Buka' : 'Tutup' }}
               </span>
             </div>
@@ -223,30 +222,30 @@
           <div class="flex flex-1 flex-col p-5">
 
             <!-- NAMA -->
-            <h3 class="text-lg font-semibold text-gray-900">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
               {{ apotek.nama }}
             </h3>
 
             <!-- ALAMAT -->
-            <p class="mt-2 min-h-[48px] text-sm leading-6 text-gray-500">
+            <p class="mt-2 min-h-[48px] text-sm leading-6 text-gray-500 dark:text-slate-400">
               {{ apotek.alamat }}
             </p>
 
             <div class="mt-4 grid grid-cols-2 gap-3">
-              <div class="rounded-2xl bg-slate-50 px-3 py-3">
-                <p class="text-[11px] uppercase tracking-[0.14em] text-slate-400">
+              <div class="rounded-2xl bg-slate-50 dark:bg-slate-800/80 px-3 py-3 transition-colors">
+                <p class="text-[11px] uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">
                   Jam
                 </p>
-                <p class="mt-1 text-sm font-semibold text-slate-700">
+                <p class="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-200">
                   {{ apotek.jam_buka || '-' }} - {{ apotek.jam_tutup || '-' }}
                 </p>
               </div>
 
-              <div class="rounded-2xl bg-slate-50 px-3 py-3">
-                <p class="text-[11px] uppercase tracking-[0.14em] text-slate-400">
+              <div class="rounded-2xl bg-slate-50 dark:bg-slate-800/80 px-3 py-3 transition-colors">
+                <p class="text-[11px] uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">
                   Jarak
                 </p>
-                <p class="mt-1 text-sm font-semibold text-slate-700">
+                <p class="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-200">
                   {{ apotek.distance ? `${apotek.distance.toFixed(2)} km` : 'Tidak diketahui' }}
                 </p>
               </div>
@@ -254,7 +253,7 @@
 
             <!-- 🔥 BUTTON DETAIL -->
             <NuxtLink :to="`/detailApotek/${apotek.id}`"
-              class="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-yellow-400 px-4 py-3 text-sm font-semibold text-gray-900 transition hover:bg-yellow-300">
+              class="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-yellow-400 hover:bg-yellow-300 text-gray-900 px-4 py-3 text-sm font-semibold transition">
               Lihat Detail
               <span class="transition group-hover:translate-x-1">
                 →
@@ -263,20 +262,15 @@
 
           </div>
         </div>
-
       </div>
 
     </div>
   </section>
-
-
-
-
 </template>
 
 
 <script setup lang="ts">
-import { onMounted, nextTick } from 'vue'
+import { onMounted, nextTick, watch } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -305,7 +299,28 @@ const { getLocationName } = useLocation()
 // MAIN
 // ========================
 
+const animateCards = () => {
+  nextTick(() => {
+    const cards = gsap.utils.toArray('.pharmacy-card')
+    if (!cards.length) return
+    gsap.fromTo(cards,
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        stagger: 0.1,
+        ease: 'power2.out',
+        clearProps: 'all'
+      }
+    )
+    ScrollTrigger.refresh()
+  })
+}
 
+watch(apoteks, () => {
+  animateCards()
+}, { deep: true })
 
 onMounted(async () => {
   await nextTick()
@@ -323,7 +338,7 @@ onMounted(async () => {
 
 
   // ========================
-  // ANIMASI (TIDAK DIUBAH)
+  // ANIMASI
   // ========================
 
   /* HERO */
@@ -333,6 +348,7 @@ onMounted(async () => {
     duration: 1,
     stagger: 0.2,
     ease: 'power3.out',
+    clearProps: 'all'
   })
 
   /* ABOUT */
@@ -340,29 +356,31 @@ onMounted(async () => {
     scrollTrigger: {
       trigger: '.about-section',
       start: 'top 75%',
+      once: true
     },
     opacity: 0,
     y: 40,
     duration: 0.8,
     stagger: 0.15,
     ease: 'power3.out',
+    clearProps: 'all'
   })
 
-  /* PHARMACY */
-  const cards = gsap.utils.toArray('.pharmacy-item')
-
-  gsap.from(cards, {
+  /* PHARMACY HEADER */
+  gsap.from('.pharmacy-header', {
     scrollTrigger: {
       trigger: '.pharmacy-section',
       start: 'top 85%',
+      once: true
     },
     opacity: 0,
-    y: 60,
-    duration: 0.8,
-    stagger: 0.2,
+    y: 35,
+    duration: 0.7,
     ease: 'power3.out',
+    clearProps: 'all'
   })
 
+  animateCards()
   ScrollTrigger.refresh()
 })
 

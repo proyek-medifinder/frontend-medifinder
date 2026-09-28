@@ -126,7 +126,7 @@ export const useApotek = () => {
         loading,
         fetchApotek,
         updateApotek,
-        photoFile,      // 🔥 WAJIB ADA
-        uploadPhoto     // 🔥 WAJIB ADA
+        photoFile,     
+        uploadPhoto     
     }
 }

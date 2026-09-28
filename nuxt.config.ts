@@ -5,6 +5,13 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxt/fonts', '@nuxt/a11y', '@nuxt/image', '@nuxt/ui'],
 
+  colorMode: {
+    preference: 'dark',
+    fallback: 'dark',
+    classSuffix: '',
+    storageKey: 'medifinder_theme'
+  },
+
   fonts: {
     families: [
       {
@@ -23,6 +30,11 @@ export default defineNuxtConfig({
     }
   },
 
+  // runtimeConfig: {
+  //   public: {
+  //     apiBase: 'http://localhost:8000'
+  //   }
+  // }
   runtimeConfig: {
     public: {
       apiBase: 'https://medifinder-backend-production.up.railway.app'
