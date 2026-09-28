@@ -593,9 +593,12 @@ const currentTimeMinutes = computed(() => {
     return now.getHours() * 60 + now.getMinutes()
 })
 
-const toMinutes = (time?: string | null) => {
+const toMinutes = (time?: string | null): number | null => {
     if (!time) return null
-    const [hours, minutes] = time.slice(0, 5).split(':').map(Number)
+    const parts = time.slice(0, 5).split(':')
+    if (parts.length < 2) return null
+    const hours = Number(parts[0])
+    const minutes = Number(parts[1])
     if (Number.isNaN(hours) || Number.isNaN(minutes)) return null
     return hours * 60 + minutes
 }
@@ -605,7 +608,11 @@ const apotekStatusLabel = computed(() => {
     const closeMinutes = toMinutes(apotekProfile.value?.jam_tutup)
 
     if (openMinutes === null || closeMinutes === null) return 'Jadwal belum diatur'
-    return currentTimeMinutes.value >= openMinutes && currentTimeMinutes.value <= closeMinutes ? 'Buka' : 'Tutup'
+    if (openMinutes === closeMinutes) return 'Buka'
+    if (openMinutes < closeMinutes) {
+        return currentTimeMinutes.value >= openMinutes && currentTimeMinutes.value <= closeMinutes ? 'Buka' : 'Tutup'
+    }
+    return currentTimeMinutes.value >= openMinutes || currentTimeMinutes.value <= closeMinutes ? 'Buka' : 'Tutup'
 })
 
 const apotekStatusBadgeClass = computed(() => {

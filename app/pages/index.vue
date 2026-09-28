@@ -211,9 +211,10 @@
             <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent"></div>
 
             <div class="absolute left-4 top-4">
-              <span class="rounded-full px-3 py-1 text-xs font-semibold backdrop-blur"
-                :class="apotek.jam_buka ? 'bg-emerald-100/95 text-emerald-700 dark:bg-emerald-950/90 dark:text-emerald-300' : 'bg-rose-100/95 text-rose-700 dark:bg-rose-950/90 dark:text-rose-300'">
-                {{ apotek.jam_buka ? 'Buka' : 'Tutup' }}
+              <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold backdrop-blur shadow-xs"
+                :class="isOpen(apotek) ? 'bg-emerald-100/95 text-emerald-700 dark:bg-emerald-950/90 dark:text-emerald-300' : 'bg-rose-100/95 text-rose-700 dark:bg-rose-950/90 dark:text-rose-300'">
+                <span class="w-1.5 h-1.5 rounded-full" :class="isOpen(apotek) ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'"></span>
+                {{ isOpen(apotek) ? 'Buka' : 'Tutup' }}
               </span>
             </div>
           </div>
@@ -237,7 +238,7 @@
                   Jam
                 </p>
                 <p class="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-200">
-                  {{ apotek.jam_buka || '-' }} - {{ apotek.jam_tutup || '-' }}
+                  {{ formatHour(apotek.jam_buka) }} - {{ formatHour(apotek.jam_tutup) }}
                 </p>
               </div>
 
@@ -421,5 +422,47 @@ const getImage = (url: string | null) => {
 
   // 🔥 kalau path lokal lama
   return `${config.public.apiBase}${url}`
+}
+
+const formatHour = (timeStr?: string | null) => {
+  if (!timeStr || timeStr.trim() === '') return '-'
+  if (timeStr.length >= 5) {
+    return timeStr.slice(0, 5)
+  }
+  return timeStr
+}
+
+const parseTimeToMinutes = (timeStr?: string | null): number | null => {
+  if (!timeStr) return null
+  const parts = String(timeStr).slice(0, 5).split(':')
+  if (parts.length < 2) return null
+  const h = Number(parts[0])
+  const m = Number(parts[1])
+  if (Number.isNaN(h) || Number.isNaN(m)) return null
+  return h * 60 + m
+}
+
+const isOpen = (apotek: any) => {
+  if (!apotek?.jam_buka || !apotek?.jam_tutup) return true // Jika tidak diatur, anggap 24 jam
+
+  const openMinutes = parseTimeToMinutes(apotek.jam_buka)
+  const closeMinutes = parseTimeToMinutes(apotek.jam_tutup)
+
+  if (openMinutes === null || closeMinutes === null) {
+    return true
+  }
+
+  if (openMinutes === closeMinutes) return true
+
+  const now = new Date()
+  const currentMinutes = now.getHours() * 60 + now.getMinutes()
+
+  // Jam operasional biasa (misal 08:00 - 21:00)
+  if (openMinutes < closeMinutes) {
+    return currentMinutes >= openMinutes && currentMinutes <= closeMinutes
+  }
+
+  // Jam operasional lewat tengah malam (misal 18:00 - 02:00)
+  return currentMinutes >= openMinutes || currentMinutes <= closeMinutes
 }
 </script>

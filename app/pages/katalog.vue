@@ -18,17 +18,27 @@ const resultApotek = ref<any[]>([])
 
 const totalOpenApotek = computed(() => resultApotek.value.filter(item => isOpen(item)).length)
 
+const parseTimeToMinutes = (timeStr?: string | null): number | null => {
+    if (!timeStr) return null
+    const parts = String(timeStr).slice(0, 5).split(':')
+    if (parts.length < 2) return null
+    const h = Number(parts[0])
+    const m = Number(parts[1])
+    if (Number.isNaN(h) || Number.isNaN(m)) return null
+    return h * 60 + m
+}
+
 const isOpen = (apotek: any) => {
     if (!apotek.jam_buka || !apotek.jam_tutup) return false
 
+    const openTime = parseTimeToMinutes(apotek.jam_buka)
+    const closeTime = parseTimeToMinutes(apotek.jam_tutup)
+
+    if (openTime === null || closeTime === null) return false
+    if (openTime === closeTime) return true
+
     const now = new Date()
     const current = now.getHours() * 60 + now.getMinutes()
-
-    const [openH, openM] = apotek.jam_buka.split(':').map(Number)
-    const [closeH, closeM] = apotek.jam_tutup.split(':').map(Number)
-
-    const openTime = openH * 60 + openM
-    const closeTime = closeH * 60 + closeM
 
     if (closeTime < openTime) {
         return current >= openTime || current <= closeTime

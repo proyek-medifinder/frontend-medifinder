@@ -223,7 +223,7 @@
                       <!-- ⏰ INFORMASI STATUS BUKA / TUTUP -->
                       <div class="flex items-center gap-1.5 my-1.5">
                         <span 
-                          v-if="apotek.is_open" 
+                          v-if="isPharmacyOpen(apotek)" 
                           class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100/70 dark:bg-emerald-950/70 px-2 py-0.5 rounded-full"
                         >
                           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -450,6 +450,40 @@ const handleSendMessage = async () => {
 
   await sendMessage(text)
   scrollToBottom()
+}
+
+const parseTimeToMinutes = (timeStr?: string | null): number | null => {
+  if (!timeStr || timeStr === '-') return null
+  const parts = String(timeStr).slice(0, 5).split(':')
+  if (parts.length < 2) return null
+  const h = Number(parts[0])
+  const m = Number(parts[1])
+  if (Number.isNaN(h) || Number.isNaN(m)) return null
+  return h * 60 + m
+}
+
+const isPharmacyOpen = (apotek: any) => {
+  if (!apotek?.jam_buka || !apotek?.jam_tutup || apotek.jam_buka === '-' || apotek.jam_tutup === '-') {
+    return apotek?.is_open ?? true
+  }
+
+  const openMinutes = parseTimeToMinutes(apotek.jam_buka)
+  const closeMinutes = parseTimeToMinutes(apotek.jam_tutup)
+
+  if (openMinutes === null || closeMinutes === null) {
+    return apotek?.is_open ?? true
+  }
+
+  if (openMinutes === closeMinutes) return true
+
+  const now = new Date()
+  const currentMinutes = now.getHours() * 60 + now.getMinutes()
+
+  if (openMinutes < closeMinutes) {
+    return currentMinutes >= openMinutes && currentMinutes <= closeMinutes
+  }
+
+  return currentMinutes >= openMinutes || currentMinutes <= closeMinutes
 }
 </script>
 
