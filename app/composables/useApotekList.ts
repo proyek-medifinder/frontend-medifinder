@@ -9,6 +9,8 @@ export const useApotekList = () => {
         item?.photo_url ||
         item?.PhotoURL ||
         item?.photoUrl ||
+        item?.url ||
+        item?.Url ||
         item?.secure_url ||
         item?.cloudinary_url ||
         item?.cloudinaryUrl ||

@@ -12,6 +12,11 @@ export const useApotek = () => {
         data?.photo_url ||
         data?.PhotoURL ||
         data?.photoUrl ||
+        data?.url ||
+        data?.Url ||
+        data?.image_url ||
+        data?.imageUrl ||
+        data?.secure_url ||
         ''
 
     const form = useState<any>('apotek_form', () => ({
@@ -66,7 +71,7 @@ export const useApotek = () => {
             body: formData
         })
 
-        const uploadedPath = getPhotoPath(res?.data || res)
+        const uploadedPath = getPhotoPath(res?.data || res) || res?.url || res?.photo_url || ''
         if (uploadedPath) {
             form.value.photo_url = uploadedPath
             form.value.PhotoURL = uploadedPath
