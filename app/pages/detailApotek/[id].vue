@@ -134,13 +134,44 @@ const infoCards = computed(() => {
     ]
 })
 
+const getObatImage = (item: any) =>
+    getImage(
+        item?.image_url ||
+        item?.ImageURL ||
+        item?.imageUrl ||
+        item?.photo_url ||
+        item?.PhotoURL ||
+        item?.foto ||
+        null
+    )
+
+const obatPage = ref(1)
+const obatPerPage = 5
+
+const totalObatPages = computed(() => {
+    const total = apotek.value?.obats?.length || 0
+    return Math.max(1, Math.ceil(total / obatPerPage))
+})
+
+const paginatedObats = computed(() => {
+    const list = apotek.value?.obats || []
+    const start = (obatPage.value - 1) * obatPerPage
+    return list.slice(start, start + obatPerPage)
+})
+
+const setObatPage = (page: number) => {
+    if (page >= 1 && page <= totalObatPages.value) {
+        obatPage.value = page
+    }
+}
+
 const stockSummary = computed(() => {
     const items = apotek.value?.obats || []
 
     return {
         total: items.length,
-        low: items.filter((item: any) => item.Stok <= 10).length,
-        safe: items.filter((item: any) => item.Stok > 10).length
+        low: items.filter((item: any) => Number(item.Stok ?? item.stok ?? 0) <= 10).length,
+        safe: items.filter((item: any) => Number(item.Stok ?? item.stok ?? 0) > 10).length
     }
 })
 
@@ -420,39 +451,89 @@ useHead({
                         </div>
 
                         <div v-else class="mt-6 space-y-4">
-                            <article v-for="obat in apotek.obats" :key="obat.ID"
-                                class="rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 p-4 transition hover:border-emerald-200 dark:hover:border-emerald-500/40 hover:bg-white dark:hover:bg-slate-800/80">
-                                <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                                    <div>
-                                        <div class="flex flex-wrap items-center gap-3">
-                                            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
-                                                {{ obat.Nama }}
-                                            </h3>
-                                            <span class="rounded-full px-3 py-1 text-xs font-semibold"
-                                                :class="obat.Stok <= 10 ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400' : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400'">
-                                                {{ obat.Stok <= 10 ? 'Stok terbatas' : 'Stok aman' }}
-                                            </span>
+                            <article v-for="obat in paginatedObats" :key="obat.id || obat.ID"
+                                class="rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 p-4.5 transition hover:border-emerald-200 dark:hover:border-emerald-500/40 hover:bg-white dark:hover:bg-slate-800/80 shadow-sm">
+                                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                    <div class="flex items-start gap-4">
+                                        <!-- FOTO OBAT (CLOUDINARY) -->
+                                        <div class="h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 flex items-center justify-center shadow-xs">
+                                            <img v-if="getObatImage(obat)" :src="getObatImage(obat)" :alt="obat.Nama || obat.nama" class="h-full w-full object-cover" />
+                                            <div v-else class="flex flex-col items-center justify-center text-slate-300 dark:text-slate-600">
+                                                <Icon icon="solar:pills-3-bold-duotone" class="h-8 w-8" />
+                                            </div>
                                         </div>
 
-                                        <div class="mt-3 flex flex-wrap gap-3 text-sm text-slate-500 dark:text-slate-400">
-                                            <span class="inline-flex items-center gap-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 px-3 py-1.5 text-slate-700 dark:text-slate-300">
-                                                <Icon icon="solar:wallet-money-bold-duotone" class="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                                                Rp {{ obat.Harga.toLocaleString() }}
-                                            </span>
-                                            <span class="inline-flex items-center gap-2 rounded-full bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 px-3 py-1.5 text-slate-700 dark:text-slate-300">
-                                                <Icon icon="solar:box-bold-duotone" class="h-4 w-4 text-amber-600 dark:text-amber-400" />
-                                                Stok {{ obat.Stok }}
-                                            </span>
+                                        <!-- DETAIL OBAT & DESKRIPSI -->
+                                        <div class="flex-1">
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <h3 class="text-base md:text-lg font-semibold text-slate-900 dark:text-white">
+                                                    {{ obat.Nama || obat.nama }}
+                                                </h3>
+                                                <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                                                    :class="Number(obat.Stok ?? obat.stok) <= 10 ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400' : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400'">
+                                                    {{ Number(obat.Stok ?? obat.stok) <= 10 ? 'Stok terbatas' : 'Stok aman' }}
+                                                </span>
+                                            </div>
+
+                                            <!-- DESKRIPSI OBAT -->
+                                            <p v-if="obat.Deskripsi || obat.deskripsi" class="mt-1 text-xs text-slate-500 dark:text-slate-400 line-clamp-2 max-w-xl">
+                                                {{ obat.Deskripsi || obat.deskripsi }}
+                                            </p>
+
+                                            <div class="mt-2.5 flex flex-wrap gap-2 text-xs md:text-sm text-slate-500 dark:text-slate-400">
+                                                <span class="inline-flex items-center gap-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 px-3 py-1 text-slate-700 dark:text-slate-300 font-medium">
+                                                    <Icon icon="solar:wallet-money-bold-duotone" class="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                                                    Rp {{ Number(obat.Harga ?? obat.harga).toLocaleString('id-ID') }}
+                                                </span>
+                                                <span class="inline-flex items-center gap-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 px-3 py-1 text-slate-700 dark:text-slate-300 font-medium">
+                                                    <Icon icon="solar:box-bold-duotone" class="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                                                    Stok {{ obat.Stok ?? obat.stok }}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
 
                                     <button @click="handleAddToCart(obat)"
-                                        class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95 shadow-md shadow-emerald-600/20">
-                                        <Icon icon="solar:cart-large-4-bold-duotone" class="h-5 w-5" />
-                                        Tambah ke keranjang
+                                        class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-4.5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 active:scale-95 shadow-md shadow-emerald-600/20 shrink-0 self-end sm:self-center">
+                                        <Icon icon="solar:cart-large-4-bold-duotone" class="h-4.5 w-4.5" />
+                                        <span>+ Keranjang</span>
                                     </button>
                                 </div>
                             </article>
+
+                            <!-- PAGINATION OBAT (5 per halaman) -->
+                            <div v-if="totalObatPages > 1" class="mt-6 flex flex-wrap items-center justify-between gap-3 pt-5 border-t border-slate-200/70 dark:border-slate-800">
+                                <p class="text-xs text-slate-500 dark:text-slate-400">
+                                    Halaman {{ obatPage }} dari {{ totalObatPages }} ({{ apotek.obats?.length || 0 }} total obat)
+                                </p>
+
+                                <div class="flex items-center gap-1.5">
+                                    <button
+                                        :disabled="obatPage <= 1"
+                                        @click="setObatPage(obatPage - 1)"
+                                        class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-xs">
+                                        <Icon icon="solar:alt-arrow-left-linear" class="h-3.5 w-3.5" />
+                                        Prev
+                                    </button>
+
+                                    <button
+                                        v-for="p in totalObatPages"
+                                        :key="p"
+                                        @click="setObatPage(p)"
+                                        class="w-8 h-8 rounded-xl text-xs font-semibold transition"
+                                        :class="p === obatPage ? 'bg-emerald-600 text-white shadow-sm' : 'border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'">
+                                        {{ p }}
+                                    </button>
+
+                                    <button
+                                        :disabled="obatPage >= totalObatPages"
+                                        @click="setObatPage(obatPage + 1)"
+                                        class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-xs">
+                                        Next
+                                        <Icon icon="solar:alt-arrow-right-linear" class="h-3.5 w-3.5" />
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

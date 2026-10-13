@@ -995,10 +995,11 @@ const fetchDashboardData = async () => {
 
             apotekProfile.value = apotekRes?.data || null
             apotekMedicines.value = (obatRes?.data || []).map((item: any) => ({
-                id: item.ID,
-                nama: item.Nama,
-                stok: Number(item.Stok || 0),
-                harga: Number(item.Harga || 0)
+                id: item.id || item.ID,
+                nama: item.nama || item.Nama,
+                stok: Number(item.stok ?? item.Stok ?? 0),
+                harga: Number(item.harga ?? item.Harga ?? 0),
+                image_url: item.image_url || item.ImageURL || ''
             }))
         }
     } catch (err) {
