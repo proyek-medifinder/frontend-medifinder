@@ -85,28 +85,10 @@ const handleRegister = async () => {
                     <p class="mt-10 text-sm font-semibold uppercase tracking-[0.28em] text-emerald-100/80 dark:text-emerald-400">
                         Buat Akun Baru
                     </p>
-                    <h1 class="mt-5 max-w-xl text-4xl font-semibold leading-tight">
-                        Mulai pakai MediFinder untuk cari apotek, obat, dan kebutuhan kesehatan dengan lebih mudah.
-                    </h1>
-                    <p class="mt-5 max-w-lg text-sm leading-7 text-emerald-50/85 dark:text-slate-300">
-                        Sekali daftar, kamu bisa lanjut ke pencarian apotek terdekat, lihat detail produk, dan kelola aktivitas akunmu dengan lebih rapi.
-                    </p>
+                    <h1 class="mt-5 max-w-xl text-4xl font-semibold leading-tight">Mulai bersama MediFinder.</h1>
+                    <p class="mt-5 max-w-lg text-sm leading-7 text-emerald-50/85 dark:text-slate-300">Temukan obat dan apotek di sekitarmu.</p>
                 </div>
 
-                <div class="space-y-3">
-                    <div class="rounded-2xl bg-white/12 dark:bg-slate-900/60 border border-transparent dark:border-slate-800 px-4 py-4">
-                        <p class="text-sm font-semibold">Cari apotek dengan lebih cepat</p>
-                        <p class="mt-1 text-sm text-emerald-50/75 dark:text-slate-400">Akunmu membantu semua proses terasa lebih praktis.</p>
-                    </div>
-                    <div class="rounded-2xl bg-white/12 dark:bg-slate-900/60 border border-transparent dark:border-slate-800 px-4 py-4">
-                        <p class="text-sm font-semibold">Pantau kebutuhan keluarga dalam satu tempat</p>
-                        <p class="mt-1 text-sm text-emerald-50/75 dark:text-slate-400">Lebih mudah lanjutkan aktivitas kesehatan harianmu.</p>
-                    </div>
-                    <div class="rounded-2xl bg-white/12 dark:bg-slate-900/60 border border-transparent dark:border-slate-800 px-4 py-4">
-                        <p class="text-sm font-semibold">Masuk dan lanjut tanpa ribet</p>
-                        <p class="mt-1 text-sm text-emerald-50/75 dark:text-slate-400">Daftar sekali, lalu gunakan seluruh layanan MediFinder.</p>
-                    </div>
-                </div>
             </div>
 
             <div class="flex items-center justify-center p-5 sm:p-8 lg:p-10">
@@ -118,9 +100,7 @@ const handleRegister = async () => {
                         <h2 class="mt-3 text-3xl font-semibold text-slate-900 dark:text-white">
                             Daftar akun MediFinder
                         </h2>
-                        <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                            Isi data singkat di bawah ini untuk mulai memakai MediFinder.
-                        </p>
+                        <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">Buat akun untuk mulai menggunakan MediFinder.</p>
 
                         <form @submit.prevent="handleRegister" class="mt-8 space-y-5">
                             <div>

@@ -1,5 +1,5 @@
 <template>
-    <AppLoadingOverlay v-if="loading" label="Memuat admin apotek..." description="Daftar admin sedang diambil dari API." />
+    <AppLoadingOverlay v-if="loading" label="Memuat admin apotek..." />
 
     <div class="space-y-6">
         <section class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -10,9 +10,7 @@
                 <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-900">
                     Data Admin Apotek
                 </h1>
-                <p class="mt-2 text-sm text-slate-500">
-                    Pantau status akun admin apotek, aktivasi, dan penghapusan data dari satu tabel yang lebih rapi.
-                </p>
+                <p class="mt-2 text-sm text-slate-500">Kelola akun dan status admin apotek.</p>
             </div>
 
             <div class="rounded-3xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
@@ -44,9 +42,7 @@
                     <h2 class="font-semibold text-slate-800">
                         Daftar Admin
                     </h2>
-                    <p class="mt-1 text-sm text-slate-500">
-                        Kelola aktivasi dan suspend akun admin apotek dari tabel ini.
-                    </p>
+
                 </div>
 
                 <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">

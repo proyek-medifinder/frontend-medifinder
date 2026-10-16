@@ -158,7 +158,7 @@ const confirmDelete = async () => {
 </script>
 
 <template>
-    <AppLoadingOverlay v-if="loading" label="Memuat data obat..." description="Katalog obat sedang diambil dari API." />
+    <AppLoadingOverlay v-if="loading" label="Memuat data obat..." />
 
     <div class="space-y-6">
         <section class="grid gap-5 md:grid-cols-3">
@@ -279,7 +279,7 @@ const confirmDelete = async () => {
                         <div class="flex-1">
                             <input type="file" accept="image/*" @change="onFileSelected"
                                 class="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer" />
-                            <p class="text-[11px] text-slate-400 mt-1">Format: JPG, PNG, WEBP (Otomatis diupload ke Cloudinary)</p>
+                            <p class="text-[11px] text-slate-400 mt-1">Format: JPG, PNG, atau WEBP.</p>
                         </div>
                     </div>
                 </div>

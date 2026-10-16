@@ -114,7 +114,7 @@ onMounted(loadData)
 </script>
 
 <template>
-    <AppLoadingOverlay v-if="loading" label="Memuat transaksi..." description="Riwayat transaksi sedang diambil dari API." />
+    <AppLoadingOverlay v-if="loading" label="Memuat transaksi..." />
 
     <div class="space-y-6">
         <div v-if="showDetailModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 px-4">
@@ -122,7 +122,7 @@ onMounted(loadData)
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <h2 class="text-lg font-semibold">Detail Transaksi</h2>
-                        <p class="mt-1 text-sm text-slate-500">Ringkasan transaksi lengkap dari API.</p>
+
                     </div>
 
                     <button @click="showDetailModal = false" class="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600 hover:bg-slate-200">

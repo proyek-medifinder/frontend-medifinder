@@ -148,8 +148,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <AppLoadingOverlay v-if="loading" label="Memuat katalog..."
-        description="Apotek dan obat sedang diambil dari API." />
+    <AppLoadingOverlay v-if="loading" label="Memuat katalog..." />
 
     <div
         class="min-h-screen overflow-hidden bg-[linear-gradient(180deg,#f4fbf8_0%,#ffffff_32%,#f8fafc_100%)] dark:bg-[linear-gradient(180deg,#090d16_0%,#0f172a_35%,#020617_100%)] pb-24 pt-24 transition-colors duration-300">
@@ -158,238 +157,39 @@ onMounted(() => {
         </div>
 
         <section class="katalog-hero relative">
-            <div class="mx-auto max-w-6xl px-6 py-10 lg:px-8 lg:py-14">
-                <div
-                    class="overflow-hidden rounded-[34px] border border-white/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 px-7 py-8 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur sm:px-9 sm:py-10 transition-colors">
-                    <div class="grid gap-8 xl:grid-cols-[1.08fr_0.92fr] xl:items-center">
-                        <div>
-                            <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[#0f766e]/70 dark:text-emerald-400">
-                                Katalog Obat
-                            </p>
-                            <h1 class="mt-4 max-w-3xl text-4xl font-semibold leading-tight text-slate-900 dark:text-white sm:text-5xl">
-                                Cari obat yang kamu butuhkan, lalu temukan apotek terdekat yang menyediakannya.
-                            </h1>
-                            <p class="mt-5 max-w-2xl text-sm leading-7 text-slate-500 dark:text-slate-300 sm:text-base">
-                                MediFinder bantu kamu menyaring apotek yang relevan berdasarkan nama obat, supaya
-                                pencarian terasa lebih cepat dan tidak melelahkan.
-                            </p>
+            <header class="mx-auto max-w-6xl px-6 pb-8 pt-10 lg:px-8 lg:pb-10">
+                <h1 class="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Cari Obat</h1>
+                <p class="mt-3 max-w-xl text-sm leading-6 text-slate-500 dark:text-slate-400 sm:text-base">Temukan apotek yang menyediakan obat dalam radius 5 km dari lokasimu.</p>
+            </header>
+        </section>
 
-                            <div class="mt-7 flex flex-wrap gap-3">
-                                <div
-                                    class="rounded-full border border-emerald-100 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/60 px-4 py-2 text-sm font-medium text-emerald-700 dark:text-emerald-300">
-                                    Pencarian berbasis lokasi
-                                </div>
-                                <div
-                                    class="rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300">
-                                    Cek apotek yang masih aktif
-                                </div>
-                                <div
-                                    class="rounded-full border border-amber-100 dark:border-amber-900/50 bg-amber-50 dark:bg-amber-950/60 px-4 py-2 text-sm font-medium text-amber-700 dark:text-amber-300">
-                                    Lanjut lihat detail apotek
-                                </div>
-                            </div>
-                        </div>
-
-                        <div
-                            class="relative overflow-hidden rounded-[30px] border border-emerald-200/70 dark:border-emerald-800/50 bg-[linear-gradient(160deg,rgba(15,118,110,0.94),rgba(13,148,136,0.84))] p-6 text-white shadow-[0_24px_70px_rgba(15,118,110,0.2)]">
-                            <div class="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-white/10 blur-2xl"></div>
-                            <div class="absolute -bottom-12 left-8 h-32 w-32 rounded-full bg-yellow-300/15 blur-2xl">
-                            </div>
-
-                            <div class="relative">
-                                <p class="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
-                                    Ringkas & Praktis
-                                </p>
-                                <h2 class="mt-3 max-w-sm text-2xl font-semibold leading-tight">
-                                    Temukan stok obat lebih cepat tanpa perlu cek satu per satu.
-                                </h2>
-
-                                <div class="mt-6 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
-                                    <div class="rounded-2xl border border-white/15 bg-white/10 px-4 py-4 backdrop-blur">
-                                        <p class="text-xs uppercase tracking-[0.18em] text-white/65">
-                                            Fokus Pencarian
-                                        </p>
-                                        <p class="mt-2 text-lg font-semibold">
-                                            Obat & Apotek
-                                        </p>
-                                    </div>
-                                    <div class="rounded-2xl border border-white/15 bg-white/10 px-4 py-4 backdrop-blur">
-                                        <p class="text-xs uppercase tracking-[0.18em] text-white/65">
-                                            Hasil
-                                        </p>
-                                        <p class="mt-2 text-lg font-semibold">
-                                            Berdasarkan Lokasi
-                                        </p>
-                                    </div>
-                                    <div class="rounded-2xl border border-white/15 bg-white/10 px-4 py-4 backdrop-blur">
-                                        <p class="text-xs uppercase tracking-[0.18em] text-white/65">
-                                            Update
-                                        </p>
-                                        <p class="mt-2 text-lg font-semibold">
-                                            Data Apotek Aktif
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+        <section class="search-box relative">
+            <div class="mx-auto max-w-6xl px-6 lg:px-8">
+                <form class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 sm:p-6" @submit.prevent="searchObat">
+                    <label for="medicine-search" class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">Nama obat</label>
+                    <div class="flex flex-col gap-3 sm:flex-row">
+                        <input id="medicine-search" v-model="keyword" placeholder="Contoh: Paracetamol 500mg"
+                            class="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                            aria-describedby="medicine-search-hint" />
+                        <div class="flex gap-3">
+                            <button type="submit" :disabled="loading" class="flex-1 rounded-xl bg-[#0f766e] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#115e59] disabled:cursor-wait disabled:opacity-60 dark:bg-emerald-600 dark:hover:bg-emerald-500">
+                                {{ loading ? 'Mencari...' : 'Cari Obat' }}
+                            </button>
+                            <button type="button" @click="resetSearch" class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">Reset</button>
                         </div>
                     </div>
-                </div>
+                    <p id="medicine-search-hint" class="mt-3 text-xs leading-5 text-slate-500 dark:text-slate-400">Izinkan akses lokasi untuk mencari apotek terdekat.</p>
+                    <p v-if="searchMessage && !searched" role="alert" class="mt-4 text-sm text-rose-600 dark:text-rose-400">{{ searchMessage }}</p>
+                </form>
             </div>
         </section>
 
-        <section class="search-box relative mt-2">
-            <div class="mx-auto max-w-6xl px-6 lg:px-8">
-                <div
-                    class="rounded-[30px] border border-emerald-200/70 dark:border-slate-800 bg-[linear-gradient(135deg,rgba(16,185,129,0.12),rgba(255,255,255,0.95))] dark:bg-[linear-gradient(135deg,rgba(16,185,129,0.12),rgba(15,23,42,0.95))] p-5 shadow-[0_18px_50px_rgba(15,23,42,0.05)] backdrop-blur sm:p-6 transition-colors">
-                    <div class="grid gap-5 xl:grid-cols-[1fr_auto] xl:items-end">
-                        <div class="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
-                            <div class="flex-1">
-                                <label class="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">
-                                    Nama obat
-                                </label>
-                                <input v-model="keyword" placeholder="Contoh: Paracetamol 500mg"
-                                    class="w-full rounded-2xl border border-white dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-950"
-                                    @keyup.enter="searchObat" />
-                            </div>
-
-                            <div class="flex gap-3 lg:pt-0">
-                                <button @click="searchObat" :disabled="loading"
-                                    class="flex-1 rounded-2xl bg-[#0f766e] dark:bg-emerald-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#115e59] dark:hover:bg-emerald-500 disabled:cursor-not-allowed disabled:bg-[#0f766e]/70">
-                                    {{ loading ? 'Mencari...' : 'Tampilkan Hasil' }}
-                                </button>
-
-                                <button @click="resetSearch"
-                                    class="flex-1 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-6 py-3 text-sm font-semibold text-slate-600 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-700">
-                                    Reset
-                                </button>
-                            </div>
-                        </div>
-
-                        <div
-                            class="rounded-[24px] border border-white/70 dark:border-slate-800 bg-white/80 dark:bg-slate-800/80 px-4 py-4 text-sm text-slate-500 dark:text-slate-400 shadow-sm backdrop-blur xl:max-w-xs transition-colors">
-                            <p class="font-semibold text-slate-900 dark:text-slate-100">
-                                Tips pencarian
-                            </p>
-                            <p class="mt-2 leading-6 text-slate-600 dark:text-slate-300">
-                                Gunakan nama obat yang paling umum supaya hasil yang muncul lebih cepat dan lebih
-                                relevan.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 flex flex-wrap items-center gap-3 text-sm">
-                        <div class="rounded-full bg-white/80 dark:bg-slate-800/80 px-4 py-2 text-slate-600 dark:text-slate-300 shadow-sm">
-                            Hasil diprioritaskan dari apotek terdekat
-                        </div>
-                        <div class="rounded-full bg-white/80 dark:bg-slate-800/80 px-4 py-2 text-slate-600 dark:text-slate-300 shadow-sm">
-                            Cek detail apotek untuk info obat lebih lengkap
-                        </div>
-                    </div>
-
-                    <p v-if="searchMessage && !searched"
-                        class="mt-4 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200/50 dark:border-rose-900/50 px-4 py-3 text-sm text-rose-600 dark:text-rose-300">
-                        {{ searchMessage }}
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <section v-if="!searched" class="empty-state relative mt-14">
-            <div class="mx-auto max-w-6xl px-6 lg:px-8">
-                <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-                    <div
-                        class="rounded-[30px] border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)] sm:p-8 transition-colors">
-                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#0f766e]/70 dark:text-emerald-400">
-                            Mulai Dari Sini
-                        </p>
-                        <h2 class="mt-3 text-3xl font-semibold leading-tight text-slate-900 dark:text-white">
-                            Satu pencarian untuk bantu kamu menuju apotek yang paling relevan.
-                        </h2>
-                        <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-500 dark:text-slate-400 sm:text-base">
-                            Tulis nama obat, izinkan akses lokasi, lalu MediFinder akan membantu menyaring apotek
-                            terdekat yang kemungkinan menyediakan kebutuhanmu.
-                        </p>
-
-                        <div class="mt-8 grid gap-4 md:grid-cols-3">
-                            <div class="rounded-[24px] bg-slate-50 dark:bg-slate-800/80 px-5 py-5 transition-colors">
-                                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
-                                    Langkah 1
-                                </p>
-                                <h3 class="mt-3 text-lg font-semibold text-slate-900 dark:text-white">
-                                    Tulis nama obat
-                                </h3>
-                                <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                                    Cukup ketik nama yang paling familiar agar pencarian lebih mudah mengenali
-                                    kebutuhanmu.
-                                </p>
-                            </div>
-
-                            <div class="rounded-[24px] bg-slate-50 dark:bg-slate-800/80 px-5 py-5 transition-colors">
-                                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
-                                    Langkah 2
-                                </p>
-                                <h3 class="mt-3 text-lg font-semibold text-slate-900 dark:text-white">
-                                    Gunakan lokasi
-                                </h3>
-                                <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                                    Lokasi membantumu melihat apotek yang dekat, jadi proses mencari obat terasa lebih
-                                    praktis.
-                                </p>
-                            </div>
-
-                            <div class="rounded-[24px] bg-slate-50 dark:bg-slate-800/80 px-5 py-5 transition-colors">
-                                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
-                                    Langkah 3
-                                </p>
-                                <h3 class="mt-3 text-lg font-semibold text-slate-900 dark:text-white">
-                                    Pilih apotek terbaik
-                                </h3>
-                                <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                                    Buka halaman detail apotek untuk melihat informasi lebih lanjut sebelum datang atau
-                                    memesan.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div
-                        class="rounded-[30px] border border-emerald-100 dark:border-slate-800 bg-[linear-gradient(180deg,#ecfdf5_0%,#ffffff_100%)] dark:bg-[linear-gradient(180deg,rgba(16,185,129,0.1)_0%,rgba(15,23,42,0.9)_100%)] p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)] sm:p-7 transition-colors">
-                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#0f766e]/70 dark:text-emerald-400">
-                            Kenapa Nyaman
-                        </p>
-                        <div class="mt-5 space-y-4">
-                            <div class="rounded-2xl border border-transparent dark:border-slate-800 bg-white dark:bg-slate-800/90 px-5 py-4 shadow-sm transition-colors">
-                                <h3 class="text-base font-semibold text-slate-900 dark:text-white">
-                                    Cari apotek terdekat
-                                </h3>
-                                <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                                    Ketik nama obat yang kamu cari, lalu biarkan MediFinder menampilkan apotek yang
-                                    relevan di sekitarmu.
-                                </p>
-                            </div>
-
-                            <div class="rounded-2xl border border-transparent dark:border-slate-800 bg-white dark:bg-slate-800/90 px-5 py-4 shadow-sm transition-colors">
-                                <h3 class="text-base font-semibold text-slate-900 dark:text-white">
-                                    Lihat ketersediaan
-                                </h3>
-                                <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                                    Hasil pencarian membantu kamu menyaring apotek yang punya obat sesuai kebutuhanmu.
-                                </p>
-                            </div>
-
-                            <div class="rounded-2xl border border-transparent dark:border-slate-800 bg-white dark:bg-slate-800/90 px-5 py-4 shadow-sm transition-colors">
-                                <h3 class="text-base font-semibold text-slate-900 dark:text-white">
-                                    Data apotek aktif
-                                </h3>
-                                <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                                    Semua hasil difokuskan ke apotek yang bisa kamu lanjutkan cek detailnya dengan
-                                    cepat.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <section v-if="!searched" class="empty-state relative mx-auto max-w-6xl px-6 py-14 text-center lg:px-8">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mx-auto mb-4 h-9 w-9 text-emerald-600 dark:text-emerald-400">
+                <circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 5 5" stroke-linecap="round" />
+            </svg>
+            <h2 class="text-lg font-semibold text-slate-800 dark:text-slate-200">Obat apa yang kamu cari?</h2>
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">Masukkan nama obat untuk melihat apotek yang menyediakannya.</p>
         </section>
 
         <section v-if="searched" class="relative mt-14">
@@ -404,13 +204,10 @@ onMounted(() => {
                             <h2 class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">
                                 Apotek yang menyediakan: "{{ keyword }}"
                             </h2>
-                            <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                                Hasil ini disusun dari apotek terdekat yang punya kecocokan dengan kata kunci yang kamu
-                                cari.
-                            </p>
+
                         </div>
 
-                        <div class="grid gap-3 sm:grid-cols-3">
+                        <div class="grid gap-3 sm:grid-cols-2">
                             <div class="rounded-2xl bg-slate-50 dark:bg-slate-800/80 px-4 py-4 text-sm text-slate-600 dark:text-slate-300">
                                 <p class="text-xs uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
                                     Ditemukan
@@ -427,14 +224,7 @@ onMounted(() => {
                                     {{ totalOpenApotek }}
                                 </p>
                             </div>
-                            <div class="rounded-2xl bg-slate-50 dark:bg-slate-800/80 px-4 py-4 text-sm text-slate-600 dark:text-slate-300">
-                                <p class="text-xs uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
-                                    Kata Kunci
-                                </p>
-                                <p class="mt-2 line-clamp-1 text-base font-semibold text-slate-900 dark:text-white">
-                                    {{ keyword }}
-                                </p>
-                            </div>
+
                         </div>
                     </div>
                 </div>

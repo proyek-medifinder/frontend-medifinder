@@ -18,20 +18,20 @@ const config = useRuntimeConfig()
 const currentPhotoUrl = computed(() => {
     // Kalau lagi pilih foto baru (preview)
     if (preview.value) return preview.value
-    
+
     const photoPath = form.value?.photo_url || form.value?.PhotoURL
-    
+
     if (photoPath) {
         // 🔥 TAMBAHAN BARU: Kalau dari Cloudinary (udah ada http/https), langsung pakai aja!
         if (photoPath.startsWith('http://') || photoPath.startsWith('https://')) {
             return photoPath
         }
-        
+
         // Kalau format path lokal lama, baru ditambahin apiBase
         const slash = photoPath.startsWith('/') ? '' : '/'
         return config.public.apiBase + slash + photoPath
     }
-    
+
     return null
 })
 
@@ -143,7 +143,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <AppLoadingOverlay v-if="loading" label="Memuat profil apotek..." description="Data apotek sedang diambil dari API." />
+    <AppLoadingOverlay v-if="loading" label="Memuat profil apotek..." />
 
     <div class="space-y-6 pb-8">
         <div v-if="saveMessage" class="rounded-[24px] border px-5 py-4 shadow-sm" :class="saveState === 'success'
@@ -169,17 +169,8 @@ onBeforeUnmount(() => {
             class="overflow-hidden rounded-[32px] border border-white/60 bg-gradient-to-br from-[#0f766e] via-[#14967f] to-[#0e7490] px-7 py-8 text-white shadow-[0_28px_70px_rgba(15,118,110,0.22)]">
             <div class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr] xl:items-end">
                 <div>
-                    <p class="text-sm uppercase tracking-[0.28em] text-emerald-50/75">
-                        Profil Apotek
-                    </p>
-                    <h2 class="mt-3 max-w-3xl text-3xl font-semibold leading-tight">
-                        Atur identitas apotek, foto toko, jam operasional, dan lokasi dalam satu halaman yang lebih
-                        nyaman dipakai.
-                    </h2>
-                    <p class="mt-4 max-w-2xl text-sm leading-7 text-emerald-50/85">
-                        Saya rapikan halaman ini supaya terasa seperti profil bisnis yang aktif dipakai admin apotek,
-                        bukan sekadar form biasa.
-                    </p>
+                    <h2 class="mt-3 max-w-3xl text-3xl font-semibold leading-tight">Profil Apotek</h2>
+
                 </div>
 
                 <div
@@ -204,9 +195,7 @@ onBeforeUnmount(() => {
                         <h3 class="text-xl font-semibold text-slate-900">
                             Foto dan Identitas
                         </h3>
-                        <p class="mt-1 text-sm text-slate-500">
-                            Tambahkan foto apotek yang rapi agar tampilan profil lebih meyakinkan.
-                        </p>
+
                     </div>
 
                     <button @click="toggleEdit" class="rounded-2xl px-4 py-2.5 text-sm font-semibold transition" :class="isEdit
@@ -265,9 +254,7 @@ onBeforeUnmount(() => {
                                         <p class="font-semibold text-slate-800">
                                             Unggah foto apotek
                                         </p>
-                                        <p class="mt-1 text-sm text-slate-500">
-                                            Foto akan langsung dipakai sebagai preview profil apotek.
-                                        </p>
+
                                     </div>
 
                                     <label
@@ -293,9 +280,6 @@ onBeforeUnmount(() => {
                 <h3 class="text-xl font-semibold text-slate-900">
                     Informasi Utama
                 </h3>
-                <p class="mt-1 text-sm text-slate-500">
-                    Semua data penting apotek bisa kamu ubah dari sini saat mode edit aktif.
-                </p>
 
                 <div class="mt-6 grid gap-4 md:grid-cols-2">
                     <div>
@@ -383,9 +367,7 @@ onBeforeUnmount(() => {
                     <p class="font-semibold text-slate-900">
                         Simpan perubahan profil apotek
                     </p>
-                    <p class="mt-1 text-sm text-slate-500">
-                        Pastikan data dan foto sudah sesuai sebelum disimpan.
-                    </p>
+
                 </div>
 
                 <button @click="handleSave" :disabled="loading"

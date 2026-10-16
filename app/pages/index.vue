@@ -62,17 +62,13 @@
         </span>
 
         <h2 class="about-item mt-6 text-3xl md:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
-          Platform Khusus <br />
+          Temukan apotek <br />
           <span class="text-[#0f766e] dark:text-emerald-400">
-            Untuk Pencarian <br />
-            Apotek Online
+            di sekitarmu
           </span>
         </h2>
 
-        <p class="about-item mt-6 max-w-xl text-gray-600 dark:text-slate-300 leading-8">
-          Unduh aplikasi MediFinder dan temukan kemudahan akses ke lebih dari
-          50.000 produk kesehatan...
-        </p>
+        <p class="about-item mt-6 max-w-xl text-gray-600 dark:text-slate-300 leading-8">Cari obat, temukan apotek terdekat, dan cek ketersediaannya sebelum memesan.</p>
 
         <!-- FEATURES -->
         <div class="mt-10 grid sm:grid-cols-2 gap-4">
@@ -130,18 +126,18 @@
               Lokasi Anda
             </h3>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              Pilih titik lokasi untuk menampilkan apotek yang paling relevan.
+              Lihat posisi Anda dan lokasi apotek dalam radius 5 km.
             </p>
           </div>
 
           <span class="rounded-full bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
-            Live area
+            Radius 5 km
           </span>
         </div>
 
         <div class="overflow-hidden rounded-[28px] border border-slate-200 dark:border-slate-700">
           <ClientOnly>
-            <UserMap @location="handleLocation" />
+            <UserMap :apoteks="apoteks" @location="handleLocation" @location-error="handleLocationError" />
           </ClientOnly>
         </div>
 
@@ -194,9 +190,9 @@
       </div>
 
       <!-- EMPTY STATE -->
-      <div v-if="apoteks.length === 0"
+      <div v-if="loading || nearbyError || locationError || apoteks.length === 0"
         class="rounded-[32px] border border-dashed border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 py-14 text-center text-gray-400 dark:text-slate-500 shadow-sm">
-        Tidak ada apotek terdekat
+        {{ locationError || nearbyError || (loading ? 'Memuat apotek dalam radius 5 km...' : 'Tidak ada apotek dalam radius 5 km') }}
       </div>
 
       <!-- CARDS GRID -->
@@ -289,11 +285,12 @@ gsap.registerPlugin(ScrollTrigger)
 // STATE
 // ========================
 const userLocation = ref("Mendeteksi lokasi...")
+const locationError = ref('')
 
 // ========================
 // COMPOSABLE
 // ========================
-const { apoteks, initNearby } = useNearbyApotek()
+const { apoteks, loading, error: nearbyError, initNearby } = useNearbyApotek()
 const { getLocationName } = useLocation()
 
 // ========================
@@ -325,18 +322,6 @@ watch(apoteks, () => {
 
 onMounted(async () => {
   await nextTick()
-
-  // 🔥 ambil lokasi + apotek
-  // optional: auto load pertama
-  const loc = await initNearby()
-
-  if (loc) {
-    const name = await getLocationName(loc.lat, loc.lng)
-    userLocation.value = name
-  }
-
-  console.log("📦 APOTEK:", apoteks.value)
-
 
   // ========================
   // ANIMASI
@@ -385,17 +370,23 @@ onMounted(async () => {
   ScrollTrigger.refresh()
 })
 
-const handleLocation = async (loc: any) => {
-  console.log("📍 lokasi user:", loc)
+const handleLocation = async (loc: { lat: number; lng: number }) => {
+  if (!Number.isFinite(loc.lat) || !Number.isFinite(loc.lng)) return
+  locationError.value = ''
+  userLocation.value = `${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}`
 
-  if (!loc?.lat || !loc?.lng) return
+  // Load pharmacies independently of the reverse-geocoding service.
+  await Promise.all([
+    initNearby(loc.lat, loc.lng),
+    getLocationName(loc.lat, loc.lng).then((name) => {
+      if (name.replace(/[,\s]/g, '')) userLocation.value = name
+    }).catch(() => { /* Coordinates remain visible if the address is unavailable. */ })
+  ])
+}
 
-  userLocation.value = loc.name
-
-  // 🔥 fetch apotek berdasarkan lokasi user
-  await initNearby(loc.lat, loc.lng)
-
-  console.log("📦 apotek:", apoteks.value)
+const handleLocationError = (message: string) => {
+  locationError.value = message
+  userLocation.value = 'Lokasi belum tersedia'
 }
 
 const scrollToAbout = () => {

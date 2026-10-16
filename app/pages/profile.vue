@@ -173,15 +173,9 @@ onMounted(async () => {
                 <div v-else-if="user" class="space-y-6">
                     <div class="grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
                         <div class="rounded-[28px] bg-[#0f766e] dark:bg-emerald-900/80 p-6 text-white sm:p-8 transition-colors">
-                            <p class="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-100/80">
-                                Profil Pengguna
-                            </p>
-                            <h1 class="mt-4 max-w-xl text-3xl font-semibold leading-tight sm:text-4xl">
-                                Semua informasi akunmu kini lebih rapi dan nyaman dibaca.
-                            </h1>
-                            <p class="mt-4 max-w-2xl text-sm leading-7 text-emerald-50/85 sm:text-base">
-                                Lihat data akun, ubah password, dan cek ringkasan transaksi tanpa harus berpindah ke banyak halaman.
-                            </p>
+
+                            <h1 class="mt-4 max-w-xl text-3xl font-semibold leading-tight sm:text-4xl">Profil Saya</h1>
+                            <p class="mt-4 max-w-2xl text-sm leading-7 text-emerald-50/85 sm:text-base">Kelola akun dan lihat riwayat transaksi.</p>
 
                             <div class="mt-8 grid gap-3 sm:grid-cols-3">
                                 <div class="rounded-2xl bg-white/12 px-4 py-4 backdrop-blur">
@@ -279,9 +273,7 @@ onMounted(async () => {
                                 </div>
                             </div>
 
-                            <p class="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                                Gunakan password baru yang lebih aman agar akunmu tetap terlindungi.
-                            </p>
+                            <p class="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">Gunakan minimal 6 karakter.</p>
 
                             <div class="mt-6 space-y-4">
                                 <div class="relative">
@@ -364,10 +356,6 @@ onMounted(async () => {
                                 </button>
                             </div>
 
-                            <p class="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                                Kami tampilkan beberapa transaksi terbaru dulu supaya halaman profil tetap rapi dan mudah dibaca.
-                            </p>
-
                             <div class="mt-6">
                                 <div v-if="loadingTransaksi" class="space-y-3">
                                     <div class="h-20 animate-pulse rounded-2xl bg-slate-200 dark:bg-slate-800"></div>
@@ -388,9 +376,7 @@ onMounted(async () => {
                                                 <p class="text-sm font-semibold text-slate-900 dark:text-white">
                                                     {{ item.id }}
                                                 </p>
-                                                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                                                    Ringkasan transaksi terbaru dari akunmu.
-                                                </p>
+
                                             </div>
 
                                             <span class="rounded-full px-3 py-1 text-xs font-semibold"
@@ -436,9 +422,7 @@ onMounted(async () => {
                     <h2 class="mt-5 text-2xl font-semibold text-slate-900 dark:text-white">
                         Kamu belum login
                     </h2>
-                    <p class="mt-3 text-sm leading-7 text-slate-500 dark:text-slate-400">
-                        Masuk dulu ke akun MediFinder supaya kami bisa menampilkan data profilmu di halaman ini.
-                    </p>
+                    <p class="mt-3 text-sm leading-7 text-slate-500 dark:text-slate-400">Masuk untuk melihat profil dan transaksi.</p>
                     <button @click="router.push('/login')"
                         class="mt-6 rounded-2xl bg-[#0f766e] dark:bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0c5f58] dark:hover:bg-emerald-500">
                         Masuk ke akun

@@ -102,7 +102,7 @@ onMounted(loadData)
 </script>
 
 <template>
-    <AppLoadingOverlay v-if="loading" label="Memuat pesanan obat..." description="Daftar pesanan sedang diambil dari API." />
+    <AppLoadingOverlay v-if="loading" label="Memuat pesanan obat..." />
 
     <div class="space-y-6">
         <div v-if="showDetailModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4 backdrop-blur-sm">
@@ -115,9 +115,7 @@ onMounted(loadData)
                         <h2 class="mt-2 text-2xl font-semibold text-slate-900">
                             {{ selectedTransaction?.id || 'Transaksi' }}
                         </h2>
-                        <p class="mt-1 text-sm text-slate-500">
-                            Ringkasan transaksi lengkap dari API.
-                        </p>
+
                     </div>
 
                     <button @click="closeDetail" class="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600 hover:bg-slate-200">
@@ -189,9 +187,7 @@ onMounted(loadData)
                 <h3 class="text-lg font-semibold text-slate-900">
                     Daftar Pesanan Obat
                 </h3>
-                <p class="mt-1 text-sm text-slate-500">
-                    Fokus utama admin apotek ada di sini: mana pesanan yang harus diproses, diverifikasi, atau dikirim lebih dulu.
-                </p>
+                <p class="mt-1 text-sm text-slate-500">Tinjau dan proses pesanan masuk.</p>
             </div>
 
             <div class="mt-5 space-y-4">

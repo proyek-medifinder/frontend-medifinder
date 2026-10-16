@@ -11,11 +11,7 @@
                         <img src="/images/Logo_remove.png" class="h-10" />
                     </div>
 
-                    <p class="text-white/80 leading-relaxed text-sm">
-                        MediFinder adalah platform pencarian apotek online yang membantu
-                        pengguna menemukan obat, konsultasi, dan layanan kesehatan dengan
-                        mudah dan cepat.
-                    </p>
+                    <p class="text-white/80 leading-relaxed text-sm">Temukan obat dan apotek di sekitarmu.</p>
                 </div>
 
                 <!-- NAVIGATION -->

@@ -79,12 +79,8 @@ const handleReset = async () => {
                     <p class="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-100/80 dark:text-emerald-400">
                         Reset Password
                     </p>
-                    <h1 class="mt-6 text-4xl font-semibold leading-tight">
-                        Yuk, buat password baru yang lebih aman dan mudah kamu ingat.
-                    </h1>
-                    <p class="mt-5 max-w-md text-sm leading-7 text-emerald-50/85 dark:text-slate-300">
-                        Setelah password diperbarui, kamu bisa langsung kembali login dan lanjut memakai MediFinder seperti biasa.
-                    </p>
+                    <h1 class="mt-6 text-4xl font-semibold leading-tight">Atur ulang kata sandi.</h1>
+                    <p class="mt-5 max-w-md text-sm leading-7 text-emerald-50/85 dark:text-slate-300">Gunakan kata sandi baru untuk masuk kembali.</p>
                 </div>
 
                 <div class="space-y-3 text-sm text-emerald-50/85 dark:text-slate-300">
@@ -111,9 +107,7 @@ const handleReset = async () => {
                     <h2 class="mt-3 text-3xl font-semibold text-slate-900 dark:text-white">
                         Atur password baru
                     </h2>
-                    <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                        Masukkan password baru yang ingin kamu gunakan untuk akun MediFinder.
-                    </p>
+                    <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">Gunakan minimal 6 karakter.</p>
 
                     <div v-if="errorMessage"
                         class="mt-6 rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/40 px-4 py-3 text-sm text-rose-700 dark:text-rose-400">

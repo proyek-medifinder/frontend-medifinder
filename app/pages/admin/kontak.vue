@@ -100,7 +100,6 @@ const closeDetail = () => {
     <AppLoadingOverlay
         v-if="loading"
         label="Memuat pesan kontak..."
-        description="Pesan masuk sedang diambil dari API."
     />
 
     <div
@@ -116,9 +115,7 @@ const closeDetail = () => {
                     <h2 class="mt-2 text-2xl font-semibold text-slate-900">
                         {{ displayedDetail?.nama || 'Pesan masuk' }}
                     </h2>
-                    <p class="mt-2 text-sm text-slate-500">
-                        Informasi lengkap pesan yang dikirim pengguna.
-                    </p>
+
                 </div>
 
                 <button
@@ -131,7 +128,7 @@ const closeDetail = () => {
 
             <div class="mt-6 space-y-4">
                 <div v-if="detailLoading" class="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-700">
-                    Memuat detail tambahan dari API...
+                    Memuat detail pesan...
                 </div>
 
                 <div v-if="displayedDetail" class="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">

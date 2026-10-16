@@ -61,7 +61,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <AppLoadingOverlay v-if="loading" label="Memuat artikel..." description="Detail artikel sedang diambil dari API." />
+    <AppLoadingOverlay v-if="loading" label="Memuat artikel..." />
 
     <div class="min-h-screen overflow-hidden bg-[linear-gradient(180deg,#f4fbf8_0%,#ffffff_32%,#f8fafc_100%)] dark:bg-[linear-gradient(180deg,#090d16_0%,#0f172a_30%,#020617_100%)] text-slate-800 dark:text-slate-100 transition-colors duration-300 pb-20 pt-24">
         <div
@@ -102,41 +102,7 @@ onMounted(() => {
                     </div>
                 </section>
 
-                <section class="grid gap-6 lg:grid-cols-[0.24fr_0.76fr]">
-                    <aside class="rounded-[28px] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.05)] dark:shadow-none lg:sticky lg:top-28 lg:h-fit">
-                        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-[#0f766e]/70 dark:text-emerald-400">
-                            Ringkasan
-                        </p>
-
-                        <div class="mt-5 space-y-4 text-sm">
-                            <div class="rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-transparent dark:border-slate-700/50 px-4 py-4">
-                                <p class="text-xs uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
-                                    Kategori
-                                </p>
-                                <p class="mt-2 font-semibold text-slate-900 dark:text-white">
-                                    {{ article.category }}
-                                </p>
-                            </div>
-
-                            <div class="rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-transparent dark:border-slate-700/50 px-4 py-4">
-                                <p class="text-xs uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
-                                    Publikasi
-                                </p>
-                                <p class="mt-2 font-semibold text-slate-900 dark:text-white">
-                                    {{ articleDate }}
-                                </p>
-                            </div>
-
-                            <div class="rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-transparent dark:border-slate-700/50 px-4 py-4">
-                                <p class="text-xs uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
-                                    Estimasi Baca
-                                </p>
-                                <p class="mt-2 font-semibold text-slate-900 dark:text-white">
-                                    {{ articleReadTime }}
-                                </p>
-                            </div>
-                        </div>
-                    </aside>
+                <section class="mx-auto max-w-4xl">
 
                     <article
                         class="rounded-[28px] border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 px-6 py-7 shadow-[0_18px_50px_rgba(15,23,42,0.05)] dark:shadow-none sm:px-8 sm:py-9">

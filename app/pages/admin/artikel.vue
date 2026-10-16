@@ -189,7 +189,7 @@ const handleFetchNews = async () => {
         await fetchFromNews()
         await fetchArtikel()
         pageMessageState.value = 'success'
-        pageMessage.value = 'Artikel dari News API berhasil disinkronkan.'
+        pageMessage.value = 'Artikel berhasil disinkronkan.'
     } catch (err: any) {
         pageMessageState.value = 'error'
         pageMessage.value = err?.data?.message || err?.message || 'Sinkronisasi artikel belum berhasil.'
@@ -208,22 +208,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <AppLoadingOverlay v-if="loading" label="Memuat artikel..." description="Daftar artikel sedang diambil dari API." />
+    <AppLoadingOverlay v-if="loading" label="Memuat artikel..." />
 
     <div class="space-y-6 pb-8">
         <section
             class="overflow-hidden rounded-[32px] border border-white/60 bg-gradient-to-br from-[#0f766e] via-[#14967f] to-[#0e7490] px-7 py-8 text-white shadow-[0_28px_70px_rgba(15,118,110,0.22)]">
             <div class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr] xl:items-end">
                 <div>
-                    <p class="text-sm uppercase tracking-[0.28em] text-emerald-50/75">
-                        Kelola Artikel
-                    </p>
-                    <h1 class="mt-3 max-w-3xl text-3xl font-semibold leading-tight">
-                        Atur artikel, draft, dan sinkronisasi berita dalam satu halaman yang lebih nyaman dipakai.
-                    </h1>
-                    <p class="mt-4 max-w-2xl text-sm leading-7 text-emerald-50/85">
-                        Halaman ini dibuat supaya workflow admin terasa lebih modern, jelas, dan cepat dipakai saat menambah atau mengedit artikel.
-                    </p>
+                    <h1 class="mt-3 max-w-3xl text-3xl font-semibold leading-tight">Kelola Artikel</h1>
+
                 </div>
 
                 <div class="grid gap-3 rounded-[28px] border border-white/15 bg-white/12 p-5 backdrop-blur sm:grid-cols-3 xl:grid-cols-1">
@@ -290,7 +283,7 @@ onBeforeUnmount(() => {
 
                     <button @click="handleFetchNews" :disabled="syncLoading"
                         class="rounded-2xl bg-sky-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-70">
-                        {{ syncLoading ? 'Sinkronisasi...' : 'Sync News API' }}
+                        {{ syncLoading ? 'Sinkronisasi...' : 'Sinkronkan Berita' }}
                     </button>
                 </div>
             </div>
@@ -442,9 +435,7 @@ onBeforeUnmount(() => {
                             <p class="font-semibold text-slate-800">
                                 Thumbnail Artikel
                             </p>
-                            <p class="mt-1 text-sm text-slate-500">
-                                Tambahkan thumbnail baru kalau ingin memperbarui tampilan artikel.
-                            </p>
+                            <p class="mt-1 text-sm text-slate-500">Unggah gambar pengganti jika diperlukan.</p>
                         </div>
 
                         <label

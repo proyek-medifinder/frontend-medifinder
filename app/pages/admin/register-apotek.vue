@@ -168,28 +168,10 @@ const handleSubmit = async () => {
                     <p class="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-100/80">
                         Pendaftaran Mitra
                     </p>
-                    <h1 class="mt-5 max-w-xl text-4xl font-semibold leading-tight">
-                        Daftarkan apotekmu dan mulai kelola operasional digital bersama MediFinder.
-                    </h1>
-                    <p class="mt-5 max-w-lg text-sm leading-7 text-emerald-50/85">
-                        Pengajuan ini akan membantu tim kami meninjau data apotek, lokasi, dan akun admin sebelum akses dashboard diberikan.
-                    </p>
+                    <h1 class="mt-5 max-w-xl text-4xl font-semibold leading-tight">Jadilah mitra MediFinder.</h1>
+                    <p class="mt-5 max-w-lg text-sm leading-7 text-emerald-50/85">Akses admin diberikan setelah data apotek diverifikasi.</p>
                 </div>
 
-                <div class="space-y-3">
-                    <div class="rounded-2xl bg-white/12 px-4 py-4">
-                        <p class="text-sm font-semibold">Kelola produk dan pesanan lebih rapi</p>
-                        <p class="mt-1 text-sm text-emerald-50/75">Semua kebutuhan operasional apotek bisa dipantau dalam satu panel.</p>
-                    </div>
-                    <div class="rounded-2xl bg-white/12 px-4 py-4">
-                        <p class="text-sm font-semibold">Jangkau lebih banyak pelanggan</p>
-                        <p class="mt-1 text-sm text-emerald-50/75">Tampilkan apotekmu agar lebih mudah ditemukan di MediFinder.</p>
-                    </div>
-                    <div class="rounded-2xl bg-white/12 px-4 py-4">
-                        <p class="text-sm font-semibold">Verifikasi lokasi lebih akurat</p>
-                        <p class="mt-1 text-sm text-emerald-50/75">Pilih titik apotek di peta supaya proses peninjauan berjalan lebih lancar.</p>
-                    </div>
-                </div>
             </div>
 
             <div class="flex items-center justify-center p-5 sm:p-8 lg:p-10">
@@ -200,9 +182,7 @@ const handleSubmit = async () => {
                     <h2 class="mt-3 text-3xl font-semibold text-slate-900">
                         Ajukan pendaftaran admin apotek
                     </h2>
-                    <p class="mt-2 text-sm leading-6 text-slate-500">
-                        Lengkapi informasi apotek, data pemilik, dan lokasi agar tim kami bisa meninjau pengajuanmu.
-                    </p>
+                    <p class="mt-2 text-sm leading-6 text-slate-500">Lengkapi data apotek dan akun admin untuk mengajukan pendaftaran.</p>
 
                     <form @submit.prevent="handleSubmit" class="mt-8 space-y-6">
                         <div class="rounded-[26px] border border-slate-200 bg-slate-50/80 p-5">
@@ -211,9 +191,7 @@ const handleSubmit = async () => {
                                     <h3 class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">
                                         Informasi Apotek
                                     </h3>
-                                    <p class="mt-2 text-sm leading-6 text-slate-500">
-                                        Isi data utama apotek dan akun admin dalam satu alur yang lebih ringkas.
-                                    </p>
+
                                 </div>
                             </div>
 

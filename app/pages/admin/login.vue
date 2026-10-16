@@ -198,28 +198,10 @@ onMounted(() => {
                     <p class="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-100/80">
                         Admin Portal
                     </p>
-                    <h1 class="mt-5 max-w-xl text-4xl font-semibold leading-tight">
-                        Kelola operasional MediFinder dari satu panel yang lebih rapi dan fokus.
-                    </h1>
-                    <p class="mt-5 max-w-lg text-sm leading-7 text-emerald-50/85">
-                        Masuk sebagai super admin atau admin apotek untuk memantau data apotek, produk, pesanan, dan proses verifikasi dengan lebih cepat.
-                    </p>
+                    <h1 class="mt-5 max-w-xl text-4xl font-semibold leading-tight">Kelola apotek bersama MediFinder.</h1>
+                    <p class="mt-5 max-w-lg text-sm leading-7 text-emerald-50/85">Pantau stok, pesanan, dan verifikasi apotek.</p>
                 </div>
 
-                <div class="space-y-3">
-                    <div class="rounded-2xl bg-white/12 px-4 py-4">
-                        <p class="text-sm font-semibold">Pantau verifikasi dan operasional</p>
-                        <p class="mt-1 text-sm text-emerald-50/75">Semua update penting ada dalam satu panel admin.</p>
-                    </div>
-                    <div class="rounded-2xl bg-white/12 px-4 py-4">
-                        <p class="text-sm font-semibold">Kelola apotek, obat, dan pesanan</p>
-                        <p class="mt-1 text-sm text-emerald-50/75">Akses cepat untuk pekerjaan harian tim admin.</p>
-                    </div>
-                    <div class="rounded-2xl bg-white/12 px-4 py-4">
-                        <p class="text-sm font-semibold">Login aman untuk tim internal</p>
-                        <p class="mt-1 text-sm text-emerald-50/75">Masuk dengan akun yang sudah punya akses ke panel admin.</p>
-                    </div>
-                </div>
             </div>
 
             <div class="flex items-center justify-center p-5 sm:p-8 lg:p-10">
@@ -231,9 +213,7 @@ onMounted(() => {
                         <h2 class="mt-3 text-3xl font-semibold text-slate-900">
                             Masuk ke panel admin
                         </h2>
-                        <p class="mt-2 text-sm leading-6 text-slate-500">
-                            Gunakan akun admin yang sudah terdaftar untuk mengakses dashboard MediFinder.
-                        </p>
+                        <p class="mt-2 text-sm leading-6 text-slate-500">Gunakan email dan kata sandi akun admin.</p>
 
                         <form class="mt-8 space-y-5" @submit.prevent="handleLogin">
                             <div>

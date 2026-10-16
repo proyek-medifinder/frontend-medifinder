@@ -123,7 +123,7 @@ const prevPage = () => {
 
 <template>
     <div class="relative space-y-6">
-        <AppLoadingOverlay v-if="loading" label="Memuat data apotek..." description="Mohon tunggu sebentar, data sedang diambil dari API." />
+        <AppLoadingOverlay v-if="loading" label="Memuat data apotek..." />
 
         <section class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
@@ -133,9 +133,7 @@ const prevPage = () => {
                 <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-900">
                     Data Apotek
                 </h1>
-                <p class="mt-2 text-sm text-slate-500">
-                    Lihat jaringan apotek yang sudah terdaftar lengkap dengan status verifikasi, jam operasional, dan detail profil.
-                </p>
+                <p class="mt-2 text-sm text-slate-500">Tinjau profil dan status verifikasi apotek.</p>
             </div>
 
             <div class="rounded-3xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
@@ -163,9 +161,7 @@ const prevPage = () => {
                     <h2 class="font-semibold text-slate-800">
                         Daftar Apotek Tersedia
                     </h2>
-                    <p class="mt-1 text-sm text-slate-500">
-                        Buka detail apotek langsung dari tabel saat ingin meninjau profil lengkapnya.
-                    </p>
+
                 </div>
 
                 <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
@@ -282,9 +278,7 @@ const prevPage = () => {
                         <h2 class="mt-2 text-2xl font-semibold text-slate-900">
                             {{ selectedApotek.nama || '-' }}
                         </h2>
-                        <p class="mt-2 text-sm text-slate-500">
-                            Ringkasan profil apotek langsung dari data tabel super admin.
-                        </p>
+
                     </div>
 
                     <button @click="closeDetail"

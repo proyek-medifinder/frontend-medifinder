@@ -61,7 +61,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <AppLoadingOverlay v-if="loading" label="Memuat artikel..." description="Artikel sedang diambil dari API." />
+    <AppLoadingOverlay v-if="loading" label="Memuat artikel..." />
 
     <div
         class="min-h-screen overflow-hidden bg-[linear-gradient(180deg,#f4fbf8_0%,#ffffff_28%,#f8fafc_100%)] dark:bg-[linear-gradient(180deg,#090d16_0%,#0f172a_30%,#020617_100%)] pb-20 pt-24 transition-colors duration-300">
@@ -70,53 +70,10 @@ onMounted(async () => {
         </div>
 
         <section class="artikel-hero relative">
-            <div class="mx-auto max-w-6xl px-6 py-10 lg:px-8 lg:py-14">
-                <div
-                    class="overflow-hidden rounded-[34px] border border-white/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 px-7 py-8 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur sm:px-9 sm:py-10 transition-colors">
-                    <div class="grid gap-8 xl:grid-cols-[1.1fr_0.9fr] xl:items-end">
-                        <div>
-                            <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[#0f766e]/70 dark:text-emerald-400">
-                                Wawasan Kesehatan
-                            </p>
-                            <h1 class="mt-4 max-w-3xl text-4xl font-semibold leading-tight text-slate-900 dark:text-white sm:text-5xl">
-                                Artikel kesehatan yang terasa lebih rapi, ringan dibaca, dan mudah dijelajahi.
-                            </h1>
-                            <p class="mt-5 max-w-2xl text-sm leading-7 text-slate-500 dark:text-slate-300 sm:text-base">
-                                Temukan informasi kesehatan, obat, dan tips harian dari MediFinder dalam tampilan yang
-                                lebih modern dan nyaman dibaca.
-                            </p>
-                        </div>
-
-                        <div
-                            class="grid gap-3 rounded-[28px] border border-slate-200/80 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-800/60 p-5 sm:grid-cols-3 xl:grid-cols-1 transition-colors">
-                            <div class="rounded-2xl bg-white dark:bg-slate-800/90 px-4 py-4 transition-colors">
-                                <p class="text-xs uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
-                                    Total Artikel
-                                </p>
-                                <p class="mt-2 text-lg font-semibold text-slate-900 dark:text-white">
-                                    {{ artikels.length }}
-                                </p>
-                            </div>
-                            <div class="rounded-2xl bg-white dark:bg-slate-800/90 px-4 py-4 transition-colors">
-                                <p class="text-xs uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
-                                    Fokus
-                                </p>
-                                <p class="mt-2 text-lg font-semibold text-slate-900 dark:text-white">
-                                    Edukasi Kesehatan
-                                </p>
-                            </div>
-                            <div class="rounded-2xl bg-white dark:bg-slate-800/90 px-4 py-4 transition-colors">
-                                <p class="text-xs uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
-                                    Update
-                                </p>
-                                <p class="mt-2 text-lg font-semibold text-slate-900 dark:text-white">
-                                    Artikel Terbaru
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <header class="mx-auto max-w-6xl px-6 pb-8 pt-10 lg:px-8 lg:pb-10">
+                <h1 class="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Artikel Kesehatan</h1>
+                <p class="mt-3 max-w-xl text-sm leading-6 text-slate-500 dark:text-slate-400 sm:text-base">Informasi kesehatan, obat, dan tips sehari-hari.</p>
+            </header>
         </section>
 
         <section class="artikel-content relative">
@@ -160,23 +117,14 @@ onMounted(async () => {
 
                                 <NuxtLink :to="`/detailArtikel/${featuredArticle.slug}`"
                                     class="mt-6 inline-flex w-fit items-center rounded-full bg-yellow-400 hover:bg-yellow-300 px-5 py-3 text-sm font-semibold text-slate-900 transition">
-                                    Baca Artikel Utama
+                                    Baca artikel
                                 </NuxtLink>
                             </div>
                         </div>
                     </div>
 
-                    <div>
-                        <div class="flex items-end justify-between gap-4">
-                            <div>
-                                <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[#0f766e]/70 dark:text-emerald-400">
-                                    Artikel Terbaru
-                                </p>
-                                <h3 class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">
-                                    Pilihan bacaan yang layak kamu lanjutkan
-                                </h3>
-                            </div>
-                        </div>
+                    <div v-if="latestArticles.length">
+                        <h2 class="text-2xl font-semibold text-slate-900 dark:text-white">Artikel Lainnya</h2>
 
                         <div v-if="latestArticles.length" class="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                             <article v-for="article in latestArticles" :key="article.id"
@@ -209,11 +157,6 @@ onMounted(async () => {
                                     </NuxtLink>
                                 </div>
                             </article>
-                        </div>
-
-                        <div v-else
-                            class="mt-6 rounded-[28px] border border-dashed border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900/90 px-6 py-10 text-center text-slate-500 dark:text-slate-400 shadow-sm">
-                            Belum ada artikel tambahan yang bisa ditampilkan.
                         </div>
                     </div>
                 </div>

@@ -204,7 +204,7 @@ useHead({
 </script>
 
 <template>
-    <AppLoadingOverlay v-if="loading" label="Memuat detail apotek..." description="Profil apotek sedang diambil dari API." />
+    <AppLoadingOverlay v-if="loading" label="Memuat detail apotek..." />
 
     <div v-if="showLoginDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm px-4">
         <div class="w-full max-w-md rounded-[28px] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-6 text-center shadow-2xl">
@@ -339,9 +339,7 @@ useHead({
                                     <h2 class="text-xl font-semibold text-slate-900 dark:text-white">
                                         Informasi Apotek
                                     </h2>
-                                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                                        Ringkasan detail yang paling sering dicari pengguna.
-                                    </p>
+
                                 </div>
 
                                 <div class="rounded-2xl bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm text-slate-600 dark:text-slate-300">

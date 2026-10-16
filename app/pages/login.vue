@@ -209,28 +209,10 @@ onMounted(() => {
                     <p class="mt-10 text-sm font-semibold uppercase tracking-[0.28em] text-emerald-100/80 dark:text-emerald-400">
                         Akun MediFinder
                     </p>
-                    <h1 class="mt-5 max-w-xl text-4xl font-semibold leading-tight">
-                        Masuk lebih cepat untuk cari apotek, pantau pesanan, dan lanjutkan kebutuhanmu.
-                    </h1>
-                    <p class="mt-5 max-w-lg text-sm leading-7 text-emerald-50/85 dark:text-slate-300">
-                        Semua akses penting ada dalam satu akun, mulai dari pencarian obat, detail apotek, sampai pesanan yang sedang berjalan.
-                    </p>
+                    <h1 class="mt-5 max-w-xl text-4xl font-semibold leading-tight">Selamat datang kembali.</h1>
+                    <p class="mt-5 max-w-lg text-sm leading-7 text-emerald-50/85 dark:text-slate-300">Temukan apotek dan pantau pesananmu.</p>
                 </div>
 
-                <div class="space-y-3">
-                    <div class="rounded-2xl bg-white/12 dark:bg-slate-900/60 border border-transparent dark:border-slate-800 px-4 py-4">
-                        <p class="text-sm font-semibold">Akses cepat ke apotek terdekat</p>
-                        <p class="mt-1 text-sm text-emerald-50/75 dark:text-slate-400">Lanjutkan pencarian tanpa mulai dari awal.</p>
-                    </div>
-                    <div class="rounded-2xl bg-white/12 dark:bg-slate-900/60 border border-transparent dark:border-slate-800 px-4 py-4">
-                        <p class="text-sm font-semibold">Pantau pesanan dan kebutuhan keluarga</p>
-                        <p class="mt-1 text-sm text-emerald-50/75 dark:text-slate-400">Semua aktivitas akun terasa lebih rapi dan mudah dipantau.</p>
-                    </div>
-                    <div class="rounded-2xl bg-white/12 dark:bg-slate-900/60 border border-transparent dark:border-slate-800 px-4 py-4">
-                        <p class="text-sm font-semibold">Satu akun untuk layanan MediFinder</p>
-                        <p class="mt-1 text-sm text-emerald-50/75 dark:text-slate-400">Masuk sekali, lalu lanjutkan semua kebutuhan kesehatanmu.</p>
-                    </div>
-                </div>
             </div>
 
             <div class="flex items-center justify-center p-5 sm:p-8 lg:p-10">
@@ -242,9 +224,7 @@ onMounted(() => {
                         <h2 class="mt-3 text-3xl font-semibold text-slate-900 dark:text-white">
                             Masuk ke akunmu
                         </h2>
-                        <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                            Masukkan email dan kata sandi untuk lanjut memakai MediFinder.
-                        </p>
+                        <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">Gunakan email dan kata sandi akunmu.</p>
 
                         <form class="mt-8 space-y-5" @submit.prevent="handleLogin">
                             <div>

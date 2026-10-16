@@ -1,5 +1,5 @@
 <template>
-    <AppLoadingOverlay v-if="loading" label="Memuat dashboard..." description="Data admin, apotek, pengajuan, dan transaksi sedang diambil dari API." />
+    <AppLoadingOverlay v-if="loading" label="Memuat dashboard..." />
 
     <div v-if="!isLoaded" class="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
         <div class="h-72 animate-pulse rounded-[32px] bg-white/70" />
@@ -15,12 +15,8 @@
                     <p class="text-sm uppercase tracking-[0.28em] text-emerald-50/75">
                         Dashboard Admin Apotek
                     </p>
-                    <h2 class="mt-3 max-w-2xl text-3xl font-semibold leading-tight">
-                        Ringkasan operasional harian apotekmu, dari status toko sampai pergerakan pesanan dan stok obat.
-                    </h2>
-                    <p class="mt-4 max-w-2xl text-sm text-emerald-50/85">
-                        Semua kartu, grafik, dan daftar pesanan di bawah ini sudah mengikuti data apotek, obat, dan transaksi yang tersambung ke API.
-                    </p>
+                    <h2 class="mt-3 max-w-2xl text-3xl font-semibold leading-tight">Ringkasan Apotek</h2>
+
                 </div>
 
                 <div class="grid gap-3 rounded-[28px] border border-white/15 bg-white/12 p-5 backdrop-blur">
@@ -75,9 +71,7 @@
                 <div class="flex items-center justify-between gap-4">
                     <div>
                         <h3 class="text-lg font-semibold text-slate-900">Pesanan Terbaru</h3>
-                        <p class="mt-1 text-sm text-slate-500">
-                            Ringkasan transaksi terbaru yang masuk ke apotekmu.
-                        </p>
+
                     </div>
                     <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
                         {{ apotekOrders.length }} transaksi terbaru
@@ -131,9 +125,7 @@
                         <h2 class="mt-2 text-2xl font-semibold text-slate-900">
                             {{ selectedAdmin?.nama_apotek || 'Apotek belum bernama' }}
                         </h2>
-                        <p class="mt-2 text-sm text-slate-500">
-                            Ringkasan profil apotek, data pemilik, dan titik lokasi yang diajukan untuk proses verifikasi.
-                        </p>
+                        <p class="mt-2 text-sm text-slate-500">Tinjau data dan lokasi apotek sebelum memverifikasi.</p>
                     </div>
 
                     <div class="flex flex-wrap gap-2">
@@ -231,9 +223,7 @@
                         <h2 class="text-lg font-semibold">
                             Detail Transaksi
                         </h2>
-                        <p class="mt-1 text-sm text-slate-500">
-                            Ringkasan transaksi pengguna yang tercatat di platform.
-                        </p>
+
                     </div>
 
                     <button @click="showTransactionModal = false" class="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600 hover:bg-slate-200">
@@ -287,12 +277,8 @@
                 <div class="grid gap-8 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)] xl:items-end">
                     <div>
                         <p class="text-sm uppercase tracking-[0.28em] text-emerald-50/75">Dashboard Super Admin</p>
-                        <h2 class="mt-4 max-w-3xl text-3xl font-semibold leading-tight xl:max-w-4xl">
-                            Satu panel untuk memantau pertumbuhan admin, proses verifikasi, dan performa jaringan apotek.
-                        </h2>
-                        <p class="mt-5 max-w-2xl text-sm leading-7 text-emerald-50/85">
-                            Semua angka di bagian ini ditarik dari data admin, apotek, pengajuan, dan pesan kontak yang aktif di sistem.
-                        </p>
+                        <h2 class="mt-4 max-w-3xl text-3xl font-semibold leading-tight xl:max-w-4xl">Ringkasan MediFinder</h2>
+
                     </div>
 
                     <div class="grid gap-4 self-start rounded-[28px] border border-white/15 bg-white/12 p-5 backdrop-blur xl:ml-4">
@@ -445,9 +431,7 @@
                         <h2 class="font-semibold text-gray-800">
                             Transaksi Platform
                         </h2>
-                        <p class="mt-1 text-sm text-slate-500">
-                            Daftar transaksi user terbaru beserta akses ke detail transaksinya.
-                        </p>
+
                     </div>
                     <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
                         {{ superTransactions.length }} transaksi dimuat
@@ -1211,7 +1195,6 @@ const openTransactionDetail = async (transaction: any) => {
         transactionDetailLoading.value = false
     }
 }
-
 
 const isLoaded = ref(false)
 
