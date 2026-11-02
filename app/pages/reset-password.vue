@@ -4,13 +4,15 @@ definePageMeta({
 })
 
 useHead({
-    title: 'Reset Password'
+    title: 'Reset Password',
+    meta: [{ name: 'referrer', content: 'no-referrer' }, { name: 'robots', content: 'noindex, nofollow' }]
 })
 
 const route = useRoute()
 const router = useRouter()
 
-const token = route.query.token as string
+const token = typeof route.query.token === 'string' ? route.query.token : ''
+const completed = ref(false)
 
 const newPassword = ref('')
 const confirmPassword = ref('')
@@ -23,6 +25,7 @@ const showConfirmPassword = ref(false)
 const { resetPassword } = useForgotPassword()
 
 const handleReset = async () => {
+    if (loading.value || completed.value) return
     errorMessage.value = ''
     successMessage.value = ''
 
@@ -51,13 +54,15 @@ const handleReset = async () => {
 
         await resetPassword(token, newPassword.value)
 
+        completed.value = true
+        await router.replace({ path: route.path, query: {} })
         successMessage.value = 'Password berhasil diperbarui. Kamu akan diarahkan ke halaman login.'
 
         setTimeout(() => {
             router.push('/login')
         }, 1400)
     } catch (err: any) {
-        errorMessage.value = err?.data?.message || 'Password belum berhasil direset. Coba lagi sebentar lagi.'
+        errorMessage.value = err?.data?.message || err?.data?.error || 'Password belum berhasil direset. Coba lagi sebentar lagi.'
     } finally {
         loading.value = false
     }
@@ -176,7 +181,7 @@ const handleReset = async () => {
                             </div>
                         </div>
 
-                        <button @click="handleReset" :disabled="loading"
+                        <button @click="handleReset" :disabled="loading || completed"
                             class="w-full rounded-2xl bg-yellow-400 py-3.5 text-sm font-semibold text-slate-900 transition hover:bg-yellow-300 disabled:opacity-70 shadow-md shadow-yellow-400/20">
                             <span v-if="loading">Memproses reset password...</span>
                             <span v-else>Simpan Password Baru</span>

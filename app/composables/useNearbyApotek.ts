@@ -35,6 +35,7 @@ export const useNearbyApotek = () => {
                     `${config.public.apiBase}/apotek/nearby`,
                     {
                         params: { lat, lng, radius: 5, page, limit: 50 },
+                        timeout: 15000,
                         headers: {
                             'ngrok-skip-browser-warning': 'true'
                         }

@@ -58,17 +58,14 @@ const handleCredentialResponse = async (response: any) => {
         } else {
             errorMessage.value = 'Akun Google ini belum punya akses ke panel admin.'
         }
-    } catch {
-        errorMessage.value = 'Login dengan Google belum berhasil. Coba ulang sebentar lagi.'
+    } catch (err: any) {
+        errorMessage.value = err?.message || 'Login dengan Google belum berhasil. Coba ulang sebentar lagi.'
     }
 }
 
-const { sendForgotEmail, resetPassword } = useForgotPassword()
+const { sendForgotEmail, resendSeconds } = useForgotPassword()
 const forgotOpen = ref(false)
-const forgotStep = ref(1)
 const forgotEmail = ref('')
-const newPassword = ref('')
-const resetToken = ref('')
 const forgotLoading = ref(false)
 const forgotErrorMessage = ref('')
 const forgotSuccessMessage = ref('')
@@ -79,10 +76,7 @@ const isValidEmail = (value: string) => {
 
 const openForgotModal = () => {
     forgotOpen.value = true
-    forgotStep.value = 1
     forgotEmail.value = ''
-    newPassword.value = ''
-    resetToken.value = ''
     forgotErrorMessage.value = ''
     forgotSuccessMessage.value = ''
 }
@@ -92,6 +86,8 @@ const closeForgotModal = () => {
 }
 
 const handleSendForgot = async () => {
+    if (forgotLoading.value || resendSeconds.value > 0) return
+    forgotEmail.value = forgotEmail.value.trim()
     try {
         forgotLoading.value = true
         forgotErrorMessage.value = ''
@@ -109,50 +105,16 @@ const handleSendForgot = async () => {
 
         const res: any = await sendForgotEmail(forgotEmail.value)
 
-        if (res?.token) {
-            resetToken.value = res.token
-            forgotStep.value = 2
-        } else {
-            forgotSuccessMessage.value = 'Link reset password sudah kami kirim. Coba cek email admin kamu, ya.'
-            setTimeout(() => {
-                closeForgotModal()
-            }, 1200)
-        }
+        forgotSuccessMessage.value = res.message
+
     } catch (err: any) {
-        forgotErrorMessage.value = err?.data?.message || err?.message || 'Link reset belum berhasil dikirim. Coba lagi sebentar lagi.'
+        forgotErrorMessage.value = err?.data?.message || err?.data?.error || err?.message || 'Link reset belum berhasil dikirim. Coba lagi sebentar lagi.'
     } finally {
         forgotLoading.value = false
     }
 }
 
-const handleResetPassword = async () => {
-    try {
-        forgotLoading.value = true
-        forgotErrorMessage.value = ''
-        forgotSuccessMessage.value = ''
 
-        if (!newPassword.value) {
-            forgotErrorMessage.value = 'Masukkan password baru dulu, ya.'
-            return
-        }
-
-        if (newPassword.value.length < 6) {
-            forgotErrorMessage.value = 'Password baru minimal 6 karakter supaya lebih aman.'
-            return
-        }
-
-        await resetPassword(resetToken.value, newPassword.value)
-
-        forgotSuccessMessage.value = 'Password admin berhasil diperbarui.'
-        setTimeout(() => {
-            closeForgotModal()
-        }, 1200)
-    } catch (err: any) {
-        forgotErrorMessage.value = err?.data?.message || err?.message || 'Password belum berhasil direset. Coba lagi sebentar lagi.'
-    } finally {
-        forgotLoading.value = false
-    }
-}
 
 onMounted(() => {
     const interval = setInterval(() => {
@@ -186,51 +148,51 @@ onMounted(() => {
     <AppLoadingOverlay v-if="loading" label="Memproses login admin..." description="Kami sedang memverifikasi akun admin." />
 
     <div
-        class="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,#edf9f7_0%,#ffffff_46%,#f7fbff_100%)] px-4 py-6 sm:px-6 lg:px-8">
+        class="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,#edf9f7_0%,#ffffff_46%,#f7fbff_100%)] dark:bg-[linear-gradient(135deg,#090d16_0%,#0f172a_46%,#020617_100%)] text-slate-900 dark:text-slate-100 transition-colors duration-300 px-4 py-6 sm:px-6 lg:px-8">
         <div
             class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.16),_transparent_26%),radial-gradient(circle_at_bottom_right,_rgba(20,184,166,0.12),_transparent_20%)]">
         </div>
 
         <div
-            class="relative mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[34px] border border-white/70 bg-white/85 shadow-[0_30px_90px_rgba(15,23,42,0.12)] backdrop-blur lg:grid-cols-[1.05fr_0.95fr]">
-            <div class="hidden bg-[#0f766e] p-8 text-white lg:flex lg:flex-col lg:justify-between xl:p-10">
+            class="relative mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[34px] border border-white/70 bg-white/85 shadow-[0_30px_90px_rgba(15,23,42,0.12)] backdrop-blur lg:grid-cols-[1.05fr_0.95fr] dark:border-slate-800 dark:bg-slate-900/85 dark:shadow-none">
+            <div class="hidden bg-[#0f766e] dark:bg-slate-950 dark:border-r dark:border-slate-800 p-8 text-white lg:flex lg:flex-col lg:justify-between xl:p-10">
                 <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-100/80">
+                    <p class="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-100/80 dark:text-emerald-400">
                         Admin Portal
                     </p>
                     <h1 class="mt-5 max-w-xl text-4xl font-semibold leading-tight">Kelola apotek bersama MediFinder.</h1>
-                    <p class="mt-5 max-w-lg text-sm leading-7 text-emerald-50/85">Pantau stok, pesanan, dan verifikasi apotek.</p>
+                    <p class="mt-5 max-w-lg text-sm leading-7 text-emerald-50/85 dark:text-slate-300">Pantau stok, pesanan, dan verifikasi apotek.</p>
                 </div>
 
             </div>
 
             <div class="flex items-center justify-center p-5 sm:p-8 lg:p-10">
                 <div class="w-full max-w-md">
-                    <div class="rounded-[30px] border border-slate-200/80 bg-white/90 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:p-8">
-                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#0f766e]/70 lg:hidden">
+                    <div class="rounded-[30px] border border-slate-200/80 bg-white/90 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:p-8 dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-none">
+                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#0f766e]/70 lg:hidden dark:text-emerald-400">
                             Admin Portal
                         </p>
-                        <h2 class="mt-3 text-3xl font-semibold text-slate-900">
+                        <h2 class="mt-3 text-3xl font-semibold text-slate-900 dark:text-white">
                             Masuk ke panel admin
                         </h2>
-                        <p class="mt-2 text-sm leading-6 text-slate-500">Gunakan email dan kata sandi akun admin.</p>
+                        <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">Gunakan email dan kata sandi akun admin.</p>
 
                         <form class="mt-8 space-y-5" @submit.prevent="handleLogin">
                             <div>
-                                <label class="mb-2 block text-sm font-medium text-slate-700">
+                                <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">
                                     Email Admin
                                 </label>
                                 <input v-model="email" type="email" placeholder="admin@medifinder.com"
-                                    class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100" />
+                                    class="text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100 dark:border-slate-700 dark:bg-slate-800 dark:focus:border-emerald-500 dark:focus:ring-emerald-950/50" />
                             </div>
 
                             <div>
                                 <div class="mb-2 flex items-center justify-between">
-                                    <label class="block text-sm font-medium text-slate-700">
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">
                                         Kata Sandi
                                     </label>
                                     <button type="button" @click="openForgotModal"
-                                        class="text-sm font-medium text-slate-500 transition hover:text-[#0f766e]">
+                                        class="text-sm font-medium text-slate-500 transition hover:text-[#0f766e] dark:text-slate-400 dark:hover:text-emerald-300">
                                         Lupa password?
                                     </button>
                                 </div>
@@ -238,10 +200,10 @@ onMounted(() => {
                                 <div class="relative">
                                     <input v-model="password" :type="showPassword ? 'text' : 'password'"
                                         placeholder="Masukkan kata sandi admin"
-                                        class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 pr-12 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100" />
+                                        class="text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 pr-12 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100 dark:border-slate-700 dark:bg-slate-800 dark:focus:border-emerald-500 dark:focus:ring-emerald-950/50" />
 
                                     <button type="button" @click="showPassword = !showPassword"
-                                        class="absolute inset-y-0 right-3 flex items-center text-slate-400 transition hover:text-slate-700">
+                                        class="absolute inset-y-0 right-3 flex items-center text-slate-400 transition hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-100">
                                         <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
                                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -260,7 +222,7 @@ onMounted(() => {
                             </div>
 
                             <div v-if="errorMessage"
-                                class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                                class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300">
                                 {{ errorMessage }}
                             </div>
 
@@ -274,31 +236,36 @@ onMounted(() => {
                             <div id="google-buttonDiv" class="flex justify-center transition-all duration-200 hover:scale-[1.01]"></div>
                         </div>
 
-                        <div class="mt-6 rounded-2xl bg-slate-50 px-4 py-4 text-sm text-slate-500">
+                        <div class="mt-6 rounded-2xl bg-slate-50 px-4 py-4 text-sm text-slate-500 dark:bg-slate-800/70 dark:text-slate-400">
                             Belum punya akun admin apotek?
-                            <NuxtLink to="/admin/register-apotek" class="font-semibold text-[#0f766e]">
+                            <NuxtLink to="/admin/register-apotek" class="font-semibold text-[#0f766e] dark:text-emerald-400">
                                 Ajukan sekarang
                             </NuxtLink>
                         </div>
+
+                        <NuxtLink to="/"
+                            class="mt-5 block text-center text-sm font-medium text-slate-500 dark:text-slate-400 transition hover:text-slate-700 dark:hover:text-slate-200">
+                            Kembali ke beranda
+                        </NuxtLink>
                     </div>
                 </div>
             </div>
         </div>
 
         <div v-if="forgotOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4">
-            <div class="w-full max-w-md rounded-[30px] border border-white/70 bg-white p-6 shadow-[0_30px_90px_rgba(15,23,42,0.18)] sm:p-7">
+            <div class="w-full max-w-md rounded-[30px] border border-white/70 bg-white p-6 shadow-[0_30px_90px_rgba(15,23,42,0.18)] sm:p-7 dark:border-slate-800 dark:bg-slate-900 dark:shadow-none">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[#0f766e]/70">
+                        <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[#0f766e]/70 dark:text-emerald-400">
                             Admin Support
                         </p>
-                        <h3 class="mt-2 text-2xl font-semibold text-slate-900">
-                            {{ forgotStep === 1 ? 'Reset password admin' : 'Atur password baru' }}
+                        <h3 class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">
+                            Reset password admin
                         </h3>
                     </div>
 
                     <button @click="closeForgotModal"
-                        class="rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
+                        class="rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -306,42 +273,28 @@ onMounted(() => {
                     </button>
                 </div>
 
-                <div v-if="forgotStep === 1" class="mt-6">
-                    <p class="text-sm leading-6 text-slate-500">
+                <div class="mt-6">
+                    <p class="text-sm leading-6 text-slate-500 dark:text-slate-400">
                         Masukkan email admin yang terdaftar. Nanti kami kirim link untuk atur password baru.
                     </p>
 
-                    <input v-model="forgotEmail" type="email" placeholder="Masukkan email admin"
-                        class="mt-5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100" />
-                </div>
-
-                <div v-if="forgotStep === 2" class="mt-6">
-                    <p class="text-sm leading-6 text-slate-500">
-                        Buat password baru untuk akun admin, lalu gunakan untuk login kembali ke dashboard.
-                    </p>
-
-                    <input v-model="newPassword" type="password" placeholder="Masukkan password baru"
-                        class="mt-5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100" />
+                    <input v-model="forgotEmail" type="email" autocomplete="email" aria-label="Email untuk reset password" @keyup.enter="handleSendForgot" placeholder="Masukkan email admin"
+                        class="text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 mt-5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#0f766e] focus:ring-4 focus:ring-emerald-100 dark:border-slate-700 dark:bg-slate-800 dark:focus:border-emerald-500 dark:focus:ring-emerald-950/50" />
                 </div>
 
                 <div v-if="forgotErrorMessage"
-                    class="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                    class="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300">
                     {{ forgotErrorMessage }}
                 </div>
 
-                <div v-if="forgotSuccessMessage"
-                    class="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                <div v-if="forgotSuccessMessage" role="status"
+                    class="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300">
                     {{ forgotSuccessMessage }}
                 </div>
 
-                <button v-if="forgotStep === 1" @click="handleSendForgot" :disabled="forgotLoading"
+                <button @click="handleSendForgot" :disabled="forgotLoading || resendSeconds > 0"
                     class="mt-6 w-full rounded-2xl bg-[#0f766e] py-3 text-sm font-semibold text-white transition hover:bg-[#0c5f58] disabled:cursor-not-allowed disabled:opacity-70">
-                    {{ forgotLoading ? 'Mengirim link reset...' : 'Kirim Link Reset' }}
-                </button>
-
-                <button v-else @click="handleResetPassword" :disabled="forgotLoading"
-                    class="mt-6 w-full rounded-2xl bg-[#0f766e] py-3 text-sm font-semibold text-white transition hover:bg-[#0c5f58] disabled:cursor-not-allowed disabled:opacity-70">
-                    {{ forgotLoading ? 'Menyimpan password...' : 'Simpan Password Baru' }}
+                    {{ forgotLoading ? 'Memproses...' : resendSeconds > 0 ? `Kirim ulang dalam ${resendSeconds} dtk` : 'Kirim Link Reset' }}
                 </button>
             </div>
         </div>

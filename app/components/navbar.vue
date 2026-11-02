@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from '#app'
+import { createPaymentTab, openPayment } from '~/utils/payment'
 
 const route = useRoute()
 const router = useRouter()
@@ -29,15 +30,18 @@ const goToProfile = async () => {
 }
 
 const handleCheckout = async () => {
+    if (loadingCheckout.value) return
     loadingCheckout.value = true
-
-    const res = await checkout()
-
-    loadingCheckout.value = false
-
-    if (!res?.redirect_url) {
-        alert("Checkout gagal")
-    }
+    let paymentTab: Window | null = null
+    try {
+        paymentTab = createPaymentTab()
+        const res = await checkout()
+        if (!res?.redirect_url) throw new Error('Tautan pembayaran belum tersedia.')
+        openPayment(res.redirect_url, paymentTab)
+    } catch (err: any) {
+        paymentTab?.close()
+        alert((err?.data?.error || err?.message || 'Checkout belum dapat diproses.') + '\nPesanan dapat diperiksa di Profil → Riwayat transaksi.')
+    } finally { loadingCheckout.value = false }
 }
 
 

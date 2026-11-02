@@ -115,20 +115,13 @@ export const useCart = () => {
                 }
             })
 
-            console.log("💳 CHECKOUT:", res)
-
-            // 🔥 buka tab baru
-            if (res.redirect_url) {
-                window.open(res.redirect_url, '_blank')
-            }
-
             // refresh cart (biar kosong)
             await fetchCart()
 
             return res
 
         } catch (err) {
-            console.error("❌ checkout:", err)
+            throw err
         }
     }
 

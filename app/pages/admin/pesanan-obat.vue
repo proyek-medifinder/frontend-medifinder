@@ -1,4 +1,24 @@
 <script setup lang="ts">
+import { paymentStatusLabel, fulfillmentLabel } from '~/utils/payment'
+const fulfillmentBusy = ref('')
+const fulfillmentError = ref('')
+const nextFulfillment = (state: string) => ({ needs_review: 'paid', paid: 'preparing', preparing: 'ready', ready: 'completed' } as Record<string, string>)[state]
+const nextFulfillmentLabel = (state: string) => ({ needs_review: 'Periksa ulang stok', paid: 'Siapkan pesanan', preparing: 'Tandai siap diambil', ready: 'Selesaikan pesanan' } as Record<string, string>)[state]
+const advanceFulfillment = async (order: any) => {
+    if (fulfillmentBusy.value) return
+    fulfillmentBusy.value = order.id
+    fulfillmentError.value = ''
+    try {
+        const config = useRuntimeConfig()
+        const token = useCookie<string | null>('auth_token')
+        await $fetch(`${config.public.apiBase}/admin/transaksi/${order.id}/fulfillment`, {
+            method: 'PATCH', headers: { Authorization: `Bearer ${token.value}`, 'ngrok-skip-browser-warning': 'true' },
+            body: { status: nextFulfillment(order.fulfillment_status) }
+        })
+        await loadData()
+    } catch (err: any) { fulfillmentError.value = err?.data?.error || 'Status pesanan belum dapat diubah.' }
+    finally { fulfillmentBusy.value = '' }
+}
 definePageMeta({
     layout: 'admin',
     middleware: 'admin'
@@ -172,13 +192,13 @@ onMounted(loadData)
         </div>
 
         <section class="grid gap-5 md:grid-cols-3">
-            <AdminMetricCard title="Pesanan Masuk" icon="solar:bag-smile-bold-duotone" badge="Hari ini"
-                description="Antrean sejak pagi" :value="totalPesanan" />
-            <AdminMetricCard title="Siap Dikirim" :value="totalPaid" icon="solar:delivery-bold-duotone"
-                badge="Siap diproses" description="Butuh pickup atau kurir" icon-class="bg-cyan-50 text-cyan-700"
+            <AdminMetricCard title="Pesanan" icon="solar:bag-smile-bold-duotone" badge="Halaman ini"
+                description="Pesanan yang ditampilkan" :value="totalPesanan" />
+            <AdminMetricCard title="Sudah Dibayar" :value="totalPaid" icon="solar:delivery-bold-duotone"
+                badge="Halaman ini" description="Pembayaran terkonfirmasi" icon-class="bg-cyan-50 text-cyan-700"
                 badge-class="bg-cyan-50 text-cyan-700" />
-            <AdminMetricCard title="Tertahan" :value="totalPending" icon="solar:document-add-bold-duotone"
-                badge="Perlu verifikasi" description="Terkait resep atau pembayaran"
+            <AdminMetricCard title="Menunggu Pembayaran" :value="totalPending" icon="solar:document-add-bold-duotone"
+                badge="Halaman ini" description="Belum dibayar"
                 icon-class="bg-rose-50 text-rose-700" badge-class="bg-rose-50 text-rose-700" />
         </section>
 
@@ -195,7 +215,7 @@ onMounted(loadData)
                     <button @click="statusFilter = ''; loadData()" class="rounded border px-3 py-1 bg-green-600 text-white">Semua</button>
                     <button @click="statusFilter = 'pending'; loadData()" class="rounded border px-3 py-1">Pending</button>
                     <button @click="statusFilter = 'paid'; loadData()" class="rounded border px-3 py-1">Paid</button>
-                    <button @click="statusFilter = 'failed'; loadData()" class="rounded border px-3 py-1">Failed</button>
+                    <button @click="statusFilter = 'cancelled'; loadData()" class="rounded border px-3 py-1">Dibatalkan</button>
                 </div>
 
                 <div v-if="loading" class="text-sm text-gray-500">
@@ -207,6 +227,7 @@ onMounted(loadData)
                 </div>
 
                 <div v-else class="mt-5 space-y-4">
+                    <p v-if="fulfillmentError" role="alert" class="text-sm text-rose-600">{{ fulfillmentError }}</p>
                     <div v-for="order in transaksi" :key="order.id"
                         class="transition hover:bg-gray-100 flex flex-col gap-3 rounded-3xl border border-slate-200 bg-slate-50/80 p-5 md:flex-row md:items-center md:justify-between">
                         <div>
@@ -218,9 +239,10 @@ onMounted(loadData)
                                 <span class="rounded-full px-3 py-1 text-xs font-semibold" :class="{
                                     'bg-yellow-50 text-yellow-700': order.status === 'pending',
                                     'bg-green-50 text-green-700': order.status === 'paid',
-                                    'bg-red-50 text-red-700': order.status === 'failed'
+                                    'bg-red-50 text-red-700': order.status === 'cancelled',
+                                    'bg-slate-200 text-slate-700': ['refunded', 'partially_refunded'].includes(order.status)
                                 }">
-                                    {{ order.status }}
+                                    {{ paymentStatusLabel(order.status) }}
                                 </span>
                             </div>
 
@@ -239,6 +261,13 @@ onMounted(loadData)
                             <button @click="openDetail(order)" class="rounded-lg bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-200">
                                 Detail
                             </button>
+                            <template v-if="order.status === 'paid'">
+                                <span class="text-xs text-emerald-700">{{ fulfillmentLabel(order.fulfillment_status) }}</span>
+                                <button v-if="nextFulfillment(order.fulfillment_status)" :disabled="!!fulfillmentBusy"
+                                    @click="advanceFulfillment(order)" class="rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white disabled:opacity-50">
+                                    {{ fulfillmentBusy === order.id ? 'Menyimpan…' : nextFulfillmentLabel(order.fulfillment_status) }}
+                                </button>
+                            </template>
                         </div>
                     </div>
                 </div>

@@ -135,15 +135,23 @@
           </span>
         </div>
 
-        <div class="overflow-hidden rounded-[28px] border border-slate-200 dark:border-slate-700">
+        <div class="relative overflow-hidden rounded-[28px] border border-slate-200 dark:border-slate-700" :aria-busy="nearbyBusy">
           <ClientOnly>
             <UserMap :apoteks="apoteks" @location="handleLocation" @location-error="handleLocationError" />
+            <template #fallback>
+              <div class="h-[464px] bg-slate-100 dark:bg-slate-800"></div>
+            </template>
           </ClientOnly>
+          <div v-if="nearbyBusy" role="status" aria-live="polite"
+            class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-white/85 px-6 text-center backdrop-blur-sm dark:bg-slate-950/80">
+            <span aria-hidden="true" class="h-10 w-10 animate-spin rounded-full border-[3px] border-emerald-100 border-t-emerald-600 motion-reduce:animate-none dark:border-slate-700 dark:border-t-emerald-400"></span>
+            <p class="text-sm font-medium text-slate-700 dark:text-slate-200">{{ nearbyLoadingLabel }}</p>
+          </div>
         </div>
 
         <div class="mt-4 rounded-2xl bg-[#0f766e]/6 dark:bg-emerald-950/40 px-4 py-3">
           <p class="text-xs uppercase tracking-[0.16em] text-[#0f766e]/70 dark:text-emerald-400/80">
-            Lokasi terdeteksi
+            {{ locationLoading ? 'Mencari lokasi' : locationError ? 'Lokasi belum tersedia' : 'Lokasi terdeteksi' }}
           </p>
           <p class="mt-1 text-sm font-semibold text-[#0f766e] dark:text-emerald-400">
             {{ userLocation }}
@@ -181,7 +189,7 @@
             Hasil ditemukan
           </p>
           <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">
-            {{ apoteks.length }}
+            {{ nearbyBusy || nearbyError || locationError ? '—' : apoteks.length }}
           </p>
           <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
             apotek aktif di sekitar lokasi
@@ -189,10 +197,29 @@
         </div>
       </div>
 
-      <!-- EMPTY STATE -->
-      <div v-if="loading || nearbyError || locationError || apoteks.length === 0"
+      <!-- Loading stays visible until location and pharmacy data are ready. -->
+      <div v-if="nearbyBusy" :aria-busy="true">
+        <p role="status" aria-live="polite" class="mb-5 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+          <span aria-hidden="true" class="h-4 w-4 animate-spin rounded-full border-2 border-emerald-200 border-t-emerald-600 motion-reduce:animate-none dark:border-slate-700 dark:border-t-emerald-400"></span>
+          {{ nearbyLoadingLabel }}
+        </p>
+        <div aria-hidden="true" class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div v-for="item in 3" :key="item" class="overflow-hidden rounded-[28px] border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+            <div class="h-48 animate-pulse bg-slate-200 motion-reduce:animate-none dark:bg-slate-800"></div>
+            <div class="space-y-4 p-5">
+              <div class="h-5 w-2/3 animate-pulse rounded bg-slate-200 motion-reduce:animate-none dark:bg-slate-800"></div>
+              <div class="h-4 w-full animate-pulse rounded bg-slate-100 motion-reduce:animate-none dark:bg-slate-800"></div>
+              <div class="h-4 w-4/5 animate-pulse rounded bg-slate-100 motion-reduce:animate-none dark:bg-slate-800"></div>
+              <div class="h-11 animate-pulse rounded-full bg-slate-100 motion-reduce:animate-none dark:bg-slate-800"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMPTY / ERROR STATE -->
+      <div v-else-if="nearbyError || locationError || apoteks.length === 0"
         class="rounded-[32px] border border-dashed border-slate-300 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 py-14 text-center text-gray-400 dark:text-slate-500 shadow-sm">
-        {{ locationError || nearbyError || (loading ? 'Memuat apotek dalam radius 5 km...' : 'Tidak ada apotek dalam radius 5 km') }}
+        {{ locationError || nearbyError || 'Tidak ada apotek dalam radius 5 km' }}
       </div>
 
       <!-- CARDS GRID -->
@@ -267,7 +294,7 @@
 
 
 <script setup lang="ts">
-import { onMounted, nextTick, watch } from 'vue'
+import { computed, onMounted, nextTick, watch } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -286,12 +313,17 @@ gsap.registerPlugin(ScrollTrigger)
 // ========================
 const userLocation = ref("Mendeteksi lokasi...")
 const locationError = ref('')
+const locationLoading = ref(true)
 
 // ========================
 // COMPOSABLE
 // ========================
 const { apoteks, loading, error: nearbyError, initNearby } = useNearbyApotek()
 const { getLocationName } = useLocation()
+const nearbyBusy = computed(() => locationLoading.value || loading.value)
+const nearbyLoadingLabel = computed(() => locationLoading.value
+  ? 'Mencari lokasi Anda...'
+  : 'Memuat apotek dalam radius 5 km...')
 
 // ========================
 // MAIN
@@ -372,6 +404,7 @@ onMounted(async () => {
 
 const handleLocation = async (loc: { lat: number; lng: number }) => {
   if (!Number.isFinite(loc.lat) || !Number.isFinite(loc.lng)) return
+  locationLoading.value = false
   locationError.value = ''
   userLocation.value = `${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}`
 
@@ -385,6 +418,7 @@ const handleLocation = async (loc: { lat: number; lng: number }) => {
 }
 
 const handleLocationError = (message: string) => {
+  locationLoading.value = false
   locationError.value = message
   userLocation.value = 'Lokasi belum tersedia'
 }

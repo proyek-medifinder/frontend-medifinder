@@ -36,6 +36,9 @@
             </div>
         </div>
 
+        <p v-if="statusMessage" role="status" class="rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300">{{ statusMessage }}</p>
+        <p v-if="statusError" role="alert" class="rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:bg-rose-950/50 dark:text-rose-300">{{ statusError }}</p>
+
         <div class="overflow-hidden rounded-[28px] border border-slate-200/70 bg-white/90 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
             <div class="flex items-center justify-between border-b px-6 py-4">
                 <div>
@@ -109,11 +112,11 @@
                             <td class="px-6 py-4">
                                 <span :class="[
                                     'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
-                                    normalizeStatus(admin.status) === 'approved'
+                                    isAccountActive(admin.status)
                                         ? 'bg-emerald-100 text-emerald-700'
                                         : 'bg-amber-100 text-amber-700'
                                 ]">
-                                    {{ normalizeStatus(admin.status) === 'approved' ? 'Aktif' : 'Suspend' }}
+                                    {{ accountStatusLabel(admin.status) }}
                                 </span>
                             </td>
 
@@ -123,18 +126,19 @@
 
                             <td class="px-6 py-4">
                                 <div class="flex flex-wrap gap-2">
-                                    <button v-if="normalizeStatus(admin.status) === 'approved'"
-                                        @click="handleSuspend(admin.id)" :disabled="actionLoadingId === admin.id"
-                                        class="rounded-xl bg-amber-100 px-3 py-2 text-xs font-semibold text-amber-800 transition hover:bg-amber-200 disabled:opacity-60">
-                                        {{ actionLoadingId === admin.id ? 'Memproses...' : 'Suspend' }}
-                                    </button>
+                                    <div class="flex items-center gap-2">
+                                        <button type="button" role="switch" :aria-checked="isAccountActive(admin.status)"
+                                            :aria-label="`Akun ${admin.name}: ${isAccountActive(admin.status) ? 'aktif, klik untuk menonaktifkan' : 'nonaktif, klik untuk mengaktifkan'}`"
+                                            :disabled="actionLoadingId !== null || !['active', 'suspended'].includes(normalizeAccountStatus(admin.status))"
+                                            :aria-busy="actionLoadingId === admin.id" @click="handleToggleStatus(admin)"
+                                            :class="isAccountActive(admin.status) ? 'bg-emerald-600' : 'bg-slate-300 dark:bg-slate-600'"
+                                            class="relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-50">
+                                            <span class="h-5 w-5 rounded-full bg-white shadow-sm transition-transform" :class="isAccountActive(admin.status) ? 'translate-x-6' : 'translate-x-1'"></span>
+                                        </button>
+                                        <span class="text-xs text-slate-500">{{ actionLoadingId === admin.id ? 'Memproses...' : isAccountActive(admin.status) ? 'Aktif' : 'Nonaktif' }}</span>
+                                    </div>
 
-                                    <button v-else @click="handleApprove(admin.id)" :disabled="actionLoadingId === admin.id"
-                                        class="rounded-xl bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60">
-                                        {{ actionLoadingId === admin.id ? 'Memproses...' : 'Aktifkan' }}
-                                    </button>
-
-                                    <button @click="openDeleteModal(admin)"
+                                    <button @click="openDeleteModal(admin)" :disabled="actionLoadingId !== null"
                                         class="rounded-xl bg-rose-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-rose-700">
                                         Hapus
                                     </button>
@@ -209,7 +213,7 @@
                     </div>
                     <div>
                         <p class="text-xs uppercase tracking-[0.16em] text-slate-400">Status</p>
-                        <p class="mt-2 font-medium text-slate-700">{{ normalizeStatus(selectedAdmin.status) === 'approved' ? 'Aktif' : 'Suspend' }}</p>
+                        <p class="mt-2 font-medium text-slate-700">{{ accountStatusLabel(selectedAdmin.status) }}</p>
                     </div>
                 </div>
 
@@ -230,6 +234,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
+import { normalizeAccountStatus, isAccountActive, accountStatusLabel } from '@/utils/accountStatus'
 
 definePageMeta({
     layout: 'admin',
@@ -250,6 +255,8 @@ const perPage = 5
 const admins = ref<Admin[]>([])
 const loading = ref(false)
 const errorMessage = ref('')
+const statusMessage = ref('')
+const statusError = ref('')
 const actionLoadingId = ref<string | null>(null)
 const showDeleteModal = ref(false)
 const selectedAdmin = ref<Admin | null>(null)
@@ -258,7 +265,7 @@ interface Admin {
     id: string
     name: string
     email: string
-    role_id: number
+    role_id: string
     status: string
     last_login_at: string | null
     created_at: string
@@ -277,23 +284,19 @@ interface AdminResponse {
     }
 }
 
-const normalizeStatus = (value?: string | null) =>
-    String(value || '')
-        .trim()
-        .toLowerCase()
-
 const shortId = (value?: string | null) => {
     if (!value) return '-'
     return value.length > 12 ? `${value.slice(0, 12)}...` : value
 }
 
 const formatDate = (value?: string | null) => {
-    if (!value) return '-'
-    return new Date(value).toLocaleString('id-ID')
+    if (!value || value.startsWith('0001-')) return '-'
+    const date = new Date(value)
+    return Number.isNaN(date.getTime()) ? '-' : date.toLocaleString('id-ID')
 }
 
 const getAdminPharmacyName = (admin: Partial<Admin>) =>
-    admin.nama_apotek || admin.pharmacy_name || admin.name || '-'
+    admin.nama_apotek || admin.pharmacy_name || 'Belum ada apotek'
 
 const fetchAdmins = async () => {
     try {
@@ -303,6 +306,7 @@ const fetchAdmins = async () => {
         const data = await $fetch<AdminResponse>(
             `${config.public.apiBase}/superadmin/admin`,
             {
+                params: { page: 1, limit: 50 },
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                     'ngrok-skip-browser-warning': 'true'
@@ -310,7 +314,15 @@ const fetchAdmins = async () => {
             }
         )
 
-        admins.value = data.data || []
+        const results = [...(data.data || [])]
+        const totalPages = Math.ceil((data.meta.total || results.length) / 50)
+        for (let page = 2; page <= totalPages; page++) {
+            const next = await $fetch<AdminResponse>(`${config.public.apiBase}/superadmin/admin`, {
+                params: { page, limit: 50 }, headers: { Authorization: `Bearer ${token.value}`, 'ngrok-skip-browser-warning': 'true' }
+            })
+            results.push(...(next.data || []))
+        }
+        admins.value = results
     } catch (err: any) {
         errorMessage.value = err?.data?.message || 'Data admin belum bisa dimuat sekarang. Coba refresh sebentar lagi.'
     } finally {
@@ -320,21 +332,18 @@ const fetchAdmins = async () => {
 
 const { updateStatusAdmin, deleteAdmin } = useAdminApotek()
 
-const handleApprove = async (id: string) => {
+const handleToggleStatus = async (admin: Admin) => {
+    if (actionLoadingId.value) return
+    const nextStatus = isAccountActive(admin.status) ? 'suspended' : 'active'
+    statusMessage.value = ''
+    statusError.value = ''
     try {
-        actionLoadingId.value = id
-        await updateStatusAdmin(id, 'approved')
-        await fetchAdmins()
-    } finally {
-        actionLoadingId.value = null
-    }
-}
-
-const handleSuspend = async (id: string) => {
-    try {
-        actionLoadingId.value = id
-        await updateStatusAdmin(id, 'suspended')
-        await fetchAdmins()
+        actionLoadingId.value = admin.id
+        await updateStatusAdmin(admin.id, nextStatus)
+        admin.status = nextStatus
+        statusMessage.value = `Akun ${admin.name} berhasil ${nextStatus === 'active' ? 'diaktifkan' : 'dinonaktifkan'}. Notifikasi email diproses.`
+    } catch (err: any) {
+        statusError.value = err?.data?.message || err?.data?.error || 'Status akun belum berhasil diubah.'
     } finally {
         actionLoadingId.value = null
     }

@@ -615,7 +615,7 @@ const showModal = ref(false)
 const verifyingAdminId = ref<string | null>(null)
 
 const approvedAdminCount = computed(() =>
-    superAdminList.value.filter((item: any) => normalizeStatus(item?.status) === 'approved').length
+    superAdminList.value.filter((item: any) => ['active', 'approved'].includes(normalizeStatus(item?.status))).length
 )
 
 const suspendedAdminCount = computed(() =>

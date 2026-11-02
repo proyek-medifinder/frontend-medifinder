@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { paymentStatusLabel, fulfillmentLabel } from '~/utils/payment'
 
 definePageMeta({
     layout: 'admin',
@@ -43,10 +44,11 @@ const filteredData = computed(() => {
 
 const totalTransaksi = computed(() => transaksi.value.length)
 const totalPendapatan = computed(() =>
-    transaksi.value.reduce((sum: number, item: any) => sum + Number(item.total_harga ?? item.total ?? 0), 0)
+    transaksi.value.filter((item: any) => ['paid', 'refunded', 'partially_refunded'].includes(item.status))
+        .reduce((sum: number, item: any) => sum + Math.max(0, Number(item.total_harga ?? item.total ?? 0) - Number(item.refunded_amount || 0)), 0)
 )
 const totalSelesai = computed(() =>
-    transaksi.value.filter((item: any) => String(item.status).toLowerCase() === 'paid').length
+    transaksi.value.filter((item: any) => item.fulfillment_status === 'completed').length
 )
 
 const formatCurrency = (value: number | string | null | undefined) =>
@@ -178,7 +180,7 @@ onMounted(loadData)
             </div>
 
             <div class="rounded-[28px] border border-slate-200/70 bg-white/90 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
-                <p class="text-sm text-gray-500">Total Pendapatan</p>
+                <p class="text-sm text-gray-500">Pendapatan bersih halaman ini</p>
                 <p class="text-2xl font-bold">{{ formatCurrency(totalPendapatan) }}</p>
             </div>
 
@@ -197,8 +199,9 @@ onMounted(loadData)
                 <option value="">Semua Status</option>
                 <option value="pending">Pending</option>
                 <option value="paid">Paid</option>
-                <option value="failed">Failed</option>
                 <option value="cancelled">Cancelled</option>
+                <option value="refunded">Dana dikembalikan</option>
+                <option value="partially_refunded">Pengembalian sebagian</option>
             </select>
         </div>
 
@@ -246,8 +249,10 @@ onMounted(loadData)
 
                             <td class="px-6 py-4">
                                 <span :class="statusClass(item.status)" class="px-3 py-1 rounded-full text-xs font-semibold capitalize">
-                                    {{ item.status }}
+                                    {{ paymentStatusLabel(item.status) }}
                                 </span>
+                                <p v-if="item.status === 'paid'" class="mt-2 text-xs text-slate-500">{{ fulfillmentLabel(item.fulfillment_status) }}</p>
+                                <p v-if="item.refunded_amount" class="mt-2 text-xs text-slate-500">Refund: {{ formatCurrency(item.refunded_amount) }}</p>
                             </td>
 
                             <td class="px-6 py-4">

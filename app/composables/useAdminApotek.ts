@@ -5,11 +5,12 @@ export const useAdminApotek = () => {
     /* =========================
        UPDATE ADMIN
     ========================= */
-    const updateStatusAdmin = async (id: string, status: 'approved' | 'suspended') => {
+    const updateStatusAdmin = async (id: string, status: 'active' | 'suspended') => {
         return await $fetch(
             `${config.public.apiBase}/superadmin/admin/${id}/status`,
             {
                 method: 'PATCH',
+                retry: 0,
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                     'ngrok-skip-browser-warning': 'true'

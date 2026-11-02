@@ -57,7 +57,7 @@ const renderApoteks = () => {
 watch(() => props.apoteks, renderApoteks, { deep: true })
 
 onMounted(async () => {
-
+    try {
     await nextTick()
 
     if (!mapContainer.value) return
@@ -105,7 +105,11 @@ onMounted(async () => {
             ? 'Izinkan akses lokasi untuk melihat apotek dalam radius 5 km.'
             : 'Lokasi belum dapat dideteksi. Muat ulang halaman untuk mencoba lagi.')
     }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 })
-
+    } catch (error) {
+        if (disposed) return
+        console.error('Gagal menyiapkan peta:', error)
+        emit('location-error', 'Peta belum dapat dimuat. Muat ulang halaman untuk mencoba lagi.')
+    }
 })
 
 onBeforeUnmount(() => {

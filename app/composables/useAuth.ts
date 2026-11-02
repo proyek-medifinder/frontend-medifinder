@@ -42,9 +42,14 @@ export const useAuth = () => {
     const toFriendlyAuthMessage = (err: any, fallback: string) => {
         const rawMessage = String(
             err?.data?.message ||
+            err?.data?.error ||
             err?.message ||
             ''
         ).toLowerCase()
+
+        if (rawMessage.includes('dinonaktifkan') || rawMessage.includes('suspended')) {
+            return 'Akun ini dinonaktifkan. Hubungi tim MediFinder untuk bantuan.'
+        }
 
         if (
             rawMessage.includes('password salah') ||

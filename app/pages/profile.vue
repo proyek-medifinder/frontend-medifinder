@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { paymentStatusLabel } from '~/utils/payment'
 useHead({
     title: 'Profil Saya'
 })
@@ -381,7 +382,7 @@ onMounted(async () => {
 
                                             <span class="rounded-full px-3 py-1 text-xs font-semibold"
                                                 :class="passwordStatusClass(item.status)">
-                                                {{ item.status }}
+                                                {{ paymentStatusLabel(item.status) }}
                                             </span>
                                         </div>
 
@@ -402,6 +403,7 @@ onMounted(async () => {
                                                 {{ getTransactionObatSummary(item) }}
                                             </p>
                                         </div>
+                                        <TransactionPaymentActions :order="item" @changed="fetchTransaksi" />
                                     </div>
 
                                     <div v-if="hiddenTransactionCount > 0"
@@ -467,7 +469,7 @@ onMounted(async () => {
 
                             <span class="rounded-full px-3 py-1 text-xs font-semibold"
                                 :class="passwordStatusClass(item.status)">
-                                {{ item.status }}
+                                {{ paymentStatusLabel(item.status) }}
                             </span>
                         </div>
 
@@ -488,6 +490,7 @@ onMounted(async () => {
                                 {{ getTransactionObatSummary(item) }}
                             </p>
                         </div>
+                        <TransactionPaymentActions :order="item" @changed="fetchTransaksi" />
                     </div>
                 </div>
             </div>

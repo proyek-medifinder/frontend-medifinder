@@ -146,7 +146,7 @@
             :class="msg.sender === 'user' ? 'items-end' : 'items-start'"
           >
             <div 
-              class="flex items-end gap-2 max-w-[90%]" 
+              class="flex min-w-0 items-end gap-2 max-w-[90%]"
               :class="msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'"
             >
               <div 
@@ -158,14 +158,15 @@
 
               <!-- Bubble Chat -->
               <div 
-                class="rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm transition-all" 
+                class="min-w-0 rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm transition-all"
                 :class="[
                   msg.sender === 'user'
                     ? 'bg-gradient-to-r from-[#0f766e] to-[#14967f] text-white rounded-br-xs shadow-teal-700/10'
                     : 'bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-bl-xs shadow-slate-200/60 dark:shadow-none'
                 ]"
               >
-                <p class="whitespace-pre-line">{{ msg.text }}</p>
+                <ChatMessageContent v-if="msg.sender === 'bot'" :text="msg.text" />
+                <p v-else class="whitespace-pre-line break-words">{{ msg.text }}</p>
 
                 <!-- 📍 KARTU PILIHAN USIA (HANYA MUNCUL DI PESAN PERTAMA JIKA BELUM PILIH USIA) -->
                 <div v-if="msg.id === 'welcome' && !selectedAgeGroup" class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">

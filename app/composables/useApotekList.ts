@@ -27,6 +27,7 @@ export const useApotekList = () => {
             const res: any = await $fetch(
                 `${config.public.apiBase}/superadmin/apotek`,
                 {
+                    params: { page: 1, limit: 50 },
                     headers: {
                         Authorization: `Bearer ${token.value}`, // 🔥 INI YANG KURANG
                         'ngrok-skip-browser-warning': 'true'
@@ -34,9 +35,15 @@ export const useApotekList = () => {
                 }
             )
 
-            console.log("📦 APOTEK:", res)
+            const rows = [...(res.data || [])]
+            for (let page = 2; page <= (res.meta?.total_page || 1); page++) {
+                const next: any = await $fetch(`${config.public.apiBase}/superadmin/apotek`, {
+                    params: { page, limit: 50 }, headers: { Authorization: `Bearer ${token.value}`, 'ngrok-skip-browser-warning': 'true' }
+                })
+                rows.push(...(next.data || []))
+            }
 
-            apoteks.value = (res.data || []).map((item: any) => ({
+            apoteks.value = rows.map((item: any) => ({
                 ...item,
                 photo_url: getPhotoPath(item),
                 PhotoURL: getPhotoPath(item)

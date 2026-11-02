@@ -20,10 +20,7 @@ const router = useRouter()
 const { login, googleLogin, user, logout } = useAuth()
 
 const forgotOpen = ref(false)
-const forgotStep = ref(1)
 const forgotEmail = ref('')
-const newPassword = ref('')
-const resetToken = ref('')
 const forgotLoading = ref(false)
 const forgotErrorMessage = ref('')
 const forgotSuccessMessage = ref('')
@@ -34,10 +31,7 @@ const isValidEmail = (value: string) => {
 
 const openForgotModal = () => {
     forgotOpen.value = true
-    forgotStep.value = 1
     forgotEmail.value = ''
-    newPassword.value = ''
-    resetToken.value = ''
     forgotErrorMessage.value = ''
     forgotSuccessMessage.value = ''
 }
@@ -46,12 +40,11 @@ const closeForgotModal = () => {
     forgotOpen.value = false
 }
 
-const {
-    sendForgotEmail,
-    resetPassword
-} = useForgotPassword()
+const { sendForgotEmail, resendSeconds } = useForgotPassword()
 
 const handleSendForgot = async () => {
+    if (forgotLoading.value || resendSeconds.value > 0) return
+    forgotEmail.value = forgotEmail.value.trim()
     try {
         forgotLoading.value = true
         forgotErrorMessage.value = ''
@@ -69,50 +62,16 @@ const handleSendForgot = async () => {
 
         const res: any = await sendForgotEmail(forgotEmail.value)
 
-        if (res?.token) {
-            resetToken.value = res.token
-            forgotStep.value = 2
-        } else {
-            forgotSuccessMessage.value = 'Link reset password sudah kami kirim. Coba cek email kamu, ya.'
-            setTimeout(() => {
-                closeForgotModal()
-            }, 1200)
-        }
+        forgotSuccessMessage.value = res.message
+
     } catch (err: any) {
-        forgotErrorMessage.value = err?.data?.message || err?.message || 'Link reset belum berhasil dikirim. Coba lagi sebentar lagi.'
+        forgotErrorMessage.value = err?.data?.message || err?.data?.error || err?.message || 'Link reset belum berhasil dikirim. Coba lagi sebentar lagi.'
     } finally {
         forgotLoading.value = false
     }
 }
 
-const handleResetPassword = async () => {
-    try {
-        forgotLoading.value = true
-        forgotErrorMessage.value = ''
-        forgotSuccessMessage.value = ''
 
-        if (!newPassword.value) {
-            forgotErrorMessage.value = 'Masukkan password baru dulu, ya.'
-            return
-        }
-
-        if (newPassword.value.length < 6) {
-            forgotErrorMessage.value = 'Password baru minimal 6 karakter supaya lebih aman.'
-            return
-        }
-
-        await resetPassword(resetToken.value, newPassword.value)
-
-        forgotSuccessMessage.value = 'Password berhasil diperbarui.'
-        setTimeout(() => {
-            closeForgotModal()
-        }, 1200)
-    } catch (err: any) {
-        forgotErrorMessage.value = err?.data?.message || err?.message || 'Password belum berhasil direset. Coba lagi sebentar lagi.'
-    } finally {
-        forgotLoading.value = false
-    }
-}
 
 const handleLogin = async () => {
     try {
@@ -315,7 +274,7 @@ onMounted(() => {
                             Bantuan Login
                         </p>
                         <h3 class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">
-                            {{ forgotStep === 1 ? 'Reset password' : 'Atur password baru' }}
+                            Reset password
                         </h3>
                     </div>
 
@@ -328,21 +287,12 @@ onMounted(() => {
                     </button>
                 </div>
 
-                <div v-if="forgotStep === 1" class="mt-6">
+                <div class="mt-6">
                     <p class="text-sm leading-6 text-slate-500 dark:text-slate-400">
                         Masukkan email akun kamu yang terdaftar. Kami akan kirim link untuk atur password baru.
                     </p>
 
-                    <input v-model="forgotEmail" type="email" placeholder="Masukkan email kamu"
-                        class="mt-5 w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition focus:border-[#0f766e] dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-950/40" />
-                </div>
-
-                <div v-if="forgotStep === 2" class="mt-6">
-                    <p class="text-sm leading-6 text-slate-500 dark:text-slate-400">
-                        Buat password baru yang lebih aman, lalu gunakan untuk login kembali.
-                    </p>
-
-                    <input v-model="newPassword" type="password" placeholder="Masukkan password baru"
+                    <input v-model="forgotEmail" type="email" autocomplete="email" aria-label="Email untuk reset password" @keyup.enter="handleSendForgot" placeholder="Masukkan email kamu"
                         class="mt-5 w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none transition focus:border-[#0f766e] dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 dark:focus:ring-emerald-950/40" />
                 </div>
 
@@ -351,19 +301,14 @@ onMounted(() => {
                     {{ forgotErrorMessage }}
                 </div>
 
-                <div v-if="forgotSuccessMessage"
+                <div v-if="forgotSuccessMessage" role="status"
                     class="mt-4 rounded-2xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 dark:bg-emerald-950/40 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-400">
                     {{ forgotSuccessMessage }}
                 </div>
 
-                <button v-if="forgotStep === 1" @click="handleSendForgot" :disabled="forgotLoading"
+                <button @click="handleSendForgot" :disabled="forgotLoading || resendSeconds > 0"
                     class="mt-6 w-full rounded-2xl bg-[#0f766e] py-3 text-sm font-semibold text-white transition hover:bg-[#0c5f58] disabled:cursor-not-allowed disabled:opacity-70">
-                    {{ forgotLoading ? 'Mengirim link reset...' : 'Kirim Link Reset' }}
-                </button>
-
-                <button v-else @click="handleResetPassword" :disabled="forgotLoading"
-                    class="mt-6 w-full rounded-2xl bg-[#0f766e] py-3 text-sm font-semibold text-white transition hover:bg-[#0c5f58] disabled:cursor-not-allowed disabled:opacity-70">
-                    {{ forgotLoading ? 'Menyimpan password...' : 'Simpan Password Baru' }}
+                    {{ forgotLoading ? 'Memproses...' : resendSeconds > 0 ? `Kirim ulang dalam ${resendSeconds} dtk` : 'Kirim Link Reset' }}
                 </button>
             </div>
         </div>

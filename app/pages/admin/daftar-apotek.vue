@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
+import { isAccountActive } from '@/utils/accountStatus'
 
 definePageMeta({
     layout: 'admin',
@@ -60,6 +61,7 @@ const formatOperationalHours = (item: any) => {
 }
 
 const getVerificationLabel = (item: any) => {
+    if (!isAccountActive(item.admin_status)) return 'Admin nonaktif'
     const status = String(item?.verification_status || item?.status || '').toUpperCase()
     if (status === 'APPROVED' || status === 'APPROVED_ADMIN') return 'Terverifikasi'
     if (status === 'PENDING') return 'Menunggu review'
@@ -68,6 +70,7 @@ const getVerificationLabel = (item: any) => {
 }
 
 const getVerificationBadge = (item: any) => {
+    if (!isAccountActive(item.admin_status)) return 'bg-slate-200 text-slate-600'
     const status = String(item?.verification_status || item?.status || '').toUpperCase()
     if (status === 'APPROVED' || status === 'APPROVED_ADMIN') return 'bg-emerald-100 text-emerald-700'
     if (status === 'PENDING') return 'bg-amber-100 text-amber-700'
@@ -103,6 +106,7 @@ watch(filteredData, () => {
 })
 
 const openDetail = (item: any) => {
+    if (!isAccountActive(item.admin_status)) return
     selectedApotek.value = item
     showDetailModal.value = true
 }
@@ -195,12 +199,15 @@ const prevPage = () => {
                         </tr>
 
                         <tr v-else v-for="item in paginatedData" :key="item.id"
-                            class="border-t border-slate-100 align-top transition hover:bg-slate-50/80">
+                            class="border-t border-slate-100 align-top transition"
+                            :aria-disabled="!isAccountActive(item.admin_status)"
+                            :class="!isAccountActive(item.admin_status) ? 'pharmacy-disabled bg-slate-100/80' : 'hover:bg-slate-50/80'">
                             <td class="px-6 py-4">
                                 <div class="flex items-start gap-3">
                                     <img :src="resolveImageUrl(item)" class="h-14 w-14 rounded-2xl object-cover ring-1 ring-slate-200" />
                                     <div>
                                         <p class="font-semibold text-slate-900">{{ item.nama || '-' }}</p>
+                                        <p v-if="!isAccountActive(item.admin_status)" class="mt-1 text-xs font-medium text-rose-700">Apotek dinonaktifkan karena akun admin tidak aktif.</p>
                                         <div class="mt-2 flex flex-wrap gap-2">
                                             <span class="rounded-full px-3 py-1 text-xs font-semibold" :class="getVerificationBadge(item)">
                                                 {{ getVerificationLabel(item) }}
@@ -232,8 +239,8 @@ const prevPage = () => {
 
                             <td class="px-6 py-4">
                                 <div class="flex flex-wrap gap-2">
-                                    <button @click="openDetail(item)"
-                                        class="rounded-xl bg-cyan-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-cyan-700">
+                                    <button @click="openDetail(item)" :disabled="!isAccountActive(item.admin_status)"
+                                        class="rounded-xl bg-cyan-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-cyan-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500">
                                         Detail Cepat
                                     </button>
                                 </div>
@@ -336,3 +343,8 @@ const prevPage = () => {
         </div>
     </div>
 </template>
+
+<style scoped>
+.pharmacy-disabled img { filter: grayscale(1); opacity: 0.5; }
+.pharmacy-disabled td:not(:first-child):not(:last-child) { opacity: 0.55; }
+</style>
