@@ -6,6 +6,21 @@ useHead({
     title: 'Katalog Obat'
 })
 
+const config = useRuntimeConfig()
+const fallbackPhoto = '/images/apotek1.jpg'
+
+const pharmacyPhoto = (photoUrl?: string | null) => {
+    const path = photoUrl?.trim()
+    if (!path) return fallbackPhoto
+    if (/^https?:\/\//i.test(path)) return path
+    return `${config.public.apiBase.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
+}
+
+const useFallbackPhoto = (event: Event) => {
+    const img = event.target as HTMLImageElement
+    if (img.getAttribute('src') !== fallbackPhoto) img.src = fallbackPhoto
+}
+
 const keyword = ref('')
 const searched = ref(false)
 const loading = ref(false)
@@ -84,7 +99,7 @@ const searchObat = async () => {
                     id: apotek.id,
                     nama: apotek.nama,
                     alamat: apotek.alamat,
-                    image: '/images/apotek1.jpg',
+                    image: pharmacyPhoto(apotek.photo_url),
                     jam_buka: apotek.jam_buka,
                     jam_tutup: apotek.jam_tutup,
                     distance: apotek.distance,
@@ -248,7 +263,7 @@ onMounted(() => {
                     <article v-for="item in resultApotek" :key="item.id"
                         class="apotek-card group overflow-hidden rounded-[28px] border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 shadow-[0_18px_50px_rgba(15,23,42,0.05)] transition hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
                         <div class="relative overflow-hidden">
-                            <img :src="item.image" :alt="item.nama"
+                            <img :src="item.image" :alt="item.nama" @error="useFallbackPhoto"
                                 class="h-52 w-full object-cover transition duration-500 group-hover:scale-105" />
 
                             <div
